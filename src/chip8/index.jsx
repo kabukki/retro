@@ -85,8 +85,9 @@ export const Chip8 = () => {
                     setEmulator(null);
                     setFramebuffer(null);
                 };
-            } catch (e) {
-                console.log('error', e);
+            } catch (err) {
+                console.error(err);
+                setError(err);
             }
         }
     }, [emulator]);

@@ -4,18 +4,21 @@ export const Display = ({ framebuffer, width, height, scale = 8 }) => {
     const canvas = useRef(null);
 
     useEffect(() => {
-        if (framebuffer) {
-            const context = canvas.current.getContext('2d');
+        const context = canvas.current.getContext('2d');
 
-            requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            if (framebuffer) {
                 for (let n = 0; n < 512; n++) {
                     const size = 8 * 8 * 4; // Tile size
                     const data = new ImageData(new Uint8ClampedArray(framebuffer.slice(n * size , (n + 1) * size)), 8, 8);
                     const offset = n >= 256 ? 16 * 8 : 0;
                     context.putImageData(data, offset + (n % 16) * 8, Math.floor(n / 16) % 16 * 8);
                 }
-            });
-        }
+            } else {
+                context.fillStyle = 'black';
+                context.fillRect(0, 0, width * scale, height * scale);
+            }
+        });
     }, [framebuffer]);
 
     return (

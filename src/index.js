@@ -6,4 +6,4 @@ import initNes from '@kabukki/wasm-nes';
 import { App } from './App';
 import './index.css';
 
-Promise.all([initChip8(), initNes()]).then((wasm) => ReactDOM.render(<App wasm={wasm} />, document.getElementById('app')));
+Promise.all([initChip8(), initNes()]).then(() => ReactDOM.render(<App />, document.getElementById('app')));

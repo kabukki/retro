@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Cartridge } from '@kabukki/wasm-nes';
+import { Cartridge, Emulator } from '@kabukki/wasm-nes';
 import { Helmet } from 'react-helmet';
 
 import { ROMSelector } from '../ROMSelector';
@@ -7,14 +7,21 @@ import { Display } from './Display';
 
 export const Nes = () => {
     const [framebuffer, setFramebuffer] = useState(null);
-    const [emulator, setEmulator] = useState(null);
+    const [emulator, setEmulator] = useState(new Emulator());
     const [error, setError] = useState(null);
     const [rom, setRom] = useState(null);
-
+    
     useEffect(() => {
         if (rom) {
-            const cart = Cartridge.new(rom);
-            setFramebuffer(cart.get_tiles());
+            emulator.load(rom);
+            emulator.start({
+                clockSpeed: (1000 / 3) / 2,
+                onError (err) {
+                    setError(err);
+                },
+            });
+            
+            return () => emulator.stop();
         }
     }, [rom]);
 
@@ -28,7 +35,7 @@ export const Nes = () => {
                 <div>
                     <button onClick={() => setEmulator(null)}>❌ End</button>
                 </div>
-                {!emulator && (
+                {!rom && (
                     <div className="absolute inset-0 flex flex-col justify-center bg-gray-500 bg-opacity-50">
                         <div className="py-4 bg-gray-500 text-center text-white" >
                             <ROMSelector onSelect={setRom} />
