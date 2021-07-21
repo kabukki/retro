@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Cartridge, Emulator } from '@kabukki/wasm-nes';
-import { Helmet } from 'react-helmet';
 
 import { ROMSelector } from '../ROMSelector';
 import { Display } from './Display';
@@ -27,9 +26,6 @@ export const Nes = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>NES</title>
-            </Helmet>
             <div className="relative flex gap-4">
                 <Display framebuffer={framebuffer} width={32 * 8} height={16 * 8} scale={1} />
                 <div>

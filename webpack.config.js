@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: path.join(__dirname, 'src/index.js'),
+    entry: path.join(__dirname, 'src/index.jsx'),
     output: {
         path: path.join(__dirname, 'dist'),
         filename: '[name].js',
@@ -20,7 +20,10 @@ module.exports = {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             }, {
-                test: /\.(ch8|nes)$/,
+                test: /\.svg$/,
+                use: ['@svgr/webpack'],
+            }, {
+                test: /\.(ch8|nes|png|jpe?g)$/,
                 type: 'asset/resource',
             },
         ],

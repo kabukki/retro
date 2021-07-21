@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Emulator } from '@kabukki/wasm-chip8';
-import { Helmet } from 'react-helmet';
 import merge from 'lodash.merge';
 
 import { hex } from '../utils';
@@ -106,9 +105,6 @@ export const Chip8 = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>CHIP-8</title>
-            </Helmet>
             <div className="relative flex gap-4">
                 <Display framebuffer={framebuffer} width={64} height={32} scale={8} settings={settings.display} />
                 <div>
