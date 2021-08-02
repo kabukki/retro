@@ -16,20 +16,36 @@ export const Nes = () => {
         if (rom) {
             emulator.load(rom);
             emulator.start({
-                // clockSpeed: 1000 / 1,
-                frameRate: 1000 / 10,
+                clockRate: 1000 / 100,
+                frameRate: 1000 / 1,
+                debugRate: 4000,
                 onError (err) {
                     console.error(err);
                     setError(err);
                 },
-                onCycle: ({ framebuffer, nametables, frame }) => {
-                    // setFramebuffer(framebuffer);
+                onCycle: (frame) => {
+                    setDebug((previous) => ({
+                        ...previous,
+                        frame,
+                    }));
+                    // console.log('cycle');
+                },
+                onDisplay (nametables) {
                     setDebug((previous) => ({
                         ...previous,
                         nametables,
-                        frame,
                     }));
-                    console.log('done');
+                    // console.log('display');
+                },
+                onDebug ({ nametables_ram, patternTables, palettes, palette }) {
+                    setDebug((previous) => ({
+                        ...previous,
+                        nametables_ram,
+                        patternTables,
+                        palettes,
+                        palette,
+                    }));
+                    // console.log('debug');
                 },
             });
             
@@ -37,43 +53,15 @@ export const Nes = () => {
         }
     }, [rom]);
 
-    // const onStep = () => {
-    //     const { framebuffer, nametables, nametables_ram, patternTables, palettes, palette, frame } = emulator.cycle();
-    //     // setFramebuffer(framebuffer);
-    //     setDebug({
-    //         nametables: nametables.map(x => new Uint8ClampedArray(x)),
-    //         nametables_ram,
-    //         patternTables,
-    //         palettes,
-    //         palette,
-    //         frame,
-    //     });
-    //     console.log('Stepped');
-    // };
-
-    const onDebug = () => {
-        const { nametables_ram, patternTables, palettes, palette } = emulator.debug();
-        setDebug((previous) => ({
-            ...previous,
-            nametables_ram,
-            patternTables,
-            palettes,
-            palette,
-        }));
-        console.log('Polled');
-    };
-
     return (
         <div>
             <div className="relative">
                 <div>
-                <button className="p-1 rounded shadow" onClick={() => setRom(null)}>❌ End</button>
-                    {/* <button onClick={onStep}>Step</button> */}
-                    <button className="p-1 rounded shadow" onClick={onDebug}>Poll debug information</button>
+                    <button className="p-1 rounded shadow" onClick={() => setRom(null)}>❌ End</button>
                 </div>
                 {/* <Display framebuffer={framebuffer} width={32 * 8} height={30 * 8} scale={1} /> */}
                 <div className="flex">
-                    <Debug {...debug} onPoll={onDebug} />
+                    <Debug {...debug} />
                 </div>
                 {!rom && (
                     <div className="absolute inset-0 flex flex-col justify-center bg-gray-500 bg-opacity-50">

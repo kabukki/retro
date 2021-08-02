@@ -15,9 +15,9 @@ export const Debug = ({ nametables = null, nametables_ram = [], patternTables = 
 
             if (nametables) {
                 context1.putImageData(new ImageData(nametables[0], width, height), 0, 0);
-                // context1.putImageData(new ImageData(nametables[1], width, height), width, 0);
-                // context1.putImageData(new ImageData(nametables[2], width, height), 0, height);
-                // context1.putImageData(new ImageData(nametables[3], width, height), width, height);
+                context1.putImageData(new ImageData(nametables[1], width, height), width, 0);
+                context1.putImageData(new ImageData(nametables[2], width, height), 0, height);
+                context1.putImageData(new ImageData(nametables[3], width, height), width, height);
             } else {
                 context1.fillStyle = 'black';
                 context1.fillRect(0, 0, 2 * width, 2 * height);
@@ -67,9 +67,6 @@ export const Debug = ({ nametables = null, nametables_ram = [], patternTables = 
     return (
         <div className="flex gap-4">
             <div>
-                <b>FRAME</b> {frame}
-            </div>
-            <div>
                 <h1>Nametables</h1>
                 <canvas
                     className="block rounded"
@@ -105,6 +102,9 @@ export const Debug = ({ nametables = null, nametables_ram = [], patternTables = 
                     width={16 * 8}
                     height={4 * 8}
                 />
+            </div>
+            <div className="font-mono">
+                <b>FRAME</b> {frame}
             </div>
         </div>
     );
