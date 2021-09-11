@@ -1,51 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Emulator } from '@kabukki/wasm-nes';
 
 import { ROMSelector } from '../ROMSelector';
 import { Display } from './Display';
-import { Debug } from './Debug';
+import { StatusBar } from './StatusBar';
 
 export const Nes = () => {
-    // const [framebuffer, setFramebuffer] = useState(null);
-    const [emulator, setEmulator] = useState(new Emulator());
+    const [emulator] = useState(new Emulator());
     const [error, setError] = useState(null);
     const [rom, setRom] = useState(null);
     const [debug, setDebug] = useState(null);
+    const canvas = useRef(null);
     
+    const context = canvas.current?.getContext('2d', { alpha: false });
+
     useEffect(() => {
         if (rom) {
-            emulator.load(rom);
+            emulator.load(rom.buffer);
             emulator.start({
-                clockRate: 1000 / 100,
-                frameRate: 1000 / 1,
-                debugRate: 4000,
                 onError (err) {
                     console.error(err);
                     setError(err);
                 },
-                onCycle: (frame) => {
+                onDisplay: (framebuffer) => {
+                    context.putImageData(new ImageData(framebuffer, 32 * 8, 30 * 8), 0, 0);
+                },
+                onDebug ({ frame, fps }) {
                     setDebug((previous) => ({
                         ...previous,
+                        fps,
                         frame,
                     }));
-                    // console.log('cycle');
-                },
-                onDisplay (nametables) {
-                    setDebug((previous) => ({
-                        ...previous,
-                        nametables,
-                    }));
-                    // console.log('display');
-                },
-                onDebug ({ nametables_ram, patternTables, palettes, palette }) {
-                    setDebug((previous) => ({
-                        ...previous,
-                        nametables_ram,
-                        patternTables,
-                        palettes,
-                        palette,
-                    }));
-                    // console.log('debug');
                 },
             });
             
@@ -54,30 +39,35 @@ export const Nes = () => {
     }, [rom]);
 
     return (
-        <div>
-            <div className="relative">
-                <div>
-                    <button className="p-1 rounded shadow" onClick={() => setRom(null)}>❌ End</button>
-                </div>
-                {/* <Display framebuffer={framebuffer} width={32 * 8} height={30 * 8} scale={1} /> */}
-                <div className="flex">
-                    <Debug {...debug} />
-                </div>
-                {!rom && (
-                    <div className="absolute inset-0 flex flex-col justify-center bg-gray-500 bg-opacity-50">
-                        <div className="py-4 bg-gray-500 text-center text-white" >
+        <>
+            <main className="h-full flex">
+                <nav className="flex flex-col shadow">
+                    <ul className="flex-1 p-4">
+                        <li>Main</li>
+                        <li>Debug</li>
+                        <li>Memory</li>
+                    </ul>
+                </nav>
+                <section className="flex-1 p-4 gap-4">
+                    <div className="relative">
+                        {(!rom || error) && <div className="absolute inset-0 bg-gray-500 bg-opacity-50" />}
+                        <Display ref={canvas} width={32 * 8} height={30 * 8} />
+                    </div>
+                    {error ? (
+                        <div>
+                        </div>
+                    ) : rom ? (
+                        <div>
+                            <button className="p-1 rounded shadow" onClick={() => setRom(null)}>❌ End</button>
+                        </div>
+                    ) : (
+                        <div>
                             <ROMSelector onSelect={setRom} />
                         </div>
-                    </div>
-                )}
-                {error && (
-                    <div className="absolute inset-0 flex flex-col justify-center bg-gray-500 bg-opacity-50">
-                        <div className="py-4">
-                            <pre className="py-4 bg-red-500 text-center text-white">{error.message}</pre>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
+                    )}
+                </section>
+            </main>
+            <StatusBar rom={rom} error={error} debug={debug} />
+        </>
     );
 };

@@ -5,8 +5,13 @@ export const ROMSelector = ({ onSelect }) => {
         const input = document.createElement('input');
         input.type = 'file';
         input.onchange = async (e) => {
-            const buffer = await e.target.files[0]?.arrayBuffer();
-            onSelect(new Uint8Array(buffer));
+            const [file] = e.target.files;
+            const buffer = await file?.arrayBuffer();
+
+            onSelect({
+                name: file.name,
+                buffer: new Uint8Array(buffer),
+            });
         };
         input.click();
     };
