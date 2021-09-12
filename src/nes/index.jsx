@@ -12,24 +12,19 @@ export const Nes = () => {
     const [debug, setDebug] = useState(null);
     const canvas = useRef(null);
     
-    const context = canvas.current?.getContext('2d', { alpha: false });
-
     useEffect(() => {
         if (rom) {
             emulator.load(rom.buffer);
             emulator.start({
+                canvas: canvas.current,
                 onError (err) {
                     console.error(err);
                     setError(err);
                 },
-                onDisplay: (framebuffer) => {
-                    context.putImageData(new ImageData(framebuffer, 32 * 8, 30 * 8), 0, 0);
-                },
-                onDebug ({ frame, fps }) {
+                onDebug (info) {
                     setDebug((previous) => ({
                         ...previous,
-                        fps,
-                        frame,
+                        ...info,
                     }));
                 },
             });
@@ -48,23 +43,20 @@ export const Nes = () => {
                         <li>Memory</li>
                     </ul>
                 </nav>
-                <section className="flex-1 p-4 gap-4">
-                    <div className="relative">
+                <section className="flex-1">
+                    <div className="flex justify-center relative border-b p-4">
                         {(!rom || error) && <div className="absolute inset-0 bg-gray-500 bg-opacity-50" />}
                         <Display ref={canvas} width={32 * 8} height={30 * 8} />
                     </div>
-                    {error ? (
-                        <div>
-                        </div>
-                    ) : rom ? (
-                        <div>
+                    <div className="p-4">
+                        {error ? (
+                            <pre>{error.message}</pre>
+                        ) : rom ? (
                             <button className="p-1 rounded shadow" onClick={() => setRom(null)}>❌ End</button>
-                        </div>
-                    ) : (
-                        <div>
+                        ) : (
                             <ROMSelector onSelect={setRom} />
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </section>
             </main>
             <StatusBar rom={rom} error={error} debug={debug} />
