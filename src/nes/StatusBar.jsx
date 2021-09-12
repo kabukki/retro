@@ -2,7 +2,7 @@ import React from 'react';
 
 import Warning from '../assets/warning.svg';
 
-export const StatusBar = ({ rom, error, debug }) => {
+export const StatusBar = ({ rom, error, stats }) => {
     return error ? (
         <aside className="flex p-1 gap-1 align-center bg-red-500 text-white font-mono">
             <Warning className="h-5" />
@@ -14,10 +14,13 @@ export const StatusBar = ({ rom, error, debug }) => {
             <span className="animate-bounce">●</span>
             <b>Running</b> {rom.name}
             <span className="flex-1 text-center">
-                <b>Frame</b> {debug?.frame}
+                <b>Frame</b> {stats?.frame}
             </span>
             <span className="flex-1 text-center">
-                <b>FPS</b> {debug?.fps}
+                <b>Frame delta</b> {Math.round(stats?.deltaAverage)}ms
+            </span>
+            <span className="flex-1 text-center">
+                <b>FPS</b> {stats?.fpsAverage}
             </span>
         </aside>
     ) : (

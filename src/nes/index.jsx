@@ -59,7 +59,7 @@ export const Nes = () => {
                     </div>
                 </section>
             </main>
-            <StatusBar rom={rom} error={error} debug={debug} />
+            <StatusBar rom={rom} error={error} stats={debug?.stats} />
         </>
     );
 };
