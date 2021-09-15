@@ -3,31 +3,30 @@ import React from 'react';
 import Warning from '../assets/warning.svg';
 
 export const StatusBar = ({ rom, error, stats }) => {
-    return error ? (
-        <aside className="flex p-1 gap-1 align-center bg-red-500 text-white font-mono">
-            <Warning className="h-5" />
-            <b>Crashed</b>
-            <span className="flex-1 text-right">{error.message}</span>
-        </aside>
-    ) : rom ? (
-        <aside className="flex p-1 gap-1 align-center bg-green-500 text-white font-mono">
-            <span className="animate-bounce">●</span>
-            <b>Running</b> {rom.name}
-            <span className="flex-1 text-center">
-                <b>Frame</b> {stats?.frame}
+    const icon = error ? <Warning className="h-5" /> : rom ? <span className="animate-bounce">●</span> : <span>●</span>;
+    const status = error ? 'Crashed' : rom ? 'Running' : 'Idle';
+    const color = error ? 'red' : rom ? 'green' : 'gray';
+
+    return (
+        <aside className="grid items-center grid-cols-1 divide-y sm:grid-cols-4 sm:divide-x sm:divide-y-0 rounded shadow font-mono">
+            <span className={`font-bold text-${color}-500 text-center`}>
+                {icon}&nbsp;<b>{status}</b>
             </span>
-            <span className="flex-1 text-center">
-                <b>Frame delta</b> {Math.round(stats?.deltaAverage)}ms
-            </span>
-            <span className="flex-1 text-center">
-                <b>FPS</b> {stats?.fpsAverage}
-            </span>
-        </aside>
-    ) : (
-        <aside className="flex p-1 gap-1 align-center bg-gray-500 text-white font-mono">
-            <span>●</span>
-            <b>Idle</b>
-            <span className="flex-1 text-right">...Waiting for ROM...</span>
+            {rom ? (
+                <>
+                    <span className="text-center">
+                        <b>#</b>&nbsp;{stats?.frame || '-'}
+                    </span>
+                    <span className="text-center">
+                        <b>Δ</b>&nbsp;{stats ? `${Math.round(stats?.deltaAverage)}ms` : '-'}
+                    </span>
+                    <span className="text-center">
+                        <b>FPS</b>&nbsp;{stats?.fpsAverage || '-'}
+                    </span>
+                </>
+            ) : (
+                <span className="col-span-3 text-center">...Waiting for ROM...</span>
+            )}
         </aside>
     );
 };

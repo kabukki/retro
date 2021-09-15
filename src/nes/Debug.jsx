@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-export const Debug = ({ nametables = null, nametables_ram = [], patternTables = null, palettes = null, palette = null, frame = 0 }) => {
+export const Debug = ({ nametables = null, nametables_ram = [], patternTables = null, palettes = null, palette = null }) => {
     const canvas1 = useRef(null);
     const canvas5 = useRef(null);
     const canvas6 = useRef(null);
@@ -102,9 +102,6 @@ export const Debug = ({ nametables = null, nametables_ram = [], patternTables = 
                     width={16 * 8}
                     height={4 * 8}
                 />
-            </div>
-            <div className="font-mono">
-                <b>FRAME</b> {frame}
             </div>
         </div>
     );
