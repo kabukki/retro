@@ -1,5 +1,5 @@
 import React from 'react'
-import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import { Chip8 } from './chip8';
@@ -82,7 +82,7 @@ export const App = () => {
                     <ul className="space-x-4">
                         {emulators.map(({ name, path }) => (
                             <li key={name} className="inline-block">
-                                <Link to={path}>{name}</Link>
+                                <NavLink to={path} activeClassName="font-bold" >{name}</NavLink>
                             </li>
                         ))}
                     </ul>

@@ -17,9 +17,8 @@ export const ROMSelector = ({ onSelect }) => {
     };
 
     return (
-        <div>
-            <h1>💾 Please select a ROM</h1>
-            <button className="p-1 rounded bg-gray-700 text-white" onClick={onClick}>Load file</button>
-        </div>
+        <button className="p-1 rounded bg-gray-700 text-white" onClick={onClick}>
+            💾&nbsp;Select a ROM
+        </button>
     );
 };
