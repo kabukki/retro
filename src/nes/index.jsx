@@ -1,48 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Emulator } from '@kabukki/wasm-nes';
 
 import { ROMSelector } from '../ROMSelector';
 import { Display } from './Display';
 import { StatusBar } from './StatusBar';
+import { Controller } from './Controller';
+import { useEmulator, useInput } from './hooks';
 
 export const Nes = () => {
-    const [emulator] = useState(new Emulator());
-    const [error, setError] = useState(null);
-    const [rom, setRom] = useState(null);
-    const [debug, setDebug] = useState(null);
-    const [scale, setScale] = useState(2);
     const canvas = useRef(null);
+    const [rom, setRom] = useState(null);
+    const [scale, setScale] = useState(2);
+    const { start, stop, load, input, debug, error } = useEmulator(canvas);
+    const [player1, player1Gamepad] = useInput({ keyboard: true, gamepad: 0 });
+    const [player2, player2Gamepad] = useInput({ gamepad: 1 });
     
-    const start = () => {
-        emulator.start({
-            canvas: canvas.current,
-            onError (err) {
-                console.error(err);
-                setError(err);
-            },
-            onDebug (info) {
-                setDebug((previous) => ({
-                    ...previous,
-                    ...info,
-                }));
-            },
-        });
-    };
+    useEffect(() => {
+        input(0, player1);
+    }, [player1]);
 
-    const stop = () => {
-        emulator.stop();
-    };
+    useEffect(() => {
+        input(1, player2);
+    }, [player2]);
 
     useEffect(() => {
         if (rom) {
-            emulator.load(rom.buffer);
+            load(rom.buffer);
             start();
             return stop;
         }
     }, [rom]);
 
     return (
-        <main className="container mx-auto p-4 flex flex-col gap-4">
+        <main className="container mx-auto p-4 flex flex-col ">
             <div className="mx-auto border rounded shadow overflow-hidden divide-y">
                 <div className="text-center text-green-700 font-mono font-bold">
                     {rom ? rom.name : '...Waiting for ROM...'}
@@ -57,6 +46,18 @@ export const Nes = () => {
                     <Display ref={canvas} width={32 * 8} height={30 * 8} scale={scale} />
                 </div>
                 <StatusBar rom={rom} error={error} stats={debug?.stats} />
+            </div>
+            <div className="sm:flex mx-auto">
+                <div>
+                    <div className="mx-auto w-2 h-10 bg-black"></div>
+                    <Controller input={player1} keyboard gamepad={player1Gamepad} />
+                </div>
+                {player2Gamepad && (
+                    <div>
+                        <div className="mx-auto w-2 h-10 bg-black"></div>
+                        <Controller input={player2} gamepad />
+                    </div>
+                )}
             </div>
             {rom && (
                 <div>
