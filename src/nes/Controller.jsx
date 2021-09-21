@@ -2,8 +2,6 @@ import React, { memo } from 'react';
 import { Button } from '@kabukki/wasm-nes';
 
 import nes from '../assets/nes_controller.png';
-import Keyboard from '../assets/keyboard.svg';
-import Gamepad from '../assets/gamepad.svg';
 
 const keys = [
     {
@@ -33,20 +31,16 @@ const keys = [
     },
 ];
 
-export const Controller = memo(({ input, keyboard, gamepad }) => {
+export const Controller = memo(({ input, disabled }) => {
     return (
-        <div>
-            <img src={nes} className="max-h-20 mx-auto" />
+        <div className="p-4">
+            <img src={nes} className={`max-h-20 mx-auto ${disabled ? 'filter brightness-50' : ''}`} />
             <div className="flex flex-wrap gap-2 justify-center items-center">
                 {keys.map((key) => (
                     <span key={key.label} className={`text-${(input & key.mask) > 0 ? 'green-700' : 'current'}`}>
                         {key.label}
                     </span>
                 ))}
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center items-center">
-                {keyboard && <Keyboard className="h-4" />}
-                {gamepad && <Gamepad className="h-4" />}
             </div>
         </div>
     );

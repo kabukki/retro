@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Emulator, Keyboard, Gamepad } from '@kabukki/wasm-nes';
+import { Emulator, InputMonitor } from '@kabukki/wasm-nes';
 
 export const useEmulator = (canvas) => {
     const [emulator] = useState(() => new Emulator());
@@ -36,25 +36,16 @@ export const useEmulator = (canvas) => {
     };
 };
 
-export const useInput = (modes) => {
-    const [input, setInput] = useState(0);
-    const [gamepad, setGamepad] = useState(false);
+export const useInput = () => {
+    const [inputs, setInputs] = useState(() => []);
 
     useEffect(() => {
-        const cleanup = [];
-
-        if (modes.keyboard === true) {
-            const keyboard = new Keyboard({ onUpdate: setInput });
-            cleanup.push(keyboard.clear.bind(keyboard));
-        }
-
-        if (typeof modes.gamepad === 'number') {
-            const gamepad = new Gamepad({ index: modes.gamepad, onUpdate: setInput, onGamepad: setGamepad });
-            cleanup.push(gamepad.clear.bind(gamepad));
-        }
-
-        return () => cleanup.forEach((clear) => clear());
+        const monitor = new InputMonitor();
+        
+        monitor.addEventListener('update', (e) => setInputs(e.detail));
+        setInputs(monitor.inputs);
+        monitor.start();
     }, []);
 
-    return [input, gamepad];
-}
+    return inputs;
+};
