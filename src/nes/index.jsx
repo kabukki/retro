@@ -4,6 +4,7 @@ import { InputType } from '@kabukki/wasm-nes';
 
 import { ROMSelector } from '../ROMSelector';
 import { Display } from './Display';
+import { Debug } from './Debug';
 import { StatusBar } from './StatusBar';
 import { Controller } from './Controller';
 import { useEmulator, useInput } from './hooks';
@@ -59,15 +60,16 @@ export const Nes = () => {
     useEffect(() => {
         if (rom) {
             load(rom.buffer);
+            setPlayer1Input(inputs.find((input) => input.type === InputType.Keyboard));
             start();
             return stop;
         }
     }, [rom]);
 
     return (
-        <main className="container mx-auto p-4 grid sm:grid-cols-2 gap-4">
+        <main className="container mx-auto p-4 grid sm:grid-cols-2 gap-4 font-mono">
             <div className="sm:col-span-2 border rounded shadow overflow-hidden divide-y">
-                <div className="text-center text-green-700 font-mono font-bold">
+                <div className="text-center text-green-700 font-bold">
                     {rom ? rom.name : '...Waiting for ROM...'}
                 </div>
                 <div className="relative flex justify-center bg-black">
@@ -81,9 +83,9 @@ export const Nes = () => {
                 </div>
                 <StatusBar rom={rom} error={error} stats={debug?.stats} />
             </div>
-            <div className="border rounded shadow divide-y">
-                <div className="text-center font-bold font-mono">Player 1</div>
-                <Controller input={player1Input?.value} disabled={!player1Input} />
+            <div className="flex flex-col border rounded shadow divide-y">
+                <div className="text-center font-bold">Player 1</div>
+                {player1Input ? <Controller input={player1Input?.value} /> : <div className="p-4 flex-1 flex flex-col justify-center items-center text-red-500">Disconnected</div>}
                 <Select
                     styles={selectStyles}
                     value={player1Input}
@@ -98,9 +100,9 @@ export const Nes = () => {
                     isClearable
                 />
             </div>
-            <div className="border rounded shadow divide-y">
-                <div className="text-center font-bold font-mono">Player 2</div>
-                <Controller input={player2Input?.value} disabled={!player2Input} />
+            <div className="flex flex-col border rounded shadow divide-y">
+                <div className="text-center font-bold">Player 2</div>
+                {player2Input ? <Controller input={player2Input?.value} /> : <div className="p-4 flex-1 flex flex-col justify-center items-center text-red-500">Disconnected</div>}
                 <Select
                     styles={selectStyles}
                     value={player2Input}
@@ -124,8 +126,8 @@ export const Nes = () => {
                         Scale: x{scale}
                         <input type="range" min="1" max="4" value={scale} onChange={e => setScale(Number(e.target.value))} />
                     </label>
-                    {/* <hr />
-                    <Debug {...debug} /> */}
+                    <hr />
+                    <Debug {...debug} />
                 </div>
             )}
         </main>

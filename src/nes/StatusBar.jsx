@@ -26,7 +26,7 @@ export const StatusBar = ({ rom, error, stats }) => {
     ];
 
     return (
-        <aside className="grid items-center grid-cols-1 divide-y sm:grid-cols-4 sm:divide-x sm:divide-y-0 font-mono">
+        <aside className="grid items-center grid-cols-1 divide-y sm:grid-cols-4 sm:divide-x sm:divide-y-0">
             {cells.map((cell, index) => (
                 <div key={index} className={`flex gap-2 justify-center items-center text-${cell.color} text-center`}>
                     {cell.icon}
