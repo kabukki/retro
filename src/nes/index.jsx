@@ -49,7 +49,7 @@ export const Nes = () => {
     const canvas = useRef(null);
     const [rom, setRom] = useState(null);
     const [scale, setScale] = useState(2);
-    const { start, stop, load, input, debug, error } = useEmulator(canvas);
+    const { start, stop, reset, load, input, debug, error } = useEmulator(canvas);
     const inputs = useInput();
     const [player1Input, setPlayer1Input] = useState(null);
     const [player2Input, setPlayer2Input] = useState(null);
@@ -74,8 +74,8 @@ export const Nes = () => {
                 </div>
                 <div className="relative flex justify-center bg-black">
                     {(error || !rom) && (
-                        <div className="absolute z-10 inset-0 grid place-content-center backdrop-filter backdrop-blur backdrop-brightness-50">
-                            {error && <pre className="text-white">{error.message}</pre>}
+                        <div className="absolute z-10 inset-0 grid place-content-center backdrop-filter backdrop-blur backdrop-brightness-50 text-center text-white">
+                            {error && error.message}
                             {!rom && <ROMSelector onSelect={setRom} />}
                         </div>
                     )}
@@ -119,6 +119,7 @@ export const Nes = () => {
             </div>
             {rom && (
                 <div className="p-4 sm:col-span-2 border rounded shadow">
+                    <button className="p-1 rounded shadow" onClick={reset}>Reset</button>
                     <button className="p-1 rounded shadow" onClick={stop}>Pause</button>
                     <button className="p-1 rounded shadow" onClick={start}>Resume</button>
                     <button className="p-1 rounded shadow" onClick={() => setRom(null)}>❌ End</button>

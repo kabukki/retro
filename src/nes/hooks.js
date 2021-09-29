@@ -25,8 +25,15 @@ export const useEmulator = (canvas) => {
         stop () {
             emulator.stop();
         },
+        reset () {
+            emulator.reset();
+        },
         load (rom) {
-            emulator.load(rom);
+            try {
+                emulator.load(rom);
+            } catch (err) {
+                setError(err);
+            }
         },
         input (player, value) {
             emulator.input(player, value);
