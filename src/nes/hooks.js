@@ -1,46 +1,80 @@
 import { useEffect, useState } from 'react';
-import { Emulator, InputMonitor } from '@kabukki/wasm-nes';
+import { Emulator, InputMonitor, Store } from '@kabukki/wasm-nes';
+
+const db = new Store();
 
 export const useEmulator = (canvas) => {
-    const [emulator] = useState(() => new Emulator());
+    const [emulator, setEmulator] = useState(null);
     const [error, setError] = useState(null);
     const [debug, setDebug] = useState(null);
+    const [snapshots, setSnapshots] = useState(() => []);
 
-    return {
-        start () {
-            emulator.start({
-                canvas: canvas.current,
-                onError (err) {
-                    console.error(err);
-                    setError(err);
-                },
-                onDebug (info) {
-                    setDebug((previous) => ({
-                        ...previous,
-                        ...info,
-                    }));
-                },
-            });
-        },
-        stop () {
-            emulator.stop();
-        },
-        reset () {
-            emulator.reset();
-        },
-        load (rom) {
-            try {
-                emulator.load(rom);
-            } catch (err) {
+    const start = () => {
+        emulator.start({
+            onError (err) {
+                console.error(err);
                 setError(err);
-            }
-        },
-        input (player, value) {
-            emulator.input(player, value);
-        },
-        debug,
-        error,
+            },
+            onDebug (info) {
+                setDebug((previous) => ({
+                    ...previous,
+                    ...info,
+                }));
+            },
+        });
     };
+
+    const pause = () => {
+        emulator.stop();
+    };
+
+    const stop = () => {
+        pause();
+        setEmulator(null);
+    };
+
+    const reset = () => {
+        emulator.reset();
+    };
+
+    const loadRom = async (rom) => {
+        try {
+            setEmulator(new Emulator(canvas.current, rom));
+        } catch (err) {
+            setError(err);
+        }
+    };
+
+    const loadSnapshot = async (snapshot) => {
+        const vm = emulator || new Emulator(canvas.current, snapshot.rom);
+        vm.restore(snapshot);
+        setEmulator(vm);
+    };
+
+    const input = (index, value) => {
+        emulator?.input(index, value);
+    };
+
+    const snapshot = () => {
+        const snapshot = emulator.snapshot();
+        db.save(snapshot.rom.fingerprint, snapshot);
+    };
+
+    useEffect(() => {
+        if (emulator) {
+            start();
+            return stop;
+        }
+    }, [emulator]);
+
+    useEffect(() => {
+        db.getAll().then(setSnapshots).catch(setError);
+    }, []);
+
+    return [
+        { emulator, snapshots, debug, error },
+        { start, pause, stop, reset, loadRom, loadSnapshot, input, snapshot },
+    ];
 };
 
 export const useInput = () => {
@@ -49,8 +83,8 @@ export const useInput = () => {
     useEffect(() => {
         const monitor = new InputMonitor();
         
-        monitor.addEventListener('update', (e) => setInputs(e.detail));
         setInputs(monitor.inputs);
+        monitor.addEventListener('update', (e) => setInputs(e.detail));
         monitor.start();
     }, []);
 

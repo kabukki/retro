@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import { InputType } from '@kabukki/wasm-nes';
 
+import Keyboard from '../assets/keyboard.svg';
+import Gamepad from '../assets/gamepad.svg';
 import { ROMSelector } from '../ROMSelector';
 import { Display } from './Display';
 import { Debug } from './Debug';
 import { StatusBar } from './StatusBar';
 import { Controller } from './Controller';
+import { Snapshot } from './Snapshot';
 import { useEmulator, useInput } from './hooks';
-import Keyboard from '../assets/keyboard.svg';
-import Gamepad from '../assets/gamepad.svg';
 
 const typeMap = {
     [InputType.Keyboard]: <Keyboard />,
@@ -47,9 +48,11 @@ const selectStyles = {
 
 export const Nes = () => {
     const canvas = useRef(null);
-    const [rom, setRom] = useState(null);
     const [scale, setScale] = useState(2);
-    const { start, stop, reset, load, input, debug, error } = useEmulator(canvas);
+    const [
+        { emulator, snapshots, debug, error },
+        { start, pause, stop, reset, loadRom, loadSnapshot, input, snapshot },
+    ] = useEmulator(canvas);
     const inputs = useInput();
     const [player1Input, setPlayer1Input] = useState(null);
     const [player2Input, setPlayer2Input] = useState(null);
@@ -58,30 +61,27 @@ export const Nes = () => {
     useEffect(() => input(1, player2Input?.value), [player2Input?.value]);
 
     useEffect(() => {
-        if (rom) {
-            load(rom.buffer);
+        if (player1Input === null) {
             setPlayer1Input(inputs.find((input) => input.type === InputType.Keyboard));
-            start();
-            return stop;
         }
-    }, [rom]);
+    }, []);
 
     return (
         <main className="container mx-auto p-4 grid sm:grid-cols-2 gap-4 font-mono">
             <div className="sm:col-span-2 border rounded shadow overflow-hidden divide-y">
                 <div className="text-center text-green-700 font-bold">
-                    {rom ? rom.name : '...Waiting for ROM...'}
+                    {emulator ? emulator.rom.name : '...Waiting for ROM...'}
                 </div>
                 <div className="relative flex justify-center bg-black">
-                    {(error || !rom) && (
+                    {(error || !emulator) && (
                         <div className="absolute z-10 inset-0 grid place-content-center backdrop-filter backdrop-blur backdrop-brightness-50 text-center text-white">
                             {error && error.message}
-                            {!rom && <ROMSelector onSelect={setRom} />}
+                            {!emulator && <ROMSelector onSelect={loadRom} />}
                         </div>
                     )}
                     <Display ref={canvas} width={32 * 8} height={30 * 8} scale={scale} />
                 </div>
-                <StatusBar rom={rom} error={error} stats={debug?.stats} />
+                <StatusBar rom={emulator?.rom} error={error} stats={debug?.stats} />
             </div>
             <div className="flex flex-col border rounded shadow divide-y">
                 <div className="text-center font-bold">Player 1</div>
@@ -117,12 +117,19 @@ export const Nes = () => {
                     isClearable
                 />
             </div>
-            {rom && (
+            <div className="sm:col-span-2 border rounded shadow divide-y">
+                <div className="text-center font-bold">Snapshots</div>
+                {snapshots.length > 0 ? snapshots.map((snapshot) => (
+                    <Snapshot key={snapshot.rom.fingerprint} {...snapshot} onClick={() => loadSnapshot(snapshot)} />
+                )) : <p>No snapshot yet!</p>}
+            </div>
+            {emulator && (
                 <div className="p-4 sm:col-span-2 border rounded shadow">
                     <button className="p-1 rounded shadow" onClick={reset}>Reset</button>
-                    <button className="p-1 rounded shadow" onClick={stop}>Pause</button>
+                    <button className="p-1 rounded shadow" onClick={pause}>Pause</button>
+                    <button className="p-1 rounded shadow" onClick={stop}>Stop</button>
                     <button className="p-1 rounded shadow" onClick={start}>Resume</button>
-                    <button className="p-1 rounded shadow" onClick={() => setRom(null)}>❌ End</button>
+                    <button className="p-1 rounded shadow" onClick={snapshot}>Snapshot</button>
                     <label>
                         Scale: x{scale}
                         <input type="range" min="1" max="4" value={scale} onChange={e => setScale(Number(e.target.value))} />
