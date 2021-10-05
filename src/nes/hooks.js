@@ -7,7 +7,7 @@ export const useEmulator = (canvas) => {
     const [emulator, setEmulator] = useState(null);
     const [error, setError] = useState(null);
     const [debug, setDebug] = useState(null);
-    const [snapshots, setSnapshots] = useState(() => []);
+    const [saves, setSaves] = useState(() => []);
 
     const start = () => {
         emulator.start({
@@ -20,6 +20,9 @@ export const useEmulator = (canvas) => {
                     ...previous,
                     ...info,
                 }));
+            },
+            onSave (save) {
+                db.save(emulator.rom.fingerprint, save);
             },
         });
     };
@@ -37,27 +40,23 @@ export const useEmulator = (canvas) => {
         emulator.reset();
     };
 
-    const loadRom = async (rom) => {
+    const load = async (rom) => {
         try {
-            setEmulator(new Emulator(canvas.current, rom));
+            const emulator = new Emulator(canvas.current, rom);
+            const save = await db.get(rom.fingerprint);
+
+            if (save) {
+                emulator.loadSave(save);
+            }
+
+            setEmulator(emulator);
         } catch (err) {
             setError(err);
         }
     };
 
-    const loadSnapshot = async (snapshot) => {
-        const vm = emulator || new Emulator(canvas.current, snapshot.rom);
-        vm.restore(snapshot);
-        setEmulator(vm);
-    };
-
     const input = (index, value) => {
         emulator?.input(index, value);
-    };
-
-    const snapshot = () => {
-        const snapshot = emulator.snapshot();
-        db.save(snapshot.rom.fingerprint, snapshot);
     };
 
     useEffect(() => {
@@ -68,12 +67,12 @@ export const useEmulator = (canvas) => {
     }, [emulator]);
 
     useEffect(() => {
-        db.getAll().then(setSnapshots).catch(setError);
+        db.getAll().then(setSaves).catch(setError);
     }, []);
 
     return [
-        { emulator, snapshots, debug, error },
-        { start, pause, stop, reset, loadRom, loadSnapshot, input, snapshot },
+        { emulator, saves, debug, error },
+        { start, pause, stop, reset, load, input },
     ];
 };
 

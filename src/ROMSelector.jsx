@@ -13,11 +13,8 @@ export const ROMSelector = ({ onSelect }) => {
     };
 
     return (
-        <div className="flex flex-col items-center">
-            <button className="p-1 rounded bg-gray-700 text-white" onClick={onClick}>
-                💾&nbsp;Insert a ROM
-            </button>
-            or load a snapshot below
-        </div>
+        <button className="p-1 rounded bg-gray-700 text-white" onClick={onClick}>
+            💾&nbsp;Insert a ROM
+        </button>
     );
 };

@@ -5,11 +5,12 @@ import { InputType } from '@kabukki/wasm-nes';
 import Keyboard from '../assets/keyboard.svg';
 import Gamepad from '../assets/gamepad.svg';
 import { ROMSelector } from '../ROMSelector';
+import { HexViewer } from '../HexViewer';
 import { Display } from './Display';
 import { Debug } from './Debug';
 import { StatusBar } from './StatusBar';
 import { Controller } from './Controller';
-import { Snapshot } from './Snapshot';
+import { Save } from './Save';
 import { useEmulator, useInput } from './hooks';
 
 const typeMap = {
@@ -50,8 +51,8 @@ export const Nes = () => {
     const canvas = useRef(null);
     const [scale, setScale] = useState(2);
     const [
-        { emulator, snapshots, debug, error },
-        { start, pause, stop, reset, loadRom, loadSnapshot, input, snapshot },
+        { emulator, saves, debug, error },
+        { start, pause, stop, reset, load, input },
     ] = useEmulator(canvas);
     const inputs = useInput();
     const [player1Input, setPlayer1Input] = useState(null);
@@ -76,7 +77,7 @@ export const Nes = () => {
                     {(error || !emulator) && (
                         <div className="absolute z-10 inset-0 grid place-content-center backdrop-filter backdrop-blur backdrop-brightness-50 text-center text-white">
                             {error && error.message}
-                            {!emulator && <ROMSelector onSelect={loadRom} />}
+                            {!emulator && <ROMSelector onSelect={load} />}
                         </div>
                     )}
                     <Display ref={canvas} width={32 * 8} height={30 * 8} scale={scale} />
@@ -117,27 +118,37 @@ export const Nes = () => {
                     isClearable
                 />
             </div>
-            <div className="sm:col-span-2 border rounded shadow divide-y">
-                <div className="text-center font-bold">Snapshots</div>
-                {snapshots.length > 0 ? snapshots.map((snapshot) => (
-                    <Snapshot key={snapshot.rom.fingerprint} {...snapshot} onClick={() => loadSnapshot(snapshot)} />
-                )) : <p>No snapshot yet!</p>}
-            </div>
+            {/* <div className="border rounded shadow">
+                <HexViewer buffer={Uint8Array.from({ length: 0x34 }, () => Math.round(Math.random() * 255))} />
+            </div> */}
             {emulator && (
-                <div className="p-4 sm:col-span-2 border rounded shadow">
-                    <button className="p-1 rounded shadow" onClick={reset}>Reset</button>
-                    <button className="p-1 rounded shadow" onClick={pause}>Pause</button>
-                    <button className="p-1 rounded shadow" onClick={stop}>Stop</button>
-                    <button className="p-1 rounded shadow" onClick={start}>Resume</button>
-                    <button className="p-1 rounded shadow" onClick={snapshot}>Snapshot</button>
-                    <label>
-                        Scale: x{scale}
-                        <input type="range" min="1" max="4" value={scale} onChange={e => setScale(Number(e.target.value))} />
-                    </label>
-                    <hr />
-                    <Debug {...debug} />
-                </div>
+                <>
+                    <div className="p-4 border rounded shadow">
+                        <button className="p-1 rounded shadow" onClick={reset}>Reset</button>
+                        <button className="p-1 rounded shadow" onClick={pause}>Pause</button>
+                        <button className="p-1 rounded shadow" onClick={stop}>Stop</button>
+                        <button className="p-1 rounded shadow" onClick={start}>Resume</button>
+                        <label>
+                            Scale: x{scale}
+                            <input type="range" min="1" max="4" value={scale} onChange={e => setScale(Number(e.target.value))} />
+                        </label>
+                        <hr />
+                        <Debug {...debug} />
+                    </div>
+                    <div className="border rounded shadow divide-y">
+                        <div className="text-center font-bold">RAM</div>
+                        <HexViewer buffer={debug?.ram || []} />
+                    </div>
+                </>
             )}
+            <div className="sm:col-span-2 border rounded shadow divide-y">
+                <div className="text-center font-bold">Saved games</div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {saves.length > 0 ? saves.map((save, index) => (
+                        <Save key={index} {...save} />
+                    )) : <p>No saves yet!</p>}
+                </div>
+            </div>
         </main>
     );
 };
