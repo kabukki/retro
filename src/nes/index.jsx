@@ -50,6 +50,7 @@ const selectStyles = {
 export const Nes = () => {
     const canvas = useRef(null);
     const [scale, setScale] = useState(2);
+    const [crt, setCrt] = useState(true);
     const [
         { emulator, saves, debug, error },
         { start, pause, stop, reset, load, input },
@@ -57,7 +58,7 @@ export const Nes = () => {
     const inputs = useInput();
     const [player1Input, setPlayer1Input] = useState(null);
     const [player2Input, setPlayer2Input] = useState(null);
-    
+
     useEffect(() => input(0, player1Input?.value), [player1Input?.value]);
     useEffect(() => input(1, player2Input?.value), [player2Input?.value]);
 
@@ -80,7 +81,7 @@ export const Nes = () => {
                             {!emulator && <ROMSelector onSelect={load} />}
                         </div>
                     )}
-                    <Display ref={canvas} width={32 * 8} height={30 * 8} scale={scale} />
+                    <Display ref={canvas} width={32 * 8} height={30 * 8} scale={scale} crt={crt} />
                 </div>
                 <StatusBar rom={emulator?.rom} error={error} stats={debug?.stats} />
             </div>
@@ -123,7 +124,7 @@ export const Nes = () => {
             </div> */}
             {emulator && (
                 <>
-                    <div className="p-4 border rounded shadow">
+                    <div className="sm:col-span-2 p-4 border rounded shadow">
                         <button className="p-1 rounded shadow" onClick={reset}>Reset</button>
                         <button className="p-1 rounded shadow" onClick={pause}>Pause</button>
                         <button className="p-1 rounded shadow" onClick={stop}>Stop</button>
@@ -132,8 +133,14 @@ export const Nes = () => {
                             Scale: x{scale}
                             <input type="range" min="1" max="4" value={scale} onChange={e => setScale(Number(e.target.value))} />
                         </label>
-                        <hr />
-                        <Debug {...debug} />
+                        <label>
+                            CRT filter
+                            <input type="checkbox" checked={crt} onChange={e => setCrt(e.target.checked)} />
+                        </label>
+                    </div>
+                    <div className="border rounded shadow divide-y">
+                        <div className="text-center font-bold">Debug</div>
+                        {/* <Debug {...debug} /> */}
                     </div>
                     <div className="border rounded shadow divide-y">
                         <div className="text-center font-bold">RAM</div>

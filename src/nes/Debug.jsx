@@ -1,29 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
-export const Debug = ({ nametables = null, nametables_ram = [], patternTables = null, palettes = null, palette = null }) => {
-    const canvas1 = useRef(null);
+export const Debug = ({ patternTables = null, palettes = null, palette = null }) => {
     const canvas5 = useRef(null);
     const canvas6 = useRef(null);
     const canvas7 = useRef(null);
-
-    useEffect(() => {
-        const context1 = canvas1.current.getContext('2d');
-
-        requestAnimationFrame(async () => {
-            const width = 32 * 8;
-            const height = 30 * 8;
-
-            if (nametables) {
-                context1.putImageData(new ImageData(nametables[0], width, height), 0, 0);
-                context1.putImageData(new ImageData(nametables[1], width, height), width, 0);
-                context1.putImageData(new ImageData(nametables[2], width, height), 0, height);
-                context1.putImageData(new ImageData(nametables[3], width, height), width, height);
-            } else {
-                context1.fillStyle = 'black';
-                context1.fillRect(0, 0, 2 * width, 2 * height);
-            }
-        });
-    }, [nametables]);
 
     useEffect(() => {
         const context5 = canvas5.current.getContext('2d');
@@ -66,17 +46,6 @@ export const Debug = ({ nametables = null, nametables_ram = [], patternTables = 
 
     return (
         <div className="flex gap-4">
-            <div>
-                <h1>Nametables</h1>
-                <canvas
-                    className="block rounded"
-                    style={{ imageRendering: 'pixelated' }}
-                    ref={canvas1}
-                    width={2 * 32 * 8}
-                    height={2 * 30 * 8}
-                />
-                {/* <HexEditor data={nametables_ram} columns={32} showRowLabels showColumnLabels /> */}
-            </div>
             <div>
                 <h1>Pattern tables</h1>
                 <canvas

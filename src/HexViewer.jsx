@@ -32,7 +32,7 @@ export const HexViewer = ({ buffer }) => {
                 {Array.from({ length: Math.ceil(buffer.length / 16) }, (v, n) => n * 16).map((offset) => (
                     <div
                         key={offset}
-                        className={`p-1 bg-${hover !== null && Math.floor(hover / 16) === Math.floor(offset / 16) ? 'green-100' : 'white'} text-right font-bold`}
+                        className={`p-1 bg-${hover !== null && Math.floor(hover / 16) === Math.floor(offset / 16) ? 'green-100' : 'white'} text-center font-bold`}
                     >
                         {offset.toString(16).padStart(padding, 0)}
                     </div>

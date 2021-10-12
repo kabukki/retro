@@ -46,6 +46,7 @@ export const useEmulator = (canvas) => {
             const save = await db.get(rom.fingerprint);
 
             if (save) {
+                console.log(`Found save ${save.name}`);
                 emulator.loadSave(save);
             }
 
