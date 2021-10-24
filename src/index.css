@@ -23,6 +23,7 @@
 
 .fullscreen:fullscreen canvas {
     width: 100vw !important;
+    max-height: 100vh !important;
 }
 
 @keyframes hue {
