@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Emulator, InputMonitor, Store } from '@kabukki/wasm-nes';
+import { useEffect, useReducer, useState } from 'react';
+import { Emulator, Store } from '@kabukki/wasm-nes';
+
+import { Keyboard, Gamepad } from './input';
 
 const db = new Store();
 
@@ -77,15 +79,40 @@ export const useEmulator = (canvas) => {
     ];
 };
 
-export const useInput = () => {
-    const [inputs, setInputs] = useState(() => []);
+export const useInputs = () => {
+    const [, forceUpdate] = useReducer(x => !x, true);
+    const [inputs, setInputs] = useState(() => [new Keyboard()]);
+    
+    const watch = (input) => {
+        input.addEventListener('update', forceUpdate);
+        input.monitor();
+    };
+    const unwatch = (input) => {
+        input.removeEventListener('update', forceUpdate);
+        input.stop();            
+    };
 
     useEffect(() => {
-        const monitor = new InputMonitor();
-        
-        setInputs(monitor.inputs);
-        monitor.addEventListener('update', (e) => setInputs(e.detail));
-        monitor.start();
+        watch(inputs[0]);
+        window.addEventListener('gamepadconnected', ({ gamepad }) => {
+            setInputs((previous) => {
+                const input = new Gamepad({ id: gamepad.id });
+                watch(input);
+                return previous.concat(input);
+            });
+        });
+        window.addEventListener('gamepaddisconnected', ({ gamepad }) => {
+            setInputs((previous) => {
+                const input = previous.find(({ id }) => id === gamepad.id);
+
+                if (input) {
+                    unwatch(input);
+                    return previous.filter(({ id }) => id !== input.id);
+                } else {
+                    return previous;
+                }
+            });
+        });
     }, []);
 
     return inputs;

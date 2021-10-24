@@ -11,17 +11,17 @@ import { Debug } from './Debug';
 import { StatusBar } from './StatusBar';
 import { Controller } from './Controller';
 import { Save } from './Save';
-import { useEmulator, useInput } from './hooks';
+import { useEmulator, useInputs } from './hooks';
 
 const typeMap = {
     [InputType.Keyboard]: <Keyboard />,
     [InputType.Gamepad]: <Gamepad />,
 };
 
-const formatOptionLabelWithIcon = ({ label, type }) => (
+const formatOptionLabelWithIcon = ({ id, type }) => (
     <div className="flex items-center gap-2">
         <div className="w-4 h-4 text-center">{typeMap[type]}</div>
-        <div className="flex-1 truncate">{label}</div>
+        <div className="flex-1 truncate">{id}</div>
     </div>
 );
 
@@ -37,7 +37,7 @@ const selectStyles = {
         ...provided,
         padding: 0,
     }),
-    option: (provided, { isSelected, isFocused, ...a }) => ({
+    option: (provided, { isSelected, isFocused }) => ({
         ...provided,
         backgroundColor: isSelected ? '#047857' : isFocused ? '#D1FAE5' : 'initial',
         '&:active': {
@@ -55,18 +55,28 @@ export const Nes = () => {
         { emulator, saves, debug, error },
         { start, pause, stop, reset, load, input },
     ] = useEmulator(canvas);
-    const inputs = useInput();
-    const [player1Input, setPlayer1Input] = useState(null);
-    const [player2Input, setPlayer2Input] = useState(null);
 
-    useEffect(() => input(0, player1Input?.value), [player1Input?.value]);
-    useEffect(() => input(1, player2Input?.value), [player2Input?.value]);
+    // Player input selection
+    const inputs = useInputs();
+    const [player1, setPlayer1] = useState(null);
+    const [player2, setPlayer2] = useState(null);
+
+    useEffect(() => input(0, player1?.value), [player1?.value]);
+    useEffect(() => input(1, player2?.value), [player2?.value]);
 
     useEffect(() => {
-        if (player1Input === null) {
-            setPlayer1Input(inputs.find((input) => input.type === InputType.Keyboard));
-        }
+        setPlayer1(inputs.find((input) => input.type === InputType.Keyboard));
     }, []);
+
+    const onPress = (input) => (button) => {
+        input.press(button);
+        input.commit();
+    };
+
+    const onRelease = (input) => (button) => {
+        input.release(button);
+        input.commit();
+    };
 
     return (
         <main className="container mx-auto p-4 grid sm:grid-cols-2 gap-4 font-mono">
@@ -87,16 +97,26 @@ export const Nes = () => {
             </div>
             <div className="flex flex-col border rounded shadow divide-y">
                 <div className="text-center font-bold">Player 1</div>
-                {player1Input ? <Controller input={player1Input?.value} /> : <div className="p-4 flex-1 flex flex-col justify-center items-center text-red-500">Disconnected</div>}
+                {player1 ? (
+                    <Controller
+                        input={player1?.value}
+                        onPress={onPress(player1)}
+                        onRelease={onRelease(player1)}
+                    />
+                ) : (
+                    <div className="p-4 flex-1 flex flex-col justify-center items-center text-red-500">
+                        Disconnected
+                    </div>
+                )}
                 <Select
                     styles={selectStyles}
-                    value={player1Input}
+                    value={player1}
                     options={inputs}
                     placeholder="Select input source..."
-                    onChange={setPlayer1Input}
-                    getOptionLabel={(input) => input.label}
+                    onChange={setPlayer1}
+                    getOptionLabel={(input) => input.id}
                     getOptionValue={(input) => input.id}
-                    isOptionDisabled={(input) => player2Input?.id === input.id}
+                    isOptionDisabled={(input) => player2?.id === input.id}
                     formatOptionLabel={formatOptionLabelWithIcon}
                     isSearchable={false}
                     isClearable
@@ -104,16 +124,26 @@ export const Nes = () => {
             </div>
             <div className="flex flex-col border rounded shadow divide-y">
                 <div className="text-center font-bold">Player 2</div>
-                {player2Input ? <Controller input={player2Input?.value} /> : <div className="p-4 flex-1 flex flex-col justify-center items-center text-red-500">Disconnected</div>}
+                {player2 ? (
+                    <Controller
+                        input={player2?.value}
+                        onPress={onPress(player2)}
+                        onRelease={onRelease(player2)}
+                    />
+                ) : (
+                    <div className="p-4 flex-1 flex flex-col justify-center items-center text-red-500">
+                        Disconnected
+                    </div>
+                )}
                 <Select
                     styles={selectStyles}
-                    value={player2Input}
+                    value={player2}
                     options={inputs}
                     placeholder="Select input source..."
-                    onChange={setPlayer2Input}
-                    getOptionLabel={(input) => input.label}
+                    onChange={setPlayer2}
+                    getOptionLabel={(input) => input.id}
                     getOptionValue={(input) => input.id}
-                    isOptionDisabled={(input) => player1Input?.id === input.id}
+                    isOptionDisabled={(input) => player1?.id === input.id}
                     formatOptionLabel={formatOptionLabelWithIcon}
                     isSearchable={false}
                     isClearable

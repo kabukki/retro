@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Button } from '@kabukki/wasm-nes';
 
-export const Controller = memo(({ input }) => (
+export const Controller = memo(({ input, onPress, onRelease }) => (
     <svg className="p-4" viewBox="-0.004 270.034 612.002 251.924" enableBackground="new -0.004 270.034 612.002 251.924">
         <g>
             <rect id="rect11983" x="15.947" y="311.988" fill="#1A1A1A" width="581.833" height="195.284"/>
@@ -31,14 +31,14 @@ export const Controller = memo(({ input }) => (
                     c0,0.907-0.735,1.643-1.643,1.643h-20.578c-0.908,0-1.643-0.736-1.643-1.643v-20.578
                     C341.829,485.577,342.565,484.842,343.472,484.842z"/>
                 <path id="path12001" fill={(input & Button.B) > 0 ? 'white' : '#FF0000'} d="M363.54,496.875c0,5.402-4.379,9.78-9.78,9.78s-9.78-4.379-9.78-9.78
-                    s4.379-9.78,9.78-9.78S363.54,491.473,363.54,496.875z"/>
+                    s4.379-9.78,9.78-9.78S363.54,491.473,363.54,496.875z" onMouseDown={() => onPress(Button.B)} onMouseUp={() => onRelease(Button.B)} />
             </g>
             <g id="g12007" transform="matrix(2.9042238,0,0,2.9042238,-597.29495,-994.37335)">
                 <path id="rect12003" fill="#DDDDDD" d="M370.572,484.842h20.578c0.907,0,1.643,0.736,1.643,1.643v20.578
                     c0,0.907-0.736,1.643-1.643,1.643h-20.578c-0.908,0-1.643-0.736-1.643-1.643v-20.578
                     C368.929,485.577,369.665,484.842,370.572,484.842z"/>
                 <path id="path12005" fill={(input & Button.A) > 0 ? 'white' : '#FF0000'} d="M390.65,496.875c0,5.402-4.379,9.78-9.78,9.78c-5.402,0-9.781-4.379-9.781-9.78
-                    s4.379-9.78,9.781-9.78C386.271,487.094,390.65,491.473,390.65,496.875z"/>
+                    s4.379-9.78,9.781-9.78C386.271,487.094,390.65,491.473,390.65,496.875z" onMouseDown={() => onPress(Button.A)} onMouseUp={() => onRelease(Button.A)} />
             </g>
             <path id="rect12205" fill="#808080" d="M205.958,382.312h153.281c5.362,0,9.709,4.347,9.709,9.709v10.594
                 c0,5.362-4.347,9.709-9.709,9.709H205.958c-5.362,0-9.709-4.347-9.709-9.709v-10.594
@@ -132,21 +132,62 @@ export const Controller = memo(({ input }) => (
                     c-0.892,0-1.337,0.445-1.337,1.337v2.006H543.818z M535.796,497.659v3.344h-2.675v-8.023c0-2.674,1.338-4.011,4.012-4.011h5.349
                     c2.674,0,4.011,1.337,4.011,4.011v8.023h-2.674v-3.344H535.796z"/>
             </g>
-            <path id="path2950" fill={(input & Button.Left) > 0 ? 'white' : 'none'} stroke="#000000" strokeWidth="0.5" d="M63.181,408.339l-5.477,5.478l-5.477,5.477l5.477,5.478l5.477,5.477v-3.286h10.954v-15.336H63.181V408.339z"/>
-            <path id="path3727" fill={(input & Button.Right) > 0 ? 'white' : 'none'} stroke="#000000" strokeWidth="0.5" d="M139.683,408.339l5.477,5.478l5.477,5.477l-5.477,5.478
-                l-5.477,5.477v-3.286h-10.954v-15.336h10.954V408.339z"/>
-            <path id="path3729" fill={(input & Button.Up) > 0 ? 'white' : 'none'} stroke="#000000" strokeWidth="0.5" d="M112.276,380.669l-5.477-5.477l-5.477-5.477
-                l-5.477,5.477l-5.477,5.477h3.286v10.954h15.336v-10.954H112.276z"/>
-            <path id="path3731" fill={(input & Button.Down) > 0 ? 'white' : 'none'} stroke="#000000" strokeWidth="0.5" d="M112.276,458.333l-5.477,5.478l-5.477,5.477
-                l-5.477-5.477l-5.477-5.478h3.286v-10.954h15.336v10.954H112.276z"/>
-            <path id="path3763" fill="none" stroke="#000000" strokeWidth="0.7366" d="M114.646,419.111
-                c0.004,7.26-5.876,13.148-13.136,13.153s-13.148-5.877-13.153-13.136c0-0.006,0-0.012,0-0.018
-                c-0.005-7.26,5.876-13.148,13.136-13.153c7.259-0.005,13.148,5.876,13.153,13.136
-                C114.646,419.099,114.646,419.105,114.646,419.111z"/>
-            <path id="rect3789" fill={(input & Button.Select) > 0 ? 'white' : '#1A1A1A'} d="M228.2,442.274h24.391c5.28,0,9.56,3.448,9.56,7.702l0,0c0,4.254-4.28,7.702-9.56,7.702
-                H228.2c-5.28,0-9.56-3.448-9.56-7.702l0,0C218.64,445.722,222.92,442.274,228.2,442.274z"/>
+            <path
+                id="path2950"
+                fill={(input & Button.Left) > 0 ? 'white' : 'none'}
+                stroke="#000000"
+                strokeWidth="0.5"
+                d="M63.181,408.339l-5.477,5.478l-5.477,5.477l5.477,5.478l5.477,5.477v-3.286h10.954v-15.336H63.181V408.339z"
+                onMouseDown={() => onPress(Button.Left)}
+                onMouseUp={() => onRelease(Button.Left)}
+                pointerEvents="visible"
+            />
+            <path
+                id="path3727"
+                fill={(input & Button.Right) > 0 ? 'white' : 'none'}
+                stroke="#000000"
+                strokeWidth="0.5"
+                d="M139.683,408.339l5.477,5.478l5.477,5.477l-5.477,5.478 l-5.477,5.477v-3.286h-10.954v-15.336h10.954V408.339z"
+                onMouseDown={() => onPress(Button.Right)}
+                onMouseUp={() => onRelease(Button.Right)}
+                pointerEvents="visible"
+            />
+            <path
+                id="path3729"
+                fill={(input & Button.Up) > 0 ? 'white' : 'none'}
+                stroke="#000000"
+                strokeWidth="0.5"
+                d="M112.276,380.669l-5.477-5.477l-5.477-5.477 l-5.477,5.477l-5.477,5.477h3.286v10.954h15.336v-10.954H112.276z"
+                onMouseDown={() => onPress(Button.Up)}
+                onMouseUp={() => onRelease(Button.Up)}
+                pointerEvents="visible"
+            />
+            <path
+                id="path3731"
+                fill={(input & Button.Down) > 0 ? 'white' : 'none'}
+                stroke="#000000"
+                strokeWidth="0.5"
+                d="M112.276,458.333l-5.477,5.478l-5.477,5.477 l-5.477-5.477l-5.477-5.478h3.286v-10.954h15.336v10.954H112.276z"
+                onMouseDown={() => onPress(Button.Down)}
+                onMouseUp={() => onRelease(Button.Down)}
+                pointerEvents="visible"
+            />
+            <path
+                id="path3763"
+                fill="none"
+                stroke="#000000"
+                strokeWidth="0.7366"
+                d="M114.646,419.111 c0.004,7.26-5.876,13.148-13.136,13.153s-13.148-5.877-13.153-13.136c0-0.006,0-0.012,0-0.018 c-0.005-7.26,5.876-13.148,13.136-13.153c7.259-0.005,13.148,5.876,13.153,13.136 C114.646,419.099,114.646,419.105,114.646,419.111z"
+            />
+            <path
+                id="rect3789"
+                fill={(input & Button.Select) > 0 ? 'white' : '#1A1A1A'}
+                d="M228.2,442.274h24.391c5.28,0,9.56,3.448,9.56,7.702l0,0c0,4.254-4.28,7.702-9.56,7.702 H228.2c-5.28,0-9.56-3.448-9.56-7.702l0,0C218.64,445.722,222.92,442.274,228.2,442.274z"
+                onMouseDown={() => onPress(Button.Select)}
+                onMouseUp={() => onRelease(Button.Select)}
+            />
             <path id="rect3791" fill={(input & Button.Start) > 0 ? 'white' : '#1A1A1A'} d="M312.173,442.274h24.392c5.279,0,9.56,3.448,9.56,7.702l0,0c0,4.254-4.28,7.702-9.56,7.702
-                h-24.392c-5.279,0-9.56-3.448-9.56-7.702l0,0C302.613,445.722,306.893,442.274,312.173,442.274z"/>
+                h-24.392c-5.279,0-9.56-3.448-9.56-7.702l0,0C302.613,445.722,306.893,442.274,312.173,442.274z" onMouseDown={() => onPress(Button.Start)} onMouseUp={() => onRelease(Button.Start)} />
         </g>
     </svg>
 ));
