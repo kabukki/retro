@@ -21,15 +21,9 @@
     animation: scroll 0.5s linear infinite;
 }
 
-.fullscreen:fullscreen {
+.fullscreen:fullscreen canvas {
     width: 100vw !important;
     height: 100vh !important;
-    display: initial;
-}
-
-.fullscreen:fullscreen canvas {
-    width: 100% !important;
-    height: 100% !important;
     object-fit: contain;
 }
 
