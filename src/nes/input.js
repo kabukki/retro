@@ -1,4 +1,4 @@
-import { Button, InputType } from '@kabukki/wasm-nes';
+import { Button } from '@kabukki/wasm-nes';
 
 export class Input extends EventTarget {
     constructor ({ id, type }) {
@@ -46,8 +46,8 @@ export class Keyboard extends Input {
         'ArrowRight': Button.Right,
     };
 
-    constructor ({ id = 'Keyboard' } = {}) {
-        super({ id, type: InputType.Keyboard });
+    constructor () {
+        super({ id: 'Keyboard', type: 'keyboard' });
     }
 
     monitor () {
@@ -111,7 +111,7 @@ export class Gamepad extends Input {
     };
 
     constructor ({ id }) {
-        super({ id, type: InputType.Gamepad });
+        super({ id, type: 'gamepad' });
         this.rafHandle = null;
     }
 

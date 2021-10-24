@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
-import { InputType } from '@kabukki/wasm-nes';
 
 import Keyboard from '../assets/keyboard.svg';
 import Gamepad from '../assets/gamepad.svg';
@@ -14,8 +13,8 @@ import { Save } from './Save';
 import { useEmulator, useInputs } from './hooks';
 
 const typeMap = {
-    [InputType.Keyboard]: <Keyboard />,
-    [InputType.Gamepad]: <Gamepad />,
+    keyboard: <Keyboard />,
+    gamepad: <Gamepad />,
 };
 
 const formatOptionLabelWithIcon = ({ id, type }) => (
@@ -65,7 +64,7 @@ export const Nes = () => {
     useEffect(() => input(1, player2?.value), [player2?.value]);
 
     useEffect(() => {
-        setPlayer1(inputs.find((input) => input.type === InputType.Keyboard));
+        setPlayer1(inputs.find((input) => input.type === 'keyboard'));
     }, []);
 
     const onPress = (input) => (button) => {
