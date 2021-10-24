@@ -1,15 +1,17 @@
 import React, { useMemo, useState } from 'react';
 
-export const HexViewer = ({ buffer }) => {
+const mappers = {
+    hex: (buffer) => Array.from(buffer).map((byte) => [byte.toString(16).padStart(2, 0), byte === 0]),
+    decimal: (buffer) => Array.from(buffer).map((byte) => [byte.toString(10), byte === 0]),
+    char: (buffer) => Array.from(buffer).map((byte) => /\P{C}/u.test(String.fromCodePoint(byte)) ? [String.fromCodePoint(byte), false] : ['.', true]),
+};
+
+export const HexViewer = React.memo(({ buffer }) => {
     const [mode, setMode] = useState('hex');
     const [hover, setHover] = useState(null);
+    const padding = useMemo(() => Math.ceil(Math.log(buffer.length) / Math.log(16)), [buffer.length]);
     
-    const hex = useMemo(() => Array.from(buffer).map((byte) => [byte.toString(16).padStart(2, 0), byte === 0]), [buffer]);
-    const decimal = useMemo(() => Array.from(buffer).map((byte) => [byte.toString(10), byte === 0]), [buffer]);
-    const char = useMemo(() => Array.from(buffer).map((byte) => /\P{C}/u.test(String.fromCodePoint(byte)) ? [String.fromCodePoint(byte), false] : ['.', true]), [buffer]);
-    const padding = useMemo(() => Math.ceil(Math.log(buffer.length) / Math.log(16)), [buffer]);
-    
-    const mapped = (mode === 'hex' ? hex : mode === 'decimal' ? decimal : mode === 'char' ? char : null);
+    const mapped = mappers[mode](buffer);
 
     return (
         <div className="grid" style={{ gridTemplate: '"select head" 0fr "left data" auto / 0fr auto' }}>
@@ -53,4 +55,4 @@ export const HexViewer = ({ buffer }) => {
             </div>
         </div>
     );
-};
+}, (previous, props) => previous.buffer == props.buffer);

@@ -8,7 +8,7 @@ const db = new Store();
 export const useEmulator = (canvas) => {
     const [emulator, setEmulator] = useState(null);
     const [error, setError] = useState(null);
-    const [debug, setDebug] = useState(null);
+    const [debug, setDebug] = useState(() => ({}));
     const [saves, setSaves] = useState(() => []);
 
     const start = () => {

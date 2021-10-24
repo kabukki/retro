@@ -55,7 +55,7 @@ export const Nes = () => {
         { start, pause, stop, reset, load, input },
     ] = useEmulator(canvas);
 
-    // Player input selection
+    // Player input
     const inputs = useInputs();
     const [player1, setPlayer1] = useState(null);
     const [player2, setPlayer2] = useState(null);
@@ -152,9 +152,6 @@ export const Nes = () => {
                     isClearable
                 />
             </div>
-            {/* <div className="border rounded shadow">
-                <HexViewer buffer={Uint8Array.from({ length: 0x34 }, () => Math.round(Math.random() * 255))} />
-            </div> */}
             {emulator && (
                 <>
                     <div className="border rounded shadow divide-y sm:col-span-2">
@@ -182,7 +179,7 @@ export const Nes = () => {
                     </div>
                     <div className="border rounded shadow divide-y">
                         <div className="text-center font-bold">RAM</div>
-                        <HexViewer buffer={debug?.ram || []} />
+                        {/* <HexViewer buffer={debug?.ram || []} /> */}
                     </div>
                 </>
             )}
