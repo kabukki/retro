@@ -55,6 +55,8 @@ export const Debug = ({ patternTables = null, palettes = null, palette = null })
                     width={16 * 8}
                     height={32 * 8}
                 />
+            </div>
+            <div>
                 <h1>Palettes</h1>
                 <canvas
                     className="block rounded shadow"
@@ -63,6 +65,8 @@ export const Debug = ({ patternTables = null, palettes = null, palette = null })
                     width={16 * 8}
                     height={2 * 8}
                 />
+            </div>
+            <div>
                 <h1>System palette</h1>
                 <canvas
                     className="block rounded"

@@ -175,7 +175,7 @@ export const Nes = () => {
                     </div>
                     <div className="border rounded shadow divide-y">
                         <div className="text-center font-bold">Debug</div>
-                        {/* <Debug {...debug} /> */}
+                        <Debug {...debug} />
                     </div>
                     <div className="border rounded shadow divide-y">
                         <div className="text-center font-bold">RAM</div>

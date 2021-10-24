@@ -14,7 +14,7 @@
 
 .crt {
     background-image:
-        repeating-linear-gradient(transparent, transparent 1px, #0005 1px, #0005 2px),
+        repeating-linear-gradient(transparent, transparent 2px, #0005 2px, #0005 4px),
         repeating-linear-gradient(90deg, #f001 0, #0f01 1px, #00f1 2px);
     backdrop-filter: brightness(1.2);
     box-shadow: 0 0 64px #000 inset;
@@ -43,6 +43,6 @@
     }
 
     100% {
-        background-position-y: 2px;
+        background-position-y: 4px;
     }
 }
