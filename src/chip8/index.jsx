@@ -3,7 +3,7 @@ import { Emulator } from '@kabukki/wasm-chip8';
 import merge from 'lodash.merge';
 
 import { hex } from '../utils';
-import { ROMSelector } from '../ROMSelector';
+import { ROMSelector } from '../common';
 import { Display } from './Display';
 import { Settings } from './Settings';
 import { Keypad } from './Keypad';

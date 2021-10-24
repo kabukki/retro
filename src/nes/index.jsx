@@ -3,8 +3,7 @@ import Select from 'react-select';
 
 import Keyboard from '../assets/keyboard.svg';
 import Gamepad from '../assets/gamepad.svg';
-import { ROMSelector } from '../ROMSelector';
-import { HexViewer } from '../HexViewer';
+import { ROMSelector, HexViewer } from '../common';
 import { Display } from './Display';
 import { Debug } from './Debug';
 import { StatusBar } from './StatusBar';
@@ -48,6 +47,7 @@ const selectStyles = {
 
 export const Nes = () => {
     const canvas = useRef(null);
+    const refFullscreen = useRef(null);
     const [scale, setScale] = useState(2);
     const [crt, setCrt] = useState(true);
     const [
@@ -77,20 +77,24 @@ export const Nes = () => {
         input.commit();
     };
 
+    const onFullscreen = () => {
+        refFullscreen.current.requestFullscreen();
+    };
+
     return (
         <main className="container mx-auto p-4 grid sm:grid-cols-2 gap-4 font-mono">
             <div className="sm:col-span-2 border rounded shadow overflow-hidden divide-y">
                 <div className="text-center text-green-700 font-bold">
                     {emulator ? emulator.rom.name : '...Waiting for ROM...'}
                 </div>
-                <div className="relative flex justify-center bg-black">
+                <div className="relative">
                     {(error || !emulator) && (
                         <div className="absolute z-10 inset-0 grid place-content-center backdrop-filter backdrop-blur backdrop-brightness-50 text-center text-white">
                             {error && error.message}
                             {!emulator && <ROMSelector onSelect={load} />}
                         </div>
                     )}
-                    <Display ref={canvas} width={32 * 8} height={30 * 8} scale={scale} crt={crt} />
+                    <Display ref={canvas} refFullscreen={refFullscreen} width={32 * 8} height={30 * 8} scale={scale} crt={crt} />
                 </div>
                 <StatusBar rom={emulator?.rom} error={error} stats={debug?.stats} />
             </div>
@@ -153,19 +157,24 @@ export const Nes = () => {
             </div> */}
             {emulator && (
                 <>
-                    <div className="sm:col-span-2 p-4 border rounded shadow">
-                        <button className="p-1 rounded shadow" onClick={reset}>Reset</button>
-                        <button className="p-1 rounded shadow" onClick={pause}>Pause</button>
-                        <button className="p-1 rounded shadow" onClick={stop}>Stop</button>
-                        <button className="p-1 rounded shadow" onClick={start}>Resume</button>
-                        <label>
-                            Scale: x{scale}
-                            <input type="range" min="1" max="4" value={scale} onChange={e => setScale(Number(e.target.value))} />
-                        </label>
-                        <label>
-                            CRT filter
-                            <input type="checkbox" checked={crt} onChange={e => setCrt(e.target.checked)} />
-                        </label>
+                    <div className="border rounded shadow divide-y sm:col-span-2">
+                        <div className="p-4 flex flex-wrap justify-center gap-4">
+                            <button className="p-1 rounded shadow" onClick={reset}>Reset</button>
+                            <button className="p-1 rounded shadow" onClick={pause}>Pause</button>
+                            <button className="p-1 rounded shadow" onClick={stop}>Stop</button>
+                            <button className="p-1 rounded shadow" onClick={start}>Resume</button>
+                        </div>
+                        <div className="p-4 flex flex-wrap justify-center gap-4">
+                            <label>
+                                Scale: x{scale}
+                                <input type="range" min="1" max="4" value={scale} onChange={e => setScale(Number(e.target.value))} />
+                            </label>
+                            <label>
+                                CRT filter
+                                <input type="checkbox" checked={crt} onChange={e => setCrt(e.target.checked)} />
+                            </label>
+                            <button className="p-1 rounded shadow" onClick={onFullscreen}>Fullscreen</button>
+                        </div>
                     </div>
                     <div className="border rounded shadow divide-y">
                         <div className="text-center font-bold">Debug</div>

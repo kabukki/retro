@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useState } from 'react';
-import { Emulator, Store } from '@kabukki/wasm-nes';
+import { Emulator } from '@kabukki/wasm-nes';
 
-import { Keyboard, Gamepad } from './input';
+import { Keyboard, Gamepad, Store } from '../common';
 
 const db = new Store();
 

@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Button } from '@kabukki/wasm-nes';
 
 export const Controller = memo(({ input, onPress, onRelease }) => (
-    <svg className="p-4" viewBox="-0.004 270.034 612.002 251.924" enableBackground="new -0.004 270.034 612.002 251.924">
+    <svg className="p-4 select-none" viewBox="-0.004 270.034 612.002 251.924" enableBackground="new -0.004 270.034 612.002 251.924">
         <g>
             <rect id="rect11983" x="15.947" y="311.988" fill="#1A1A1A" width="581.833" height="195.284"/>
             <path id="rect12203" fill="#808080" d="M205.958,305.043h153.281c5.362,0,9.709,4.347,9.709,9.709v10.594

@@ -12,6 +12,19 @@
     animation: hue 4s ease-in-out infinite alternate;
 }
 
+.crt {
+    background-image:
+        repeating-linear-gradient(transparent, transparent 1px, #0005 1px, #0005 2px),
+        repeating-linear-gradient(90deg, #f001 0, #0f01 1px, #00f1 2px);
+    backdrop-filter: brightness(1.2);
+    box-shadow: 0 0 64px #000 inset;
+    animation: scroll 0.5s linear infinite;
+}
+
+.fullscreen:fullscreen canvas {
+    width: 100vw !important;
+}
+
 @keyframes hue {
     0% {
         filter: hue-rotate(0deg);
@@ -20,15 +33,6 @@
     100% {
         filter: hue-rotate(360deg);
     }
-}
-
-.crt {
-    background-image:
-        repeating-linear-gradient(transparent, transparent 1px, #0005 1px, #0005 2px),
-        repeating-linear-gradient(90deg, #f001 0, #0f01 1px, #00f1 2px);
-    backdrop-filter: brightness(1.2);
-    box-shadow: 0 0 64px #000 inset;
-    animation: scroll 0.5s linear infinite;
 }
 
 @keyframes scroll {

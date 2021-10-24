@@ -14,7 +14,6 @@ export class Input extends EventTarget {
             this.value = this.buffer;
             this.dispatchEvent(new CustomEvent('update', { detail: this.value }));
         }
-        this.buffer = Button.None;
     }
 
     press (button) {
