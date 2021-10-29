@@ -24,7 +24,7 @@ export const HexViewer = React.memo(({ buffer }) => {
                 {Array.from({ length: 16 }, (v, n) => n).map((offset) => (
                     <div
                         key={offset}
-                        className={`p-1 bg-${hover !== null && hover % 16 === offset ? 'green-100' : 'white'} text-center font-bold`}
+                        className={`p-1 bg-${hover !== null && hover % 16 === offset ? 'green-700' : 'transparent'} text-center font-bold`}
                     >
                         {offset.toString(16)}
                     </div>
@@ -34,17 +34,17 @@ export const HexViewer = React.memo(({ buffer }) => {
                 {Array.from({ length: Math.ceil(buffer.length / 16) }, (v, n) => n * 16).map((offset) => (
                     <div
                         key={offset}
-                        className={`p-1 bg-${hover !== null && Math.floor(hover / 16) === Math.floor(offset / 16) ? 'green-100' : 'white'} text-center font-bold`}
+                        className={`p-1 bg-${hover !== null && Math.floor(hover / 16) === Math.floor(offset / 16) ? 'green-700' : 'transparent'} text-center font-bold`}
                     >
                         {offset.toString(16).padStart(padding, 0)}
                     </div>
                 ))}
             </div>
-            <div style={{ gridArea: 'data' }} className="grid grid-cols-16 bg-gray-200">
+            <div style={{ gridArea: 'data' }} className="grid grid-cols-16">
                 {mapped.map(([byte, disabled], offset) => (
                     <div
                         key={offset}
-                        className={`p-1 grid-area text-center bg-white hover:text-green-400 text-${disabled ? 'gray-200' : 'current'}`}
+                        className={`p-1 grid-area text-center hover:text-green-700 text-${disabled ? 'white text-opacity-25' : 'current'}`}
                         title={'0x' + offset.toString(16).padStart(padding, 0)}
                         onMouseEnter={() => setHover(offset)}
                         onMouseLeave={() => setHover(null)}

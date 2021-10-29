@@ -36,7 +36,7 @@ export class Input extends EventTarget {
 export class Keyboard extends Input {
     static keymap = {
         ' ': Button.A,
-        'Escape': Button.B,
+        'Meta': Button.B,
         'Shift': Button.Select,
         'Enter': Button.Start,
         'ArrowUp': Button.Up,
@@ -61,7 +61,6 @@ export class Keyboard extends Input {
 
     onKey (e) {
         if (e.key in Keyboard.keymap) {
-            console.log(e.key);
             e.preventDefault();
             switch (e.type) {
                 case 'keydown': this.press(Keyboard.keymap[e.key]); break;

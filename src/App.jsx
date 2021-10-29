@@ -74,8 +74,8 @@ const Card = ({ to, image, title, year, url }) => (
 export const App = () => {
     return (
         <div className="h-screen flex flex-col">
-            <Router >
-                <header className="p-4 flex flex-wrap justify-between items-center bg-green-700 text-white text-center">
+            <Router>
+                <header className="z-30 p-4 flex flex-wrap justify-between items-center bg-green-700 shadow text-white text-center">
                     <h1 className="text-xl font-mono font-bold text-shadow animate-hue text-green-100">
                         <Link to="/">RETRO</Link>
                     </h1>

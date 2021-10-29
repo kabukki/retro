@@ -9,6 +9,7 @@
     "start": "webpack serve --mode development"
   },
   "dependencies": {
+    "@headlessui/react": "^1.4.1",
     "@kabukki/wasm-chip8": "^1.2.0",
     "lodash.merge": "^4.6.2",
     "react": "^17.0.2",

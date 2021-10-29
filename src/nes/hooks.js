@@ -12,7 +12,7 @@ export const useEmulator = (canvas) => {
     const [saves, setSaves] = useState(() => []);
 
     const start = () => {
-        emulator.start({
+        emulator?.start({
             onError (err) {
                 console.error(err);
                 setError(err);
@@ -30,7 +30,7 @@ export const useEmulator = (canvas) => {
     };
 
     const pause = () => {
-        emulator.stop();
+        emulator?.stop();
     };
 
     const stop = () => {
@@ -39,7 +39,7 @@ export const useEmulator = (canvas) => {
     };
 
     const reset = () => {
-        emulator.reset();
+        emulator?.reset();
     };
 
     const load = async (rom) => {
@@ -73,23 +73,23 @@ export const useEmulator = (canvas) => {
         db.getAll().then(setSaves).catch(setError);
     }, []);
 
-    return [
-        { emulator, saves, debug, error },
-        { start, pause, stop, reset, load, input },
-    ];
+    return {
+        emulator, saves, debug, error,
+        start, pause, stop, reset, load, input,
+    };
 };
 
 export const useInputs = () => {
     const [, forceUpdate] = useReducer(x => !x, true);
     const [inputs, setInputs] = useState(() => [new Keyboard()]);
-    
+
     const watch = (input) => {
         input.addEventListener('update', forceUpdate);
         input.monitor();
     };
     const unwatch = (input) => {
         input.removeEventListener('update', forceUpdate);
-        input.stop();            
+        input.stop();
     };
 
     useEffect(() => {
@@ -116,4 +116,58 @@ export const useInputs = () => {
     }, []);
 
     return inputs;
+};
+
+export const useInput = (nPlayers, { onInput = console.log }) => {
+    const inputs = useInputs();
+    const [players, setPlayers] = useState(() => new Array(nPlayers).fill(null));
+
+    const setPlayer = (player, input) => {
+        setPlayers((previous) => {
+            const players = previous.slice();
+            players[player] = input;
+            return players;
+        });
+    };
+
+    // It's ok to call hooks in a loop as long as the order is respected across renders
+    for (let n = 0; n < nPlayers; n++) {
+        useEffect(() => onInput(n, players[n]?.value), [players[n]?.value]);
+    }
+
+    useEffect(() => {
+        setPlayer(0, inputs.find((input) => input.type === 'keyboard'));
+    }, []);
+
+    return {
+        inputs,
+        players,
+        setPlayer,
+    };
+};
+
+export const useSettings = () => {
+    const [modules, setModules] = useState(['stats', 'input']);
+    const [crt, setCRT] = useState(false);
+
+    return {
+        modules,
+        crt,
+        setModules,
+        setCRT,
+    };
+};
+
+export const useKeyboard = (keymap) => {
+    const onKey = (e) => {
+        if (e.key in keymap) {
+            e.preventDefault();
+            keymap[e.key]();
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
 };

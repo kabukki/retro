@@ -1,13 +1,13 @@
 import React, { forwardRef } from 'react';
 
-export const Display = forwardRef(({ width, height, scale, crt, refFullscreen }, ref) => (
-    <div className="fullscreen relative grid place-content-center bg-black" ref={refFullscreen}>
+export const Display = forwardRef(({ width, height, crt }, ref) => (
+    <div className="h-full relative bg-black">
         <canvas
+            className="absolute inset-0 h-full w-full object-contain"
             ref={ref}
-            className="max-w-full"
             width={width}
             height={height}
-            style={{ imageRendering: 'pixelated', width: `${width * scale}px` }}
+            style={{ imageRendering: 'pixelated' }}
         />
         {crt && <div className="absolute inset-0 crt" />}
     </div>
