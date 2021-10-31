@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components{
+@layer base {
+    body {
+        font-family: 'Titillium Web', sans-serif;
+    }
+}
+
+@layer components {
     .text-shadow {
         text-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     }

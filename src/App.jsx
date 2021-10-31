@@ -84,7 +84,7 @@ export const App = () => {
         <div className="h-screen flex flex-col">
             <Router>
                 <header className="z-30 p-4 flex flex-wrap justify-between items-center bg-green-700 shadow text-white text-center">
-                    <h1 className="text-xl font-mono font-bold text-shadow animate-hue text-green-100">
+                    <h1 className="text-xl font-bold text-shadow animate-hue text-green-100">
                         <Link to="/">RETRO</Link>
                     </h1>
                     <ul className="space-x-4">

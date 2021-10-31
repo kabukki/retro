@@ -51,7 +51,7 @@ export const Chip8 = () => {
             debug: emulator.debug,
             settings,
         }}>
-            <main className="relative flex-1 flex flex-col font-mono">
+            <main className="relative flex-1 flex flex-col">
                 <Display ref={canvas} width={64} height={32} crt={settings.ui.crt} />
                 <Transition
                     show={settingsOpen}

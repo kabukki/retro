@@ -57,7 +57,7 @@ export const Nes = () => {
             saves: emulator.saves,
             settings,
         }}>
-            <main className="relative flex-1 flex flex-col font-mono">
+            <main className="relative flex-1 flex flex-col">
                 <Display ref={canvas} width={32 * 8} height={30 * 8} crt={settings.crt} />
                 <Transition
                     show={settingsOpen}
