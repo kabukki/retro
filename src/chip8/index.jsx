@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Transition } from '@headlessui/react';
 
 import { ROMSelector, EmulatorContext } from '../common';
@@ -14,11 +14,12 @@ import chip8 from '../assets/chip8.png';
 import content from '../assets/chip8.content.png';
 
 export const Chip8 = () => {
+    const canvas = useRef(null);
     const [settingsOpen, setSettingsOpen] = useState(false);
 
     const settings = useSettings();
-    const emulator = useEmulator(settings);
-    const input = useInput(settings.input.map, { onKeydown: emulator.keydown, onKeyup: emulator.keyup });
+    const emulator = useEmulator(settings, canvas);
+    const input = useInput(settings.input.map, { onInput: emulator.input });
 
     const onOpen = () => setSettingsOpen(true);
     const onClose = () => setSettingsOpen(false);
@@ -44,14 +45,14 @@ export const Chip8 = () => {
     return (
         <EmulatorContext.Provider value={{
             meta: {
-                name: emulator?.rom?.name,
+                name: emulator.emulator?.rom?.name,
             },
             input,
             debug: emulator.debug,
             settings,
         }}>
             <main className="relative flex-1 flex flex-col font-mono">
-                <Display framebuffer={emulator.framebuffer} width={64} height={32} scale={8} settings={settings.ui} />
+                <Display ref={canvas} width={64} height={32} crt={settings.ui.crt} />
                 <Transition
                     show={settingsOpen}
                     unmount={false}

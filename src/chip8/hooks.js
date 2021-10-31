@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Emulator } from '@kabukki/wasm-chip8';
 
 import { hex } from '../utils';
@@ -6,18 +6,19 @@ import { EmulatorAudio } from './audio';
 
 const audio = new EmulatorAudio('sine');
 
-export const useEmulator = (settings) => {
+export const useEmulator = (settings, canvas) => {
     const [emulator, setEmulator] = useState(null);
     const [error, setError] = useState(null);
     const [debug, setDebug] = useState(() => ({}));
-    const [framebuffer, setFramebuffer] = useState(null);
-    const [rom, setRom] = useState(null);
 
     const start = () => {
         emulator?.start({
-            clockSpeed: settings.core.clockSpeed,
+            cpuFrequency: settings.core.cpuFrequency,
             timerFrequency: settings.core.timerFrequency,
-            refreshRate: settings.core.refreshRate,
+            colors: {
+                on: settings.ui.colorOn,
+                off: settings.ui.colorOff,
+            },
             onError (err) {
                 console.error(err);
                 setError(err);
@@ -38,7 +39,12 @@ export const useEmulator = (settings) => {
                     }
                 }
             },
-            onDisplay: setFramebuffer,
+            onDebug: (info) => {
+                setDebug((previous) => ({
+                    ...previous,
+                    ...info,
+                }));
+            },
         });
     };
 
@@ -49,24 +55,18 @@ export const useEmulator = (settings) => {
     const stop = () => {
         pause();
         setEmulator(null);
-        setFramebuffer(null);
     };
 
     const load = async (rom) => {
         try {
-            setRom(rom);
-            setEmulator(new Emulator(rom.buffer));
+            setEmulator(new Emulator(canvas.current, rom));
         } catch (err) {
             setError(err);
         }
     };
 
-    const keyup = (value) => {
-        emulator?.keyup(value);
-    };
-
-    const keydown = (value) => {
-        emulator?.keydown(value);
+    const input = (key, state) => {
+        emulator?.input(key, state);
     };
 
     useEffect(() => {
@@ -82,12 +82,12 @@ export const useEmulator = (settings) => {
     }, [emulator]);
     
     return {
-        emulator, rom, debug, error, framebuffer,
-        start, pause, stop, load, keyup, keydown,
+        emulator, debug, error,
+        start, pause, stop, load, input,
     };
 };
 
-export const useInput = (keymap, { onKeyup = console.log, onKeydown = console.log }) => {
+export const useInput = (keymap, { onInput = console.log }) => {
     const [input, setInput] = useState(() => new Array(16).fill(false));
 
     const onKey = (e) => {
@@ -96,11 +96,11 @@ export const useInput = (keymap, { onKeyup = console.log, onKeydown = console.lo
             e.preventDefault();
             switch (e.type) {
                 case 'keydown':
-                    onKeydown(key);
+                    onInput(key, true);
                     setInput((previous) => previous.map((pressed, index) => index === key ? true : pressed));
                     break;
                 case 'keyup':
-                    onKeyup(key);
+                    onInput(key, false);
                     setInput((previous) => previous.map((pressed, index) => index === key ? false : pressed));
                     break;
             }
@@ -125,7 +125,6 @@ export const useSettings = () => {
     const [core, setCore] = useState({
         clockSpeed: 1000 / 200,
         timerFrequency: 1000 / 60,
-        refreshRate: 30,
     });
     const [ui, setUI] = useState({
         colorOn: '#ffffff',
