@@ -10,7 +10,6 @@ import { ModuleStats } from './ModuleStats';
 import { ModuleInput } from './ModuleInput';
 import { ModuleDebug } from './ModuleDebug';
 
-import chip8 from '../assets/chip8.png';
 import content from '../assets/chip8.content.png';
 
 export const Chip8 = () => {
@@ -76,7 +75,6 @@ export const Chip8 = () => {
                     leaveTo="-translate-y-full"
                     leave="transform transition"
                 >
-                    <img src={chip8} />
                     <ROMSelector content={content} onSelect={emulator.load} />
                 </Transition>
                 <Transition

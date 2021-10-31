@@ -8,6 +8,7 @@ export const ModuleInput = () => {
 
     return (
         <aside className="p-4 rounded bg-black bg-opacity-25 text-center">
+            <h2 className="font-bold">Input</h2>
             <Keypad input={input} />
         </aside>
     );

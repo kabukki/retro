@@ -11,7 +11,6 @@ import { ModuleInput } from './ModuleInput';
 import { ModuleDebug } from './ModuleDebug';
 import { ModuleRAM } from './ModuleRAM';
 
-import nes from '../assets/nes.png';
 import content from '../assets/nes.content.png';
 
 export const Nes = () => {
@@ -86,7 +85,6 @@ export const Nes = () => {
                     leaveTo="-translate-y-full"
                     leave="transform transition"
                 >
-                    <img src={nes} />
                     <ROMSelector content={content} onSelect={emulator.load} />
                 </Transition>
                 <Transition
