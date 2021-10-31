@@ -5,10 +5,11 @@ import { Helmet } from 'react-helmet';
 import { Chip8 } from './chip8';
 import { Nes } from './nes';
 
-import cosmac from './assets/cosmac.jpeg';
+import chip8 from './assets/chip8.png';
 import nes from './assets/nes.png';
-import gameboy from './assets/gameboy.jpg';
+import gameboy from './assets/gameboy.png';
 import n64 from './assets/n64.png';
+import playstation from './assets/playstation.png';
 import Github from './assets/github.svg';
 
 const withTitle = ({ name, component: Component }) => (props) => (
@@ -22,52 +23,59 @@ const withTitle = ({ name, component: Component }) => (props) => (
 
 const emulators = [
     {
-        name: 'CHIP-8',
-        year: 1978,
+        title: 'CHIP-8',
+        subtitle: 'Weisbecker, 1978',
         path: '/chip8',
-        picture: cosmac,
+        picture: chip8,
         url: 'https://github.com/kabukki/wasm-chip8',
         component: Chip8,
     }, {
-        name: 'NES',
-        year: 1983,
+        title: 'NES',
+        subtitle: 'Nintendo, 1983',
         path: '/nes',
         picture: nes,
         url: 'https://github.com/kabukki/wasm-nes',
         component: Nes,
     }, {
-        name: 'Game Boy',
-        year: 1989,
+        title: 'Game Boy',
+        subtitle: 'Nintendo, 1989',
         path: '/gameboy',
         picture: gameboy,
-        component: () => <p>Coming soon</p>,
+        component: () => <p>Coming soon(ish)</p>,
     }, {
-        name: 'Nintendo 64',
-        year: 1996,
+        title: 'PlayStation',
+        subtitle: 'Sony, 1994',
+        path: '/ps',
+        picture: playstation,
+        component: () => <p>Coming soon(ish)</p>,
+    }, {
+        title: 'Nintendo 64',
+        subtitle: 'Nintendo, 1996',
         path: '/n64',
         picture: n64,
-        component: () => <p>Coming soon</p>,
+        component: () => <p>Coming soon(ish)</p>,
     }
 ];
 
-const Card = ({ to, image, title, year, url }) => (
-    <div className="relative rounded shadow overflow-hidden hover:shadow-md transition-shadow">
+const Card = ({ to, picture, title, subtitle, url }) => (
+    <div className="relative flex items-center p-2 gap-2 rounded border overflow-hidden group hover:bg-green-700 hover:text-white transition">
         {!url && (
             <div className="absolute inset-0 flex flex-col justify-center bg-gray-900 bg-opacity-50">
-                <p className="py-4 text-center text-white">Coming soon</p>
+                <p className="py-4 text-center text-white">Coming soon(ish)</p>
             </div>
         )}
-        <img className="h-48 w-full object-contain" src={image} alt={title} />
-        <div className="p-2 flex flex-wrap justify-between border-t">
+        <img className="h-24 object-contain" src={picture} alt={title} />
+        <div className="flex-1">
             <Link to={to}>
-                <h2 className="font-bold text-green-700">{title}</h2> {year}
+                <h2 className="font-bold text-green-700 transition group-hover:text-white">{title}</h2>
+                {subtitle}
             </Link>
-            {url && (
-                <a href={url} target={title} >
-                    <Github className="fill-current hover:text-green-700 transition-colors"/>
-                </a>
-            )}
         </div>
+        {url && (
+            <a href={url} target={title} >
+                <Github className="fill-current"/>
+            </a>
+        )}
     </div>
 );
 
@@ -80,8 +88,8 @@ export const App = () => {
                         <Link to="/">RETRO</Link>
                     </h1>
                     <ul className="space-x-4">
-                        {emulators.map(({ name, path }) => (
-                            <li key={name} className="inline-block">
+                        {emulators.map(({ title, path }) => (
+                            <li key={title} className="inline-block">
                                 <NavLink to={path} activeClassName="font-bold" >{name}</NavLink>
                             </li>
                         ))}
@@ -89,13 +97,13 @@ export const App = () => {
                 </header>
                 <Switch>
                     {emulators.map((emulator) => (
-                        <Route key={emulator.name} path={emulator.path} component={withTitle(emulator)} />
+                        <Route key={emulator.title} path={emulator.path} component={withTitle(emulator)} />
                     ))}
                     <Route path="/" exact>
                         <h1 className="m-4 text-xl text-center">Welcome to RETRO !</h1>
                         <div className="m-4 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                            {emulators.map(({ name, year, path, picture, url }) => (
-                                <Card key={name} to={path} image={picture} title={name} year={year} url={url} />
+                            {emulators.map(({ title, subtitle, path, picture, url }) => (
+                                <Card key={title} to={path} picture={picture} title={title} subtitle={subtitle} url={url} />
                             ))}
                         </div>
                     </Route>
