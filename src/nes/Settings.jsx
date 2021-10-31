@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Select from 'react-select';
 import { Tab } from '@headlessui/react';
 
-import { EmulatorContext } from './context';
+import { EmulatorContext } from '../common';
 import { Controller } from './Controller';
 import { Save } from './Save';
 

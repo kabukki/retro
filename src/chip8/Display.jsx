@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-export const Display = ({ framebuffer, width, height, scale = 8, settings }) => {
+export const Display = ({ framebuffer, width, height, scale = 8, settings, crt }) => {
     const canvas = useRef(null);
 
     useEffect(() => {
@@ -22,12 +22,15 @@ export const Display = ({ framebuffer, width, height, scale = 8, settings }) => 
     }, [framebuffer]);
 
     return (
-        <canvas
-            className="block rounded"
-            style={{ imageRendering: 'pixelated' }}
-            ref={canvas}
-            width={width * scale}
-            height={height * scale}
-        />
+        <div className="h-full relative bg-black">
+            <canvas
+                className="absolute inset-0 h-full w-full object-contain"
+                ref={canvas}
+                width={width * scale}
+                height={height * scale}
+                style={{ imageRendering: 'pixelated' }}
+            />
+            {settings.crt && <div className="absolute inset-0 crt" />}
+        </div>
     );
 };

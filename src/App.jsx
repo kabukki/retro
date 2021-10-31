@@ -58,7 +58,7 @@ const emulators = [
 ];
 
 const Card = ({ to, picture, title, subtitle, url }) => (
-    <div className="relative flex items-center p-2 gap-2 rounded border overflow-hidden group hover:bg-green-700 hover:text-white transition">
+    <div className="relative flex items-center p-2 gap-2 rounded shadow overflow-hidden group hover:bg-green-700 hover:text-white transition">
         {!url && (
             <div className="absolute inset-0 flex flex-col justify-center bg-gray-900 bg-opacity-50">
                 <p className="py-4 text-center text-white">Coming soon(ish)</p>
@@ -90,7 +90,7 @@ export const App = () => {
                     <ul className="space-x-4">
                         {emulators.map(({ title, path }) => (
                             <li key={title} className="inline-block">
-                                <NavLink to={path} activeClassName="font-bold" >{name}</NavLink>
+                                <NavLink to={path} activeClassName="font-bold" >{title}</NavLink>
                             </li>
                         ))}
                     </ul>

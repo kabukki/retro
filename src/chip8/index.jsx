@@ -1,143 +1,107 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Emulator } from '@kabukki/wasm-chip8';
-import merge from 'lodash.merge';
+import React, { useEffect, useState } from 'react';
+import { Transition } from '@headlessui/react';
 
-import { hex } from '../utils';
-import { ROMSelector } from '../common';
+import { ROMSelector, EmulatorContext } from '../common';
+import { useEmulator, useInput, useKeyboard, useSettings } from './hooks';
 import { Display } from './Display';
 import { Settings } from './Settings';
-import { Keypad } from './Keypad';
-import { EmulatorAudio } from './audio';
+import { ModuleMeta } from './ModuleMeta';
+import { ModuleStats } from './ModuleStats';
+import { ModuleInput } from './ModuleInput';
+import { ModuleDebug } from './ModuleDebug';
 
-const audio = new EmulatorAudio('sine');
+import chip8 from '../assets/chip8.png';
+import content from '../assets/chip8.content.png';
 
 export const Chip8 = () => {
-    const [lastInstruction, setLastInstruction] = useState(null);
-    const [framebuffer, setFramebuffer] = useState(null);
-    const [emulator, setEmulator] = useState(null);
-    const [error, setError] = useState(null);
-    const [rom, setRom] = useState(null);
-    const [settings, setSettings] = useState({
-        core: {
-            clockSpeed: 1000 / 200,
-            timerFrequency: 1000 / 60,
-        },
-        display: {
-            colorOn: '#ffffff',
-            colorOff: '#000000',
-            refreshRate: 30,
-        },
-        audio: true,
-        keyboard: {
-            map: {
-                '1': 0x1, '2': 0x2, '3': 0x3, '4': 0xC,
-                'q': 0x4, 'w': 0x5, 'e': 0x6, 'r': 0xD,
-                'a': 0x7, 's': 0x8, 'd': 0x9, 'f': 0xE,
-                'z': 0xA, 'x': 0x0, 'c': 0xB, 'v': 0xF,
-            },
-        },
+    const [settingsOpen, setSettingsOpen] = useState(false);
+
+    const settings = useSettings();
+    const emulator = useEmulator(settings);
+    const input = useInput(settings.input.map, { onKeydown: emulator.keydown, onKeyup: emulator.keyup });
+
+    const onOpen = () => setSettingsOpen(true);
+    const onClose = () => setSettingsOpen(false);
+    const onStop = () => {
+        emulator.stop();
+        onClose();
+    };
+
+    useKeyboard({
+        Escape: () => setSettingsOpen((previous) => !previous),
     });
 
-    // Keyboard shortcuts
-    const onKeydown = useCallback(({ key }) => key in settings.keyboard.map && emulator?.keydown(settings.keyboard.map[key]), [emulator]);
-    const onKeyup = useCallback(({ key }) => key in settings.keyboard.map && emulator?.keyup(settings.keyboard.map[key]), [emulator]);
-
     useEffect(() => {
-        document.addEventListener('keydown', onKeydown);
-        document.addEventListener('keyup', onKeyup);
-
-        return () => {
-            document.removeEventListener('keydown', onKeydown);
-            document.removeEventListener('keyup', onKeyup);    
-        };
-    }, [onKeydown, onKeyup]);
-
-    // When emulator changes, start/stop
-    useEffect(() => {
-        if (emulator) {
-            try {
-                emulator.start({
-                    clockSpeed: settings.core.clockSpeed,
-                    timerFrequency: settings.core.timerFrequency,
-                    refreshRate: settings.display.refreshRate,
-                    onError (err) {
-                        console.log('onError');
-                        console.error(err);
-                        setError(err);
-                        emulator.stop();
-                    },
-                    onCPU: (opcode) => setLastInstruction(hex(opcode)),
-                    onTimer: (shouldBeep) => {
-                        if (settings.audio) {
-                            if (shouldBeep) {
-                                audio.play();
-                            } else {
-                                audio.pause();
-                            }
-                        }
-                    },
-                    onDisplay: setFramebuffer,
-                });
-    
-                return () => {
-                    emulator.stop();
-                    setEmulator(null);
-                    setFramebuffer(null);
-                };
-            } catch (err) {
-                console.error(err);
-                setError(err);
+        if (emulator.emulator) {
+            if (settingsOpen) {
+                emulator.pause();
+            } else {
+                emulator.start();
             }
         }
-    }, [emulator]);
-
-    // When a ROM is loaded, create a new emulator instance
-    useEffect(() => {
-        if (rom) {
-            try {
-                setEmulator(new Emulator(rom));
-            } catch (err) {
-                console.dir(err)
-                setError(err);
-            }
-        }
-    }, [rom]);
+    }, [settingsOpen]);
 
     return (
-        <div>
-            <div className="relative flex gap-4">
-                <Display framebuffer={framebuffer} width={64} height={32} scale={8} settings={settings.display} />
-                <div>
-                    <Keypad onKeydown={(key) => emulator?.keydown(key)} onKeyup={(key) => emulator?.keyup(key)}/>
-                    <pre>{lastInstruction}</pre>
-                    <button onClick={() => setEmulator(null)}>❌ End</button>
-                </div>
-                {!emulator && (
-                    <div className="absolute inset-0 flex flex-col justify-center bg-gray-500 bg-opacity-50">
-                        <div className="py-4 bg-gray-500 text-center text-white" >
-                            <ROMSelector onSelect={setRom} />
+        <EmulatorContext.Provider value={{
+            meta: {
+                name: emulator?.rom?.name,
+            },
+            input,
+            debug: emulator.debug,
+            settings,
+        }}>
+            <main className="relative flex-1 flex flex-col font-mono">
+                <Display framebuffer={emulator.framebuffer} width={64} height={32} scale={8} settings={settings.ui} />
+                <Transition
+                    show={settingsOpen}
+                    unmount={false}
+                    className="absolute z-10 inset-0 p-4 mx-auto text-white backdrop-filter backdrop-blur-lg backdrop-brightness-50 overflow-auto"
+                    enter="transition ease-out"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                    leave="transition ease-out"
+                >
+                    <Settings onStop={onStop} onClose={onClose} />
+                </Transition>
+                <Transition
+                    show={!emulator.emulator}
+                    className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-green-700"
+                    enter="transform transition"
+                    enterFrom="-translate-y-full"
+                    enterTo="translate-y-0"
+                    leaveFrom="translate-y-0"
+                    leaveTo="-translate-y-full"
+                    leave="transform transition"
+                >
+                    <img src={chip8} />
+                    <ROMSelector content={content} onSelect={emulator.load} />
+                </Transition>
+                <Transition
+                    show={!!emulator.error}
+                    className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-red-700"
+                    enter="transform transition duration-500"
+                    enterFrom="-translate-y-full"
+                    enterTo="translate-y-0"
+                    leaveFrom="translate-y-0"
+                    leaveTo="-translate-y-full"
+                    leave="transform transition duration-500"
+                    >
+                    {emulator.error?.message}
+                </Transition>
+                {emulator.emulator && (
+                    <>
+                        <div className="absolute top-0 right-0 h-full p-4 flex flex-col items-stretch gap-4 text-white overflow-auto">
+                            <ModuleMeta />
+                            {settings.modules.includes('stats') && <ModuleStats />}
+                            {settings.modules.includes('input') && <ModuleInput />}
+                            {settings.modules.includes('debug') && <ModuleDebug />}
                         </div>
-                    </div>
+                        <button className="absolute top-4 left-4 text-white" onClick={onOpen}>⚙️ Settings</button>
+                    </>
                 )}
-                {error && (
-                    <div className="absolute inset-0 flex flex-col justify-center bg-gray-500 bg-opacity-50">
-                        <div className="py-4">
-                            <pre className="py-4 bg-red-500 text-center text-white">{error.message}</pre>
-                        </div>
-                    </div>
-                )}
-            </div>
-            <div>
-                <Settings settings={settings} onUpdate={(newSettings) => setSettings((oldSettings) => merge({}, oldSettings, newSettings))} />
-                <div className="space-y-4">
-                    <div>
-                        <h2 className="border-b border-grey-500">⏱ Stats</h2>
-                        <p><b>CPU clock speed</b> {Math.round(1000 / settings.core.clockSpeed)}Hz</p>
-                        <p><b>Timer frequency</b> {Math.round(1000 / settings.core.timerFrequency)}Hz</p>
-                        <p><b>Display refresh rate</b> {settings.display.refreshRate} FPS</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </main>
+        </EmulatorContext.Provider>
     );
 };

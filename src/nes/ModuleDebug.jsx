@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 
-import { EmulatorContext } from './context';
+import { EmulatorContext } from '../common';
 
 export const ModuleDebug = () => {
     const { debug } = useContext(EmulatorContext);

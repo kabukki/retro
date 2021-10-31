@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { EmulatorContext } from './context';
+import { EmulatorContext } from '../common';
 import { Controller } from './Controller';
 
 export const ModuleInput = () => {

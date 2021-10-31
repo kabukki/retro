@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Reel from 'react-reel'
 
-import { EmulatorContext } from './context';
+import { EmulatorContext } from '../common';
 
 export const ModuleStats = () => {
     const { debug } = useContext(EmulatorContext);
