@@ -147,7 +147,7 @@ export const useInput = (nPlayers, { onInput = console.log }) => {
 };
 
 export const useSettings = () => {
-    const [modules, setModules] = useState(['stats', 'input']);
+    const [modules, setModules] = useState(['meta', 'stats', 'input']);
     const [crt, setCRT] = useState(false);
 
     return {
@@ -156,18 +156,4 @@ export const useSettings = () => {
         setModules,
         setCRT,
     };
-};
-
-export const useKeyboard = (keymap) => {
-    const onKey = (e) => {
-        if (e.key in keymap) {
-            e.preventDefault();
-            keymap[e.key]();
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, []);
 };

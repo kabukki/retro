@@ -42,15 +42,14 @@ const formatOptionLabelWithIcon = ({ id, type }) => {
     );
 };
 
-export const Settings = ({ onReset, onStop, onClose }) => {
+export const Settings = () => {
     const { settings, input, saves } = useContext(EmulatorContext);
 
     return (
-        <div className="flex flex-col gap-4 container mx-auto h-full">
+        <>
             <Tab.Group>
                 <Tab.List className="flex flex-col sm:flex-row" as="ul">
                     <Tab className={({ selected }) => `flex-1 text-center font-bold ${selected ? 'bg-white text-black' : ''}`} as="li">Input</Tab>
-                    <Tab className={({ selected }) => `flex-1 text-center font-bold ${selected ? 'bg-white text-black' : ''}`} as="li">Graphics</Tab>
                     <Tab className={({ selected }) => `flex-1 text-center font-bold ${selected ? 'bg-white text-black' : ''}`} as="li">Interface</Tab>
                     <Tab className={({ selected }) => `flex-1 text-center font-bold ${selected ? 'bg-white text-black' : ''}`} as="li">Saves</Tab>
                 </Tab.List>
@@ -85,13 +84,11 @@ export const Settings = ({ onReset, onStop, onClose }) => {
                             CRT filter
                             <input type="checkbox" checked={settings.crt} onChange={e => settings.setCRT(e.target.checked)} />
                         </label>
-                    </Tab.Panel>
-                    <Tab.Panel>
                         <Select
                             styles={selectStyles}
                             value={settings.modules}
                             onChange={settings.setModules}
-                            options={['stats', 'input', 'debug', 'ram']}
+                            options={['meta', 'stats', 'input', 'ram', 'ppu']}
                             getOptionLabel={(module) => module}
                             getOptionValue={(module) => module}
                             isSearchable
@@ -108,11 +105,6 @@ export const Settings = ({ onReset, onStop, onClose }) => {
                     </Tab.Panel>
                 </Tab.Panels>
             </Tab.Group>
-            <div className="flex justify-center gap-4">
-                <button className="p-1 text-red-500" onClick={onStop}>Stop</button>
-                <button className="p-1 text-yellow-500" onClick={onReset}>Reset</button>
-                <button onClick={onClose}>Resume</button>
-            </div>
-        </div>
+        </>
     );
 };

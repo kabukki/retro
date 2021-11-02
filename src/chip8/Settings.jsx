@@ -25,11 +25,11 @@ const selectStyles = {
     }),
 };
 
-export const Settings = ({ onStop, onClose }) => {
+export const Settings = () => {
     const { settings, input } = useContext(EmulatorContext);
 
     return (
-        <div className="flex flex-col gap-4 container mx-auto h-full">
+        <>
             <Tab.Group>
                 <Tab.List className="flex flex-col sm:flex-row" as="ul">
                     <Tab className={({ selected }) => `flex-1 text-center font-bold ${selected ? 'bg-white text-black' : ''}`} as="li">Input</Tab>
@@ -67,7 +67,7 @@ export const Settings = ({ onStop, onClose }) => {
                             styles={selectStyles}
                             value={settings.modules}
                             onChange={settings.setModules}
-                            options={['stats', 'input', 'debug']}
+                            options={['meta', 'stats', 'input', 'debug']}
                             getOptionLabel={(module) => module}
                             getOptionValue={(module) => module}
                             isSearchable
@@ -77,10 +77,6 @@ export const Settings = ({ onStop, onClose }) => {
                     </Tab.Panel>
                 </Tab.Panels>
             </Tab.Group>
-            <div className="flex justify-center gap-4">
-                <button className="p-1 text-red-500" onClick={onStop}>Stop</button>
-                <button onClick={onClose}>Resume</button>
-            </div>
-        </div>
+        </>
     );
 };

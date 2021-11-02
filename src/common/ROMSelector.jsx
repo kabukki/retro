@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { getRom } from '@kabukki/wasm-nes';
 
-export const ROMSelector = ({ content, onSelect }) => {
+export const ROMSelector = ({ picture, onSelect }) => {
     const ref = useRef(null);
     const [drag, setDrag] = useState(false);
 
@@ -48,7 +48,7 @@ export const ROMSelector = ({ content, onSelect }) => {
                 onDragOver={onDragOver}
                 onDragEnter={onDragEnter}
             >
-                {content ? <img src={content} className="h-24" /> : '💾'}
+                {picture ? <img src={picture} className="h-24" /> : '💾'}
                 {drag && <div className="absolute inset-0 bg-white bg-opacity-50" onDragLeave={onDragLeave} />}
                 <p>Drag & drop your file here</p>
                 <div className="self-stretch flex gap-2 items-center">

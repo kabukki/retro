@@ -22,7 +22,6 @@ export const useEmulator = (settings, canvas) => {
             onError (err) {
                 console.error(err);
                 setError(err);
-                stop();
             },
             onCPU: (opcode) => {
                 setDebug((previous) => ({
@@ -121,7 +120,7 @@ export const useInput = (keymap, { onInput = console.log }) => {
 };
 
 export const useSettings = () => {
-    const [modules, setModules] = useState(['stats', 'input']);
+    const [modules, setModules] = useState(['meta', 'stats', 'input']);
     const [core, setCore] = useState({
         clockSpeed: 1000 / 200,
         timerFrequency: 1000 / 60,
@@ -151,18 +150,4 @@ export const useSettings = () => {
         setUI,
         setInput,
     };
-};
-
-export const useKeyboard = (keymap) => {
-    const onKey = (e) => {
-        if (e.key in keymap) {
-            e.preventDefault();
-            keymap[e.key]();
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, []);
 };

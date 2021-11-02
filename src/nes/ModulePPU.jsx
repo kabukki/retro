@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useRef } from 'react';
 
-import { EmulatorContext } from '../common';
+import { HexViewer, EmulatorContext } from '../common';
 
-export const ModuleDebug = () => {
+export const ModulePPU = () => {
+    const canvas1 = useRef(null);
+    const canvas2 = useRef(null);
+    const canvas3 = useRef(null);
     const { debug } = useContext(EmulatorContext);
-    const canvas5 = useRef(null);
-    const canvas6 = useRef(null);
-    const canvas7 = useRef(null);
 
     useEffect(() => {
-        const context5 = canvas5.current.getContext('2d');
+        const context5 = canvas1.current.getContext('2d');
 
         requestAnimationFrame(() => {
             if (debug?.patternTables) {
@@ -22,7 +22,7 @@ export const ModuleDebug = () => {
     }, [debug?.patternTables]);
 
     useEffect(() => {
-        const context6 = canvas6.current.getContext('2d');
+        const context6 = canvas2.current.getContext('2d');
 
         requestAnimationFrame(() => {
             if (debug?.palettes) {
@@ -35,7 +35,7 @@ export const ModuleDebug = () => {
     }, [debug?.palettes]);
 
     useEffect(() => {
-        const context7 = canvas7.current.getContext('2d');
+        const context7 = canvas3.current.getContext('2d');
 
         requestAnimationFrame(() => {
             if (debug?.palette) {
@@ -49,27 +49,29 @@ export const ModuleDebug = () => {
 
     return (
         <aside className="p-4 rounded bg-black bg-opacity-25 text-center">
+            <h2>OAM</h2>
+            <HexViewer buffer={debug?.oam || []} />
             <h2>Pattern tables</h2>
             <canvas
-                className="block rounded"
+                className="inline rounded"
                 style={{ imageRendering: 'pixelated' }}
-                ref={canvas5}
+                ref={canvas1}
                 width={16 * 8}
                 height={32 * 8}
             />
             <h2>Palettes</h2>
             <canvas
-                className="block rounded shadow"
+                className="inline rounded"
                 style={{ imageRendering: 'pixelated' }}
-                ref={canvas6}
+                ref={canvas2}
                 width={16 * 8}
                 height={2 * 8}
             />
             <h2>System palette</h2>
             <canvas
-                className="block rounded"
+                className="inline rounded"
                 style={{ imageRendering: 'pixelated' }}
-                ref={canvas7}
+                ref={canvas3}
                 width={16 * 8}
                 height={4 * 8}
             />

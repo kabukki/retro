@@ -15,10 +15,10 @@ export const HexViewer = React.memo(({ buffer }) => {
 
     return (
         <div className="grid" style={{ gridTemplate: '"select head" 0fr "left data" auto / 0fr auto' }}>
-            <select style={{ gridArea: 'select' }} className="outline-none border-b border-r" value={mode} onChange={(e) => setMode(e.target.value)}>
-                <option value="hex">Hex</option>
-                <option value="decimal">Dec</option>
-                <option value="char">Chr</option>
+            <select style={{ gridArea: 'select' }} className="bg-transparent outline-none border-b border-r" value={mode} onChange={(e) => setMode(e.target.value)}>
+                <option value="hex">HEX</option>
+                <option value="decimal">DEC</option>
+                <option value="char">CHR</option>
             </select>
             <div style={{ gridArea: 'head' }} className="grid grid-cols-16 border-b">
                 {Array.from({ length: 16 }, (v, n) => n).map((offset) => (
