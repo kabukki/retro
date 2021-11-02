@@ -32,7 +32,7 @@ const TransitionSlide = ({ children, ...props }) => (
 );
 
 export const UI = ({
-    settings, display, select, modules,
+    title, settings, display, select, modules,
     init, error, onPause, onStart, onReset, onStop,
 }) => {
     const [running, setRunning] = useState(false);
@@ -87,7 +87,16 @@ export const UI = ({
                 </div>
             </TransitionFade>
             <TransitionSlide show={!init} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-green-700">
-                {select}
+                <div className="absolute inset-0 pointer-events-none grid grid-cols-6 grid-rows-6 place-items-center gap-4 text-green-900 whitespace-nowrap">
+                    {Array.from({ length: 36 }, (v, n) => (
+                        <div className="text-xl" key={n}>
+                            {((n % 2) + Math.floor(n / 6) % 2) % 2 === 0 ? title : '·'}
+                        </div>
+                    ))}
+                </div>
+                <div className="z-10">
+                    {select}
+                </div>
             </TransitionSlide>
             <TransitionSlide show={!!error} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-red-700">
                 {error?.message}
@@ -100,6 +109,7 @@ export const UI = ({
                     <div className="absolute top-4 left-4 flex gap-4 text-white">
                         <button onClick={_onOpenSettings}>⚙️</button>
                         {running ? <button onClick={_onPause}>⏸</button> : <button onClick={_onStart}>▶️</button>}
+                        <button onClick={_onReset}>🔁</button>
                         <button onClick={_onStop}>⏹</button>
                     </div>
                 </>

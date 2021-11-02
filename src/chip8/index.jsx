@@ -18,7 +18,7 @@ const modules = {
     debug: <ModuleDebug />,
 };
 
-export const Chip8 = () => {
+export const Chip8 = (meta) => {
     const canvas = useRef(null);
 
     const settings = useSettings();
@@ -27,14 +27,14 @@ export const Chip8 = () => {
 
     return (
         <EmulatorContext.Provider value={{
-            meta: {
-                name: emulator.emulator?.rom?.name,
-            },
+            meta,
+            rom: emulator.emulator?.rom,
             input,
             debug: emulator.debug,
             settings,
         }}>
             <UI
+                title={meta.title}
                 settings={<Settings />}
                 display={<Display ref={canvas} width={64} height={32} crt={settings.ui.crt} />}
                 select={<ROMSelector picture={content} onSelect={emulator.load} />}

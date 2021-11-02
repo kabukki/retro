@@ -12,14 +12,18 @@ import n64 from './assets/n64.png';
 import playstation from './assets/playstation.png';
 import Github from './assets/github.svg';
 
-const withTitle = ({ name, component: Component }) => (props) => (
-    <>
-        <Helmet>
-            <title>{name}</title>
-        </Helmet>
-        <Component {...props} />
-    </>
-);
+const withTitle = (emulator) => (props) => {
+    const { name, component: Component } = emulator;
+    
+    return (
+        <>
+            <Helmet>
+                <title>{name}</title>
+            </Helmet>
+            <Component {...emulator} {...props} />
+        </>
+    );
+};
 
 const emulators = [
     {
@@ -87,10 +91,13 @@ export const App = () => {
                     <h1 className="text-xl font-bold text-shadow animate-hue text-green-100">
                         <Link to="/">RETRO</Link>
                     </h1>
-                    <ul className="space-x-4">
-                        {emulators.map(({ title, path }) => (
-                            <li key={title} className="inline-block">
-                                <NavLink to={path} activeClassName="font-bold" >{title}</NavLink>
+                    <ul className="flex flex-wrap items-center gap-4">
+                        {emulators.map(({ title, picture, path }) => (
+                            <li key={title}>
+                                <NavLink className="flex items-center gap-2" to={path} activeClassName="font-bold">
+                                    <img className="h-4" src={picture} />
+                                    {title}
+                                </NavLink>
                             </li>
                         ))}
                     </ul>

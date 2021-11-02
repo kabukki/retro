@@ -20,7 +20,7 @@ const modules = {
     ppu: <ModulePPU />,
 };
 
-export const Nes = () => {
+export const Nes = (meta) => {
     const canvas = useRef(null);
 
     const emulator = useEmulator(canvas);
@@ -29,15 +29,15 @@ export const Nes = () => {
 
     return (
         <EmulatorContext.Provider value={{
-            meta: {
-                name: emulator.emulator?.rom?.name,
-            },
+            meta,
+            rom: emulator.emulator?.rom,
             input,
             debug: emulator.debug,
             saves: emulator.saves,
             settings,
         }}>
             <UI
+                title={meta.title}
                 settings={<Settings />}
                 display={<Display ref={canvas} width={256} height={240} crt={settings.crt} />}
                 select={<ROMSelector picture={content} onSelect={emulator.load} />}

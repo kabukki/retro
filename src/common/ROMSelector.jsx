@@ -52,9 +52,9 @@ export const ROMSelector = ({ picture, onSelect }) => {
                 {drag && <div className="absolute inset-0 bg-white bg-opacity-50" onDragLeave={onDragLeave} />}
                 <p>Drag & drop your file here</p>
                 <div className="self-stretch flex gap-2 items-center">
-                    <div className="h-px flex-1 bg-white bg-opacity-50" />
+                    <div className="h-px flex-1 bg-white" />
                     OR
-                    <div className="h-px flex-1 bg-white bg-opacity-50" />
+                    <div className="h-px flex-1 bg-white" />
                 </div>
                 <button className="p-1 rounded shadow bg-green-700 text-white" onClick={onClick}>
                     Browse files
