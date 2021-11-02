@@ -100,6 +100,7 @@ export const UI = ({
                     <div className="absolute top-4 left-4 flex gap-4 text-white">
                         <button onClick={_onOpenSettings}>⚙️</button>
                         {running ? <button onClick={_onPause}>⏸</button> : <button onClick={_onStart}>▶️</button>}
+                        <button onClick={_onStop}>⏹</button>
                     </div>
                 </>
             )}
