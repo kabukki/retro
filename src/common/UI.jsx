@@ -31,6 +31,21 @@ const TransitionSlide = ({ children, ...props }) => (
     </Transition>
 );
 
+const Background = ({ text, className, children }) => (
+    <>
+        <div className={`absolute inset-0 pointer-events-none grid grid-cols-6 grid-rows-6 place-items-center gap-4 whitespace-nowrap ${className || ''}`}>
+            {Array.from({ length: 36 }, (v, n) => (
+                <div className="text-xl" key={n}>
+                    {((n % 2) + Math.floor(n / 6) % 2) % 2 === 0 ? text : '·'}
+                </div>
+            ))}
+        </div>
+        <div className="z-10">
+            {children}
+        </div>
+    </>
+);
+
 export const UI = ({
     title, settings, display, select, modules,
     init, error, onPause, onStart, onReset, onStop,
@@ -87,19 +102,14 @@ export const UI = ({
                 </div>
             </TransitionFade>
             <TransitionSlide show={!init} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-green-700">
-                <div className="absolute inset-0 pointer-events-none grid grid-cols-6 grid-rows-6 place-items-center gap-4 text-green-900 whitespace-nowrap">
-                    {Array.from({ length: 36 }, (v, n) => (
-                        <div className="text-xl" key={n}>
-                            {((n % 2) + Math.floor(n / 6) % 2) % 2 === 0 ? title : '·'}
-                        </div>
-                    ))}
-                </div>
-                <div className="z-10">
+                <Background className="text-green-900" text={title}>
                     {select}
-                </div>
+                </Background>
             </TransitionSlide>
             <TransitionSlide show={!!error} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-red-700">
-                {error?.message}
+                <Background className="text-red-900" text={title}>
+                    <h1 className="font-bold">{error?.message}</h1>
+                </Background>
             </TransitionSlide>
             {init && (
                 <>
