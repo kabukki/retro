@@ -14,27 +14,29 @@
     }
 }
 
-.animate-hue {
-    animation: hue 4s ease-in-out infinite alternate;
-}
-
 .crt {
     background-image:
-        repeating-linear-gradient(transparent, transparent 1px, #0005 1px, #0005 2px),
-        repeating-linear-gradient(90deg, #f002 0, #0f02 1px, #00f2 2px);
+    repeating-linear-gradient(transparent, transparent 1px, #0005 1px, #0005 2px),
+    repeating-linear-gradient(90deg, #f002 0, #0f02 1px, #00f2 2px);
     backdrop-filter: brightness(1.2);
     box-shadow: 0 0 64px #000 inset;
     animation: scroll 0.5s linear infinite;
 }
 
-@keyframes hue {
-    0% {
-        filter: hue-rotate(0deg);
-    }
+.animate-color {
+    animation: color 8s linear infinite;
+}
 
-    100% {
-        filter: hue-rotate(360deg);
-    }
+@keyframes color {
+    0%      { color: #000; }
+    12.5%   { color: #00f; }
+    25%     { color: #0f0; }
+    37.5%   { color: #0ff; }
+    50%     { color: #f00; }
+    62.5%   { color: #f0f; }
+    75%     { color: #ff0; }
+    87.5%   { color: #fff; }
+    100%    { color: #000; }
 }
 
 @keyframes scroll {

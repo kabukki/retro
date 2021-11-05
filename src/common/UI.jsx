@@ -33,10 +33,10 @@ const TransitionSlide = ({ children, ...props }) => (
 
 const Background = ({ text, className, children }) => (
     <>
-        <div className={`absolute inset-0 pointer-events-none grid grid-cols-6 grid-rows-6 place-items-center gap-4 whitespace-nowrap ${className || ''}`}>
-            {Array.from({ length: 36 }, (v, n) => (
-                <div className="text-xl" key={n}>
-                    {((n % 2) + Math.floor(n / 6) % 2) % 2 === 0 ? text : '·'}
+        <div className={`absolute inset-0 pointer-events-none select-none grid grid-cols-5 grid-rows-5 place-items-center gap-4 whitespace-nowrap ${className || ''}`}>
+            {Array.from({ length: 25 }, (v, n) => (
+                <div key={n}>
+                    {n % 2 === 0 ? text : '·'}
                 </div>
             ))}
         </div>
