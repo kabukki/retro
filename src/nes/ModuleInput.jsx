@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 
-import { EmulatorContext } from '../common';
+import { EmulatorContext, Module } from '../common';
 import { Controller } from './Controller';
 
 export const ModuleInput = () => {
     const { input } = useContext(EmulatorContext);
 
     return (
-        <aside className="p-4 rounded bg-black bg-opacity-25 text-center">
+        <Module className="text-center">
             {input.players.map((player, index) => (
                 <div key={index}>
                     <h2 className="font-bold">Player {index + 1}</h2>
@@ -18,6 +18,6 @@ export const ModuleInput = () => {
                     )}
                 </div>
             ))}
-        </aside>
+        </Module>
     );
 };

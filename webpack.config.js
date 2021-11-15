@@ -33,4 +33,10 @@ module.exports = {
             template: path.join(__dirname, 'src/index.html'),
         }),
     ],
+    devServer: {
+        headers: {
+            'Cross-Origin-Embedder-Policy': 'require-corp',
+            'Cross-Origin-Opener-Policy': 'same-origin',
+        },
+    },
 };

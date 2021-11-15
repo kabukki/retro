@@ -48,7 +48,7 @@ const Background = ({ text, className, children }) => (
 
 export const UI = ({
     title, settings, display, select, modules,
-    init, error, onPause, onStart, onReset, onStop,
+    error, onStop, emulator,
 }) => {
     const [running, setRunning] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
@@ -60,16 +60,19 @@ export const UI = ({
         _onCloseSettings();
     };
     const _onReset = () => {
-        onReset();
+        emulator?.reset();
         _onCloseSettings();
     };
     const _onPause = () => {
-        onPause();
+        emulator?.stop();
         setRunning(false);
     };
     const _onStart = () => {
-        onStart();
+        emulator?.start();
         setRunning(true);
+    };
+    const _onStep = () => {
+        emulator?.step();
     };
 
     useKeyboard({
@@ -89,19 +92,19 @@ export const UI = ({
             {display}
             <TransitionFade
                 show={settingsOpen}
-                unmount={false}
+                // unmount={false}
                 className="absolute z-10 inset-0 p-4 mx-auto text-white backdrop-filter backdrop-blur-lg backdrop-brightness-50 overflow-auto"
             >
                 <div className="flex flex-col gap-4 container mx-auto h-full">
                     {settings}
                     <div className="flex justify-center gap-4">
                         <button className="p-1 text-red-500" onClick={_onStop}>Stop</button>
-                        {onReset && <button className="p-1 text-yellow-500" onClick={_onReset}>Reset</button>}
+                        <button className="p-1 text-yellow-500" onClick={_onReset}>Reset</button>
                         <button onClick={_onCloseSettings}>Resume</button>
                     </div>
                 </div>
             </TransitionFade>
-            <TransitionSlide show={!init} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-green-700">
+            <TransitionSlide show={!emulator} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-green-700">
                 <Background className="text-green-900" text={title}>
                     {select}
                 </Background>
@@ -111,7 +114,7 @@ export const UI = ({
                     <h1 className="font-bold">{error?.message}</h1>
                 </Background>
             </TransitionSlide>
-            {init && (
+            {emulator && (
                 <>
                     <div className="absolute top-0 right-0 h-full p-4 flex flex-col items-stretch gap-4 text-white overflow-auto">
                         {modules.map(([key, module]) => cloneElement(module, { key }))}
@@ -119,6 +122,7 @@ export const UI = ({
                     <div className="absolute top-4 left-4 flex gap-4 text-white">
                         <button onClick={_onOpenSettings}>⚙️</button>
                         {running ? <button onClick={_onPause}>⏸</button> : <button onClick={_onStart}>▶️</button>}
+                        <button onClick={_onStep}>⏩</button>
                         <button onClick={_onReset}>🔁</button>
                         <button onClick={_onStop}>⏹</button>
                     </div>

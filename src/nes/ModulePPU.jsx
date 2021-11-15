@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 
-import { HexViewer, EmulatorContext } from '../common';
+import { HexViewer, EmulatorContext, Module } from '../common';
 
 export const ModulePPU = () => {
     const canvas1 = useRef(null);
@@ -12,45 +12,45 @@ export const ModulePPU = () => {
         const context5 = canvas1.current.getContext('2d');
 
         requestAnimationFrame(() => {
-            if (debug?.patternTables) {
-                context5.putImageData(new ImageData(debug?.patternTables, 16 * 8, 32 * 8), 0, 0);
+            if (debug?.ppu.patternTables) {
+                context5.putImageData(new ImageData(debug?.ppu.patternTables, 16 * 8, 32 * 8), 0, 0);
             } else {
                 context5.fillStyle = 'black';
                 context5.fillRect(0, 0, 16 * 8, 32 * 8);
             }
         });
-    }, [debug?.patternTables]);
+    }, [debug?.ppu.patternTables]);
 
     useEffect(() => {
         const context6 = canvas2.current.getContext('2d');
 
         requestAnimationFrame(() => {
-            if (debug?.palettes) {
-                context6.putImageData(new ImageData(debug?.palettes, 16 * 8, 2 * 8), 0, 0);
+            if (debug?.ppu.palettes) {
+                context6.putImageData(new ImageData(debug?.ppu.palettes, 16 * 8, 2 * 8), 0, 0);
             } else {
                 context6.fillStyle = 'black';
                 context6.fillRect(0, 0, 16 * 8, 2 * 8);
             }
         });
-    }, [debug?.palettes]);
+    }, [debug?.ppu.palettes]);
 
     useEffect(() => {
         const context7 = canvas3.current.getContext('2d');
 
         requestAnimationFrame(() => {
-            if (debug?.palette) {
-                context7.putImageData(new ImageData(debug?.palette, 16 * 8, 4 * 8), 0, 0);
+            if (debug?.ppu.palette) {
+                context7.putImageData(new ImageData(debug?.ppu.palette, 16 * 8, 4 * 8), 0, 0);
             } else {
                 context7.fillStyle = 'black';
                 context7.fillRect(0, 0, 16 * 8, 4 * 8);
             }
         });
-    }, [debug?.palette]);
+    }, [debug?.ppu.palette]);
 
     return (
-        <aside className="p-4 rounded bg-black bg-opacity-25 text-center">
+        <Module className="text-center">
             <h2>OAM</h2>
-            <HexViewer buffer={debug?.oam || []} />
+            <HexViewer buffer={debug?.ppu.oam || []} />
             <h2>Pattern tables</h2>
             <canvas
                 className="inline rounded"
@@ -75,6 +75,6 @@ export const ModulePPU = () => {
                 width={16 * 8}
                 height={4 * 8}
             />
-        </aside>
+        </Module>
     );
 };

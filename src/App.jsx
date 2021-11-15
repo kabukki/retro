@@ -65,7 +65,7 @@ const Card = ({ to, picture, title, subtitle, url }) => (
     <div className="relative flex items-center p-2 gap-2 rounded shadow overflow-hidden group hover:bg-green-700 hover:text-white transition">
         {!url && (
             <div className="absolute inset-0 flex flex-col justify-center bg-gray-900 bg-opacity-50">
-                <p className="py-4 text-center text-white">Coming soon(ish)</p>
+                <p className="py-4 text-center text-white">Unavailable</p>
             </div>
         )}
         <img className="h-24 object-contain" src={picture} alt={title} />

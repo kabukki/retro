@@ -88,7 +88,7 @@ export const Settings = () => {
                             styles={selectStyles}
                             value={settings.modules}
                             onChange={settings.setModules}
-                            options={['meta', 'stats', 'input', 'ram', 'ppu']}
+                            options={['audio', 'performance', 'input', 'ram', 'ppu', 'cartridge']}
                             getOptionLabel={(module) => module}
                             getOptionValue={(module) => module}
                             isSearchable

@@ -11,61 +11,35 @@ export const useEmulator = (canvas) => {
     const [debug, setDebug] = useState(() => ({}));
     const [saves, setSaves] = useState(() => []);
 
-    const start = () => {
-        emulator?.start({
-            onError (err) {
-                console.error(err);
-                setError(err);
-            },
-            onDebug (info) {
-                setDebug((previous) => ({
-                    ...previous,
-                    ...info,
-                }));
-            },
-            onSave (save) {
-                db.save(emulator.rom.fingerprint, save);
-            },
-        });
+    const onDebug = ({ detail: info }) => {
+        setDebug((previous) => ({
+            ...previous,
+            ...info,
+        }));
     };
 
-    const pause = () => {
-        emulator?.stop();
+    const onError = ({ detail: { error } }) => {
+        console.error(error);
+        setError(error);
     };
 
-    const stop = () => {
-        pause();
-        setEmulator(null);
-    };
-
-    const reset = () => {
-        emulator?.reset();
-    };
-
-    const load = async (rom) => {
-        try {
-            const emulator = new Emulator(canvas.current, rom);
-            const save = await db.get(rom.fingerprint);
-
-            if (save) {
-                console.log(`Found save ${save.name}`);
-                emulator.loadSave(save);
-            }
-
-            setEmulator(emulator);
-        } catch (err) {
-            setError(err);
-        }
-    };
-
-    const input = (index, value) => {
-        emulator?.input(index, value);
+    const onSave = ({ detail: { save } }) => {
+        db.save(emulator.rom.fingerprint, save);
     };
 
     useEffect(() => {
         if (emulator) {
-            start();
-            return stop;
+            emulator.addEventListener('debug', onDebug);
+            emulator.addEventListener('error', onError);
+            emulator.addEventListener('save', onSave);
+            emulator.start();
+
+            return () => {
+                emulator.removeEventListener('debug', onDebug);
+                emulator.removeEventListener('error', onError);
+                emulator.removeEventListener('save', onSave);
+                emulator.stop();
+            };
         }
     }, [emulator]);
 
@@ -74,8 +48,28 @@ export const useEmulator = (canvas) => {
     }, []);
 
     return {
-        emulator, saves, debug, error,
-        start, pause, stop, reset, load, input,
+        emulator,
+        saves,
+        debug,
+        error,
+        stop () {
+            setEmulator(null);
+        },
+        async load (rom) {
+            try {
+                const emulator = new Emulator(canvas.current, rom);
+                const save = await db.get(rom.fingerprint);
+    
+                if (save) {
+                    console.log(`Found save ${save.name}`);
+                    emulator.loadSave(save);
+                }
+    
+                setEmulator(emulator);
+            } catch (err) {
+                setError(err);
+            }    
+        },
     };
 };
 
@@ -147,7 +141,7 @@ export const useInput = (nPlayers, { onInput = console.log }) => {
 };
 
 export const useSettings = () => {
-    const [modules, setModules] = useState(['meta', 'stats', 'input']);
+    const [modules, setModules] = useState(['performance', 'input']);
     const [crt, setCRT] = useState(false);
 
     return {

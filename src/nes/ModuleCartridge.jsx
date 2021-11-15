@@ -1,80 +1,34 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext } from 'react';
 
-import { HexViewer, EmulatorContext } from '../common';
+import { Module, EmulatorContext } from '../common';
+
+import content from '../assets/nes.content.png';
 
 export const ModuleCartridge = () => {
-    const canvas1 = useRef(null);
-    const canvas2 = useRef(null);
-    const canvas3 = useRef(null);
-    const { debug } = useContext(EmulatorContext);
-
-    useEffect(() => {
-        const context5 = canvas1.current.getContext('2d');
-
-        requestAnimationFrame(() => {
-            if (debug?.patternTables) {
-                context5.putImageData(new ImageData(debug?.patternTables, 16 * 8, 32 * 8), 0, 0);
-            } else {
-                context5.fillStyle = 'black';
-                context5.fillRect(0, 0, 16 * 8, 32 * 8);
-            }
-        });
-    }, [debug?.patternTables]);
-
-    useEffect(() => {
-        const context6 = canvas2.current.getContext('2d');
-
-        requestAnimationFrame(() => {
-            if (debug?.palettes) {
-                context6.putImageData(new ImageData(debug?.palettes, 16 * 8, 2 * 8), 0, 0);
-            } else {
-                context6.fillStyle = 'black';
-                context6.fillRect(0, 0, 16 * 8, 2 * 8);
-            }
-        });
-    }, [debug?.palettes]);
-
-    useEffect(() => {
-        const context7 = canvas3.current.getContext('2d');
-
-        requestAnimationFrame(() => {
-            if (debug?.palette) {
-                context7.putImageData(new ImageData(debug?.palette, 16 * 8, 4 * 8), 0, 0);
-            } else {
-                context7.fillStyle = 'black';
-                context7.fillRect(0, 0, 16 * 8, 4 * 8);
-            }
-        });
-    }, [debug?.palette]);
+    const { debug, rom } = useContext(EmulatorContext);
 
     return (
-        <aside className="p-4 rounded bg-black bg-opacity-25 text-center">
-            <h2>OAM</h2>
-            <HexViewer buffer={debug?.oam || []} />
-            <h2>Pattern tables</h2>
-            <canvas
-                className="inline rounded"
-                style={{ imageRendering: 'pixelated' }}
-                ref={canvas1}
-                width={16 * 8}
-                height={32 * 8}
-            />
-            <h2>Palettes</h2>
-            <canvas
-                className="inline rounded"
-                style={{ imageRendering: 'pixelated' }}
-                ref={canvas2}
-                width={16 * 8}
-                height={2 * 8}
-            />
-            <h2>System palette</h2>
-            <canvas
-                className="inline rounded"
-                style={{ imageRendering: 'pixelated' }}
-                ref={canvas3}
-                width={16 * 8}
-                height={4 * 8}
-            />
-        </aside>
+        <Module>
+            <div className="flex gap-2 items-center ">
+                <img className="h-4" src={content} />
+                <b className="flex-1">{rom.name}</b>
+            </div>
+            <div className="p-4 grid grid-cols-2 gap-x-2 items-center rounded bg-black bg-opacity-25">
+                <h2>PRG banks</h2>
+                {debug?.cartridge.prgBanks}
+                <h2>CHR banks</h2>
+                {debug?.cartridge.chrBanks}
+                <h2>CHR type</h2>
+                {debug?.cartridge.chrType}
+                <h2>Mapper</h2>
+                {debug?.cartridge.mapper}
+                <h2>Trainer ?</h2>
+                {debug?.cartridge.trainer ? 'Yes' : 'No'}
+                <h2>RAM size</h2>
+                {debug?.cartridge.ram}
+                <h2>Mirroring</h2>
+                {debug?.cartridge.mirroring}
+            </div>
+        </Module>
     );
 };
