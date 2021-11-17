@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { getRom } from '@kabukki/wasm-nes';
+import { Rom } from '@kabukki/emukit';
 
 export const ROMSelector = ({ picture, onSelect }) => {
     const ref = useRef(null);
@@ -7,7 +7,7 @@ export const ROMSelector = ({ picture, onSelect }) => {
 
     const onFile = (file) => {
         if (file) {
-            getRom(file).then(onSelect);
+            Rom.fromFile(file).then(onSelect);
         }
     };
 

@@ -1,88 +1,64 @@
 import { useEffect, useState } from 'react';
-import { Emulator } from '@kabukki/wasm-chip8';
+import { Chip8 } from '@kabukki/wasm-chip8';
 
-import { hex } from '../utils';
-import { EmulatorAudio } from './audio';
-
-const audio = new EmulatorAudio('sine');
 
 export const useEmulator = (settings, canvas) => {
     const [emulator, setEmulator] = useState(null);
     const [error, setError] = useState(null);
     const [debug, setDebug] = useState(() => ({}));
 
-    const start = () => {
-        emulator?.start({
-            cpuFrequency: settings.core.cpuFrequency,
-            timerFrequency: settings.core.timerFrequency,
-            colors: {
-                on: settings.ui.colorOn,
-                off: settings.ui.colorOff,
-            },
-            onError (err) {
-                console.error(err);
-                setError(err);
-            },
-            onCPU: (opcode) => {
-                setDebug((previous) => ({
-                    ...previous,
-                    lastInstruction: hex(opcode),
-                }));
-            },
-            onTimer: (shouldBeep) => {
-                if (settings.audio) {
-                    if (shouldBeep) {
-                        audio.play();
-                    } else {
-                        audio.pause();
-                    }
-                }
-            },
-            onDebug: (info) => {
-                setDebug((previous) => ({
-                    ...previous,
-                    ...info,
-                }));
-            },
-        });
+    const onDebug = ({ detail: info }) => {
+        setDebug((previous) => ({
+            ...previous,
+            ...info,
+        }));
     };
 
-    const pause = () => {
-        emulator?.stop();
-    };
-
-    const stop = () => {
-        pause();
-        setEmulator(null);
-    };
-
-    const load = async (rom) => {
-        try {
-            setEmulator(new Emulator(canvas.current, rom));
-        } catch (err) {
-            setError(err);
-        }
-    };
-
-    const input = (key, state) => {
-        emulator?.input(key, state);
+    const onError = ({ detail: error }) => {
+        console.error(error);
+        setError(error);
     };
 
     useEffect(() => {
         if (emulator) {
-            try {
-                start();
-                return stop;
-            } catch (err) {
-                console.error(err);
-                setError(err);
-            }
+            emulator.addEventListener('debug', onDebug);
+            emulator.addEventListener('error', onError);
+            emulator.start();
+
+            return () => {
+                emulator.removeEventListener('debug', onDebug);
+                emulator.removeEventListener('error', onError);
+                emulator.stop();
+            };
         }
     }, [emulator]);
     
     return {
-        emulator, debug, error,
-        start, pause, stop, load, input,
+        emulator,
+        debug,
+        error,
+        stop () {
+            setEmulator(null);
+        },
+        async load (rom) {
+            try {
+                const emulator = new Chip8({
+                    canvas: canvas.current,
+                    rom,
+                    colors: {
+                        on: settings.ui.colorOn,
+                        off: settings.ui.colorOff,
+                    },
+                });
+    
+                await emulator.init();
+
+                setEmulator(emulator);
+            } catch (err) {
+                console.error(err);
+                setError(err);
+            }
+        },
     };
 };
 
@@ -120,16 +96,11 @@ export const useInput = (keymap, { onInput = console.log }) => {
 };
 
 export const useSettings = () => {
-    const [modules, setModules] = useState(['meta', 'stats', 'input']);
-    const [core, setCore] = useState({
-        clockSpeed: 1000 / 200,
-        timerFrequency: 1000 / 60,
-    });
+    const [modules, setModules] = useState(['performance', 'input']);
     const [ui, setUI] = useState({
         colorOn: '#ffffff',
         colorOff: '#000000',
         crt: true,
-        audio: true,
     });
     const [input, setInput] = useState({
         map: {
@@ -142,11 +113,9 @@ export const useSettings = () => {
 
     return {
         modules,
-        core,
         ui,
         input,
         setModules,
-        setCore,
         setUI,
         setInput,
     };

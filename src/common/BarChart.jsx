@@ -1,9 +1,8 @@
 import React from 'react';
 
-export const BarChart = ({ title, max, chunks, className }) => {
+export const BarChart = ({ max, chunks, className }) => {
     return (
         <div className={className}>
-            <h2 className="font-bold">{title}</h2>
             <div className="flex rounded overflow-hidden">
                 {chunks.map(({ value, color, label }) => (
                     <div key={label} className={`p-2 bg-${color} truncate`} style={{ width: `${100 * value / max}%` }}>

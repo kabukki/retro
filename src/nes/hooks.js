@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from 'react';
-import { Emulator } from '@kabukki/wasm-nes';
+import { Nes } from '@kabukki/wasm-nes';
 
 import { Keyboard, Gamepad, Store } from '../common';
 
@@ -18,12 +18,12 @@ export const useEmulator = (canvas) => {
         }));
     };
 
-    const onError = ({ detail: { error } }) => {
+    const onError = ({ detail: error }) => {
         console.error(error);
         setError(error);
     };
 
-    const onSave = ({ detail: { save } }) => {
+    const onSave = ({ detail: save }) => {
         db.save(emulator.rom.fingerprint, save);
     };
 
@@ -57,9 +57,11 @@ export const useEmulator = (canvas) => {
         },
         async load (rom) {
             try {
-                const emulator = new Emulator(canvas.current, rom);
+                const emulator = new Nes({ canvas: canvas.current, rom });
                 const save = await db.get(rom.fingerprint);
     
+                await emulator.init();
+
                 if (save) {
                     console.log(`Found save ${save.name}`);
                     emulator.loadSave(save);
@@ -67,6 +69,7 @@ export const useEmulator = (canvas) => {
     
                 setEmulator(emulator);
             } catch (err) {
+                console.error(err);
                 setError(err);
             }    
         },

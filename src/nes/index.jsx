@@ -25,8 +25,8 @@ const modules = {
 export const Nes = (meta) => {
     const canvas = useRef(null);
 
-    const { emulator, saves, debug, error, load, stop } = useEmulator(canvas);
     const settings = useSettings();
+    const { emulator, saves, debug, error, load, stop } = useEmulator(canvas);
     const input = useInput(2, {
         onInput: (index, value) => {
             emulator?.input(index, value);
@@ -36,7 +36,7 @@ export const Nes = (meta) => {
     return (
         <EmulatorContext.Provider value={{
             meta,
-            rom: emulator?.rom,
+            emulator,
             input,
             debug,
             saves,

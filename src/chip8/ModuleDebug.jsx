@@ -1,14 +1,15 @@
 import React, { useContext } from 'react';
 
-import { EmulatorContext } from '../common';
+import { EmulatorContext, Module } from '../common';
+import { hex } from '../utils';
 
 export const ModuleDebug = () => {
     const { debug } = useContext(EmulatorContext);
 
     return (
-        <aside className="p-4 rounded bg-black bg-opacity-25 text-center">
+        <Module>
             <h2 className="font-bold">Last insruction</h2>
-            <pre>{debug.lastInstruction}</pre>
-        </aside>
+            <pre>{debug.lastInstruction ? hex(debug.lastInstruction.opcode) : '-'}</pre>
+        </Module>
     );
 };

@@ -59,10 +59,6 @@ export const Settings = () => {
                             <input type="checkbox" checked={settings.ui.crt} onChange={e => settings.setUI((previous) => ({ ...previous, crt: e.target.checked }))} />
                             CRT filter
                         </label>
-                        <label>
-                            <input type="checkbox" checked={settings.ui.audio} onChange={(e) => settings.setUI((previous) => ({ ...previous, audio: e.target.checked }))} />
-                            Sound <b>{settings.ui.audio ? 'ON' : 'OFF'}</b>
-                        </label>
                         <Select
                             styles={selectStyles}
                             value={settings.modules}

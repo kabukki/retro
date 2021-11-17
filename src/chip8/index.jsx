@@ -4,46 +4,50 @@ import { ROMSelector, EmulatorContext, UI } from '../common';
 import { useEmulator, useInput, useSettings } from './hooks';
 import { Display } from './Display';
 import { Settings } from './Settings';
-import { ModuleMeta } from './ModuleMeta';
-import { ModuleStats } from './ModuleStats';
-import { ModuleInput } from './ModuleInput';
+import { ModuleAudio } from './ModuleAudio';
+import { ModuleCartridge } from './ModuleCartridge';
 import { ModuleDebug } from './ModuleDebug';
+import { ModuleInput } from './ModuleInput';
+import { ModulePerformance } from './ModulePerformance';
 
 import content from '../assets/chip8.content.png';
 
 const modules = {
-    meta: <ModuleMeta />,
-    stats: <ModuleStats />,
-    input: <ModuleInput />,
+    audio: <ModuleAudio />,
+    cartridge: <ModuleCartridge />,
     debug: <ModuleDebug />,
+    input: <ModuleInput />,
+    performance: <ModulePerformance />,
 };
 
 export const Chip8 = (meta) => {
     const canvas = useRef(null);
 
     const settings = useSettings();
-    const emulator = useEmulator(settings, canvas);
-    const input = useInput(settings.input.map, { onInput: emulator.input });
+    const { emulator, debug, error, load, stop } = useEmulator(settings, canvas);
+    const input = useInput(settings.input.map, {
+        onInput (key, state) {
+            emulator?.input(key, state);
+        },
+    });
 
     return (
         <EmulatorContext.Provider value={{
             meta,
-            rom: emulator.emulator?.rom,
+            emulator,
             input,
-            debug: emulator.debug,
+            debug,
             settings,
         }}>
             <UI
                 title={meta.title}
                 settings={<Settings />}
                 display={<Display ref={canvas} width={64} height={32} crt={settings.ui.crt} />}
-                select={<ROMSelector picture={content} onSelect={emulator.load} />}
+                select={<ROMSelector picture={content} onSelect={load} />}
                 modules={Object.entries(modules).filter(([id]) => settings.modules.includes(id))}
-                init={!!emulator.emulator}
-                error={emulator.error}
-                onStart={emulator.start}
-                onPause={emulator.pause}
-                onStop={emulator.stop}
+                emulator={emulator}
+                onStop={stop}
+                error={error}
             />
         </EmulatorContext.Provider>
     );
