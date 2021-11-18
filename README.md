@@ -1,4 +1,6 @@
-# RETRO
+# 👾 RETRO
+
+Collection of WASM emulators playable on the web.
 
 ## Credis
 
