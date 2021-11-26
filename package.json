@@ -15,11 +15,11 @@
     "@kabukki/wasm-nes": "^0.0.1",
     "autoprefixer": "^10.4.0",
     "lodash.merge": "^4.6.2",
+    "metric-prefix": "^0.9.0",
     "pretty-ms": "^7.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
-    "react-reel": "^1.2.3",
     "react-router-dom": "^5.2.0",
     "react-select": "^4.3.1"
   },

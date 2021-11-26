@@ -1,7 +1,9 @@
-import React, { cloneElement, useEffect, useState } from 'react';
-import { Transition } from '@headlessui/react';
+import React, { useContext, useEffect, useState } from 'react';
+import { Transition, Tab } from '@headlessui/react';
 
-import { useKeyboard } from '.';
+import { EmulatorContext, ROMSelector, useKeyboard } from '.';
+
+import Bug from '../assets/bug.svg';
 
 const TransitionFade = ({ children, ...props }) => (
     <Transition
@@ -46,88 +48,86 @@ const Background = ({ text, className, children }) => (
     </>
 );
 
-export const UI = ({
-    title, settings, display, select, modules,
-    error, onStop, emulator,
-}) => {
-    const [running, setRunning] = useState(false);
-    const [settingsOpen, setSettingsOpen] = useState(false);
+export const UI = ({ modules, display, error, onSelect, onStop }) => {
+    const [pause, setPause] = useState(false);
+    const [settingsOpen, setSettingsOpen] = useState(true);
+    const { meta, emulator } = useContext(EmulatorContext);
 
-    const _onOpenSettings = () => setSettingsOpen(true);
-    const _onCloseSettings = () => setSettingsOpen(false);
     const _onStop = () => {
         onStop();
-        _onCloseSettings();
+        setPause(false);
     };
     const _onReset = () => {
         emulator?.reset();
-        _onCloseSettings();
-    };
-    const _onPause = () => {
-        emulator?.stop();
-        setRunning(false);
-    };
-    const _onStart = () => {
-        emulator?.start();
-        setRunning(true);
-    };
-    const _onStep = () => {
-        emulator?.step();
+        setPause(false);
     };
 
     useKeyboard({
-        Escape: () => setSettingsOpen((previous) => !previous),
+        Escape: () => setPause((previous) => !previous),
     });
 
     useEffect(() => {
-        if (settingsOpen) {
-            _onPause();
+        if (pause) {
+            emulator?.stop();
         } else {
-            _onStart();
+            emulator?.start();
         }
-    }, [settingsOpen]);
+    }, [pause]);
 
     return (
-        <main className="relative flex-1 flex flex-col">
-            {display}
-            <TransitionFade
-                show={settingsOpen}
-                // unmount={false}
-                className="absolute z-10 inset-0 p-4 mx-auto text-white backdrop-filter backdrop-blur-lg backdrop-brightness-50 overflow-auto"
-            >
-                <div className="flex flex-col gap-4 container mx-auto h-full">
-                    {settings}
-                    <div className="flex justify-center gap-4">
-                        <button className="p-1 text-red-500" onClick={_onStop}>Stop</button>
-                        <button className="p-1 text-yellow-500" onClick={_onReset}>Reset</button>
-                        <button onClick={_onCloseSettings}>Resume</button>
+        <main className="relative flex-1 flex flex-col min-h-0">
+            <div className="h-full flex">
+                {settingsOpen && (
+                    <div className="h-full resize-x overflow-x-auto">
+                        <UI.Settings panels={modules} />
                     </div>
+                )}
+                <div className="relative flex-1">
+                    {display}
+                    {emulator && (
+                        <button className="absolute top-4 left-4 text-white" onClick={() => setSettingsOpen((previous) => !previous)}>⚙️</button>
+                    )}
+                    <TransitionFade show={pause} className="absolute z-10 inset-0 text-white backdrop-filter backdrop-blur-lg backdrop-brightness-50 overflow-auto">
+                        <div className="h-full flex flex-col justify-center gap-4">
+                            <h1 className="text-shadow text-center text-8xl tracking-widest font-mono font-bold animate-color">
+                                PAUSE
+                            </h1>
+                            <ul className="flex gap-4 items-center justify-center">
+                                <li><button onClick={() => setPause(false)}>Resume</button></li>
+                                <li><button className="p-1 text-yellow-500" onClick={_onReset}>Reset</button></li>
+                                <li><button className="p-1 text-red-500" onClick={_onStop}>Stop</button></li>
+                            </ul>
+                        </div>
+                    </TransitionFade>
                 </div>
-            </TransitionFade>
+            </div>
             <TransitionSlide show={!emulator} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-green-700">
-                <Background className="text-green-900" text={title}>
-                    {select}
+                <Background className="text-green-900" text={meta.name}>
+                    <ROMSelector picture={meta.content} onSelect={onSelect} />
                 </Background>
             </TransitionSlide>
             <TransitionSlide show={!!error} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-red-700">
-                <Background className="text-red-900" text={title}>
+                <Background className="text-red-900" text={meta.name}>
                     <h1 className="font-bold">{error?.message}</h1>
                 </Background>
             </TransitionSlide>
-            {emulator && (
-                <>
-                    <div className="absolute top-0 right-0 h-full p-4 flex flex-col items-stretch gap-4 text-white overflow-auto">
-                        {modules.map(([key, module]) => cloneElement(module, { key }))}
-                    </div>
-                    <div className="absolute top-4 left-4 flex gap-4 text-white">
-                        <button onClick={_onOpenSettings}>⚙️</button>
-                        {running ? <button onClick={_onPause}>⏸</button> : <button onClick={_onStart}>▶️</button>}
-                        <button onClick={_onStep}>⏩</button>
-                        <button onClick={_onReset}>🔁</button>
-                        <button onClick={_onStop}>⏹</button>
-                    </div>
-                </>
-            )}
         </main>
     );
 };
+
+UI.Settings = ({ panels }) => (
+    <Tab.Group className="h-full flex flex-col overflow-hidden" as="aside">
+        <Tab.List className="flex flex-col flex-wrap sm:flex-row gap-x-4 bg-white relative shadow" as="ul">
+            {Object.keys(panels).map((name) => (
+                <Tab key={name} className={({ selected }) => `p-4 flex-1 text-center font-bold cursor-pointer ${selected ? 'text-green-700 border-b border-green-700' : ''}`} as="li">{name}</Tab>
+            ))}
+        </Tab.List>
+        <Tab.Panels className="flex-1 p-4 bg-gray-100 min-h-0 overflow-auto">
+            {Object.values(panels).map((Component) => (
+                <Tab.Panel key={Component.name}>
+                    <Component />
+                </Tab.Panel>
+            ))}
+        </Tab.Panels>
+    </Tab.Group>
+);

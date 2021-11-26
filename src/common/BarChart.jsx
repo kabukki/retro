@@ -6,7 +6,7 @@ export const BarChart = ({ max, chunks, className }) => {
             <div className="flex rounded overflow-hidden">
                 {chunks.map(({ value, color, label }) => (
                     <div key={label} className={`p-2 bg-${color} truncate`} style={{ width: `${100 * value / max}%` }}>
-                        {value}
+                        {/* {value} */}
                     </div>
                 ))}
             </div>
