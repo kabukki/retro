@@ -51,7 +51,7 @@ const Background = ({ text, className, children }) => (
 export const UI = ({ modules, display, error, onSelect, onStop }) => {
     const [pause, setPause] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(true);
-    const { meta, emulator } = useContext(EmulatorContext);
+    const { meta, emulator, debug } = useContext(EmulatorContext);
 
     const _onStop = () => {
         onStop();
@@ -79,13 +79,14 @@ export const UI = ({ modules, display, error, onSelect, onStop }) => {
             <div className="h-full flex">
                 {settingsOpen && (
                     <div className="h-full resize-x overflow-x-auto">
-                        <UI.Settings panels={modules} />
+                        <UI.Debug panels={modules} />
                     </div>
                 )}
                 <div className="relative flex-1">
                     {display}
+                    {debug ? <span className="absolute top-4 right-4 text-white font-mono">{debug?.performance?.fps?.toString() || '-'}</span> : null}
                     {emulator && (
-                        <button className="absolute top-4 left-4 text-white" onClick={() => setSettingsOpen((previous) => !previous)}>⚙️</button>
+                        <Bug className="absolute top-4 left-4 w-4 h-4 text-white cursor-pointer" onClick={() => setSettingsOpen((previous) => !previous)} />
                     )}
                     <TransitionFade show={pause} className="absolute z-10 inset-0 text-white backdrop-filter backdrop-blur-lg backdrop-brightness-50 overflow-auto">
                         <div className="h-full flex flex-col justify-center gap-4">
@@ -115,14 +116,16 @@ export const UI = ({ modules, display, error, onSelect, onStop }) => {
     );
 };
 
-UI.Settings = ({ panels }) => (
-    <Tab.Group className="h-full flex flex-col overflow-hidden" as="aside">
-        <Tab.List className="flex flex-col flex-wrap sm:flex-row gap-x-4 bg-white relative shadow" as="ul">
-            {Object.keys(panels).map((name) => (
-                <Tab key={name} className={({ selected }) => `p-4 flex-1 text-center font-bold cursor-pointer ${selected ? 'text-green-700 border-b border-green-700' : ''}`} as="li">{name}</Tab>
+UI.Debug = ({ panels }) => (
+    <Tab.Group className="h-full flex flex-wrap overflow-hidden" as="aside">
+        <Tab.List className="flex-0 sm:flex-row bg-white relative shadow" as="ul">
+            {Object.values(panels).map((Component) => (
+                <Tab key={Component.name} className={({ selected }) => `p-4 flex gap-x-4 items-center cursor-pointer ${selected ? 'font-bold text-green-700' : ''}`} as="li">
+                    {Component.Icon && <Component.Icon className="w-4 h-4 text-current" />} {Component.name}
+                </Tab>
             ))}
         </Tab.List>
-        <Tab.Panels className="flex-1 p-4 bg-gray-100 min-h-0 overflow-auto">
+        <Tab.Panels className="h-full flex-1 p-4 bg-gray-100 overflow-auto">
             {Object.values(panels).map((Component) => (
                 <Tab.Panel key={Component.name}>
                     <Component />

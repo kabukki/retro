@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useRef } from 'react';
 
 import { HexViewer, EmulatorContext } from '../../../../common';
 
-export const PPU = () => {
+import Icon from '../../../../assets/paint.svg';
+
+export const Graphics = () => {
     const canvas1 = useRef(null);
     const canvas2 = useRef(null);
     const canvas3 = useRef(null);
-    const { debug } = useContext(EmulatorContext);
+    const { debug, settings } = useContext(EmulatorContext);
 
     useEffect(() => {
         const context5 = canvas1.current.getContext('2d');
@@ -57,7 +59,7 @@ export const PPU = () => {
                 <div className="row-span-2">
                     <b>Pattern tables</b>
                     <canvas
-                        className="rounded"
+                        className="w-full rounded"
                         style={{ imageRendering: 'pixelated' }}
                         ref={canvas1}
                         width={16 * 8}
@@ -67,7 +69,7 @@ export const PPU = () => {
                 <div>
                     <b>Palettes</b>
                     <canvas
-                        className="rounded"
+                        className="w-full rounded"
                         style={{ imageRendering: 'pixelated' }}
                         ref={canvas2}
                         width={16 * 8}
@@ -77,7 +79,7 @@ export const PPU = () => {
                 <div>
                     <b>System palette</b>
                     <canvas
-                        className="rounded"
+                        className="w-full rounded"
                         style={{ imageRendering: 'pixelated' }}
                         ref={canvas3}
                         width={16 * 8}
@@ -85,6 +87,14 @@ export const PPU = () => {
                     />
                 </div>
             </div>
+            <div>
+                <label>
+                    CRT filter
+                    <input type="checkbox" checked={settings.crt} onChange={e => settings.setCRT(e.target.checked)} />
+                </label>
+            </div>
         </div>
     );
 };
+
+Graphics.Icon = Icon;

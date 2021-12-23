@@ -76,3 +76,5 @@ export const Input = () => {
         </div>
     ));
 };
+
+Input.Icon = Gamepad;

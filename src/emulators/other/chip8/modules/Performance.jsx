@@ -4,7 +4,7 @@ import pretty from 'pretty-ms';
 import { EmulatorContext } from '../../../../common';
 import { hex } from '../../../../utils';
 
-export const General = () => {
+export const Performance = () => {
     const { debug } = useContext(EmulatorContext);
 
     return (

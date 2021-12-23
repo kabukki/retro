@@ -4,7 +4,9 @@ import { prefix } from 'metric-prefix';
 
 import { EmulatorContext } from '../../../../common';
 
-export const General = () => {
+import Icon from '../../../../assets/performance.svg';
+
+export const Performance = () => {
     const { debug } = useContext(EmulatorContext);
 
     return (
@@ -46,3 +48,5 @@ export const General = () => {
         </div>
     );
 };
+
+Performance.Icon = Icon;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { HashRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
@@ -15,7 +15,9 @@ const withTitle = (emulator) => (props) => {
             <Helmet>
                 <title>{name}</title>
             </Helmet>
-            <Component {...emulator} {...props} />
+            <Suspense fallback={<p>Loading</p>}>
+                <Component {...emulator} {...props} />
+            </Suspense>
         </>
     );
 };

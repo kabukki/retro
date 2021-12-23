@@ -4,10 +4,10 @@ export const Display = forwardRef(({ width, height, crt }, ref) => (
     <div className="h-full relative bg-black flex-1">
         <canvas
             className="absolute inset-0 h-full w-full object-contain"
+            style={{ imageRendering: 'pixelated' }}
             ref={ref}
             width={width}
             height={height}
-            style={{ imageRendering: 'pixelated' }}
         />
         {crt && <div className="absolute inset-0 crt" />}
     </div>

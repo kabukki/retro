@@ -17,8 +17,8 @@ export const HexViewer = ({ buffer, className = '' }) => {
     return (
         <div className={`grid overflow-auto ${className}`} style={{ gridTemplate: '"select head" 0fr "left data" auto / 0fr auto' }}>
             <select style={{ gridArea: 'select' }} className="sticky top-0 outline-none border-r bg-transparent backdrop-filter backdrop-blur shadow" value={mode} onChange={(e) => setMode(e.target.value)}>
-                <option value="hex">Hexadecimal</option>
-                <option value="dec">Decimal</option>
+                <option value="hex">Hex.</option>
+                <option value="dec">Dec.</option>
                 <option value="chr">ASCII</option>
             </select>
             <div style={{ gridArea: 'head' }} className="sticky top-0 grid grid-cols-16 bg-transparent backdrop-filter backdrop-blur shadow">

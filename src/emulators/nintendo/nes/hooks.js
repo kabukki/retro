@@ -30,14 +30,12 @@ export const useEmulator = (canvas) => {
     useEffect(() => {
         if (emulator) {
             emulator.addEventListener('debug', onDebug);
-            emulator.addEventListener('frame', onDebug);
             emulator.addEventListener('error', onError);
             emulator.addEventListener('save', onSave);
             emulator.start();
 
             return () => {
                 emulator.removeEventListener('debug', onDebug);
-                emulator.removeEventListener('frame', onDebug);
                 emulator.removeEventListener('error', onError);
                 emulator.removeEventListener('save', onSave);
                 emulator.stop();
@@ -146,13 +144,10 @@ export const useInput = (nPlayers, { onInput = console.log }) => {
 };
 
 export const useSettings = () => {
-    const [modules, setModules] = useState(['performance', 'input']);
     const [crt, setCRT] = useState(false);
 
     return {
-        modules,
         crt,
-        setModules,
         setCRT,
     };
 };

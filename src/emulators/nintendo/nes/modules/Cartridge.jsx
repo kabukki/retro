@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 
 import { HexViewer, EmulatorContext } from '../../../../common';
 
+import Icon from '../../../../assets/cartridge.svg';
+
 export const Cartridge = () => {
     const { meta, debug, emulator } = useContext(EmulatorContext);
 
@@ -37,3 +39,5 @@ export const Cartridge = () => {
         </div>
     );
 };
+
+Cartridge.Icon = Icon;
