@@ -22,6 +22,6 @@ jobs:
       - name: Build
         run: npm run build
       - name: Deploy
-        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET }}
+        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET }} --delete
       - name: Invalidate cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION }} --paths "/*"
