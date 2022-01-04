@@ -10,7 +10,18 @@ jobs:
           node-version: 16
           scope: '@kabukki'
           registry-url: 'https://npm.pkg.github.com'
-      - run: npm ci
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.AWS_S3_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_ACCESS_KEY_SECRET }}
+      - name: Install
+        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npm run build
+      - name: Build
+        run: npm run build
+      - name: Deploy
+        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET }}
+      - name: Invalidate cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION }} --paths "/*"
