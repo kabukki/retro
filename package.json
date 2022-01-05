@@ -11,7 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^1.4.1",
     "@kabukki/emukit": "^1.0.0",
-    "@kabukki/wasm-chip8": "^1.3.0",
+    "@kabukki/wasm-chip8": "^1.4.0",
     "@kabukki/wasm-nes": "^0.0.2",
     "autoprefixer": "^10.4.0",
     "lodash.merge": "^4.6.2",

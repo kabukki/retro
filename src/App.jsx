@@ -3,9 +3,20 @@ import { HashRouter as Router, Switch, Route, Link, NavLink } from 'react-router
 import { Helmet } from 'react-helmet';
 
 import emulators from './emulators';
+import { formatOrdinal } from './utils';
 
 import Github from './assets/github.svg';
 import Wikipedia from './assets/wikipedia.svg';
+
+const sortedEmulators = Object.values(emulators.reduce((acc, emulator) => {
+    acc[emulator.generation] = acc[emulator.generation] || {
+        generation: emulator.generation,
+        name: Number.isInteger(emulator.generation) ? `${formatOrdinal(emulator.generation)} generation` : 'Other',
+    };
+    acc[emulator.generation].emulators = (acc[emulator.generation].emulators || []).concat(emulator);
+
+    return acc;
+}, {})).sort((a, b) => b.generation - a.generation);
 
 const withTitle = (emulator) => (props) => {
     const { name, component: Component } = emulator;
@@ -22,12 +33,9 @@ const withTitle = (emulator) => (props) => {
     );
 };
 
-const Card = ({ name, developer, year, generation, path, picture, github, wikipedia }) => (
+const Card = ({ name, developer, year, path, picture, github, wikipedia }) => (
     <div className={`relative overflow-hidden rounded shadow divide-y bg-${github ? 'white' : 'gray-100 opacity-25'} transition hover:shadow-md`}>
         <h1 className="flex">
-            <div className={`p-2 w-10 h-10 flex items-center justify-center bg-green-${200 + generation * 100} text-white`}>
-                {generation || '-'}
-            </div>
             <div className="p-2 flex-1 flex gap-2">
                 {github ? (
                     <Link to={path} className="flex-1 text-green-700 font-bold font-mono">
@@ -84,13 +92,17 @@ export const App = () => {
                         <Route key={emulator.name} path={emulator.path} component={withTitle(emulator)} />
                     ))}
                     <Route path="/">
-                        <main className="m-4 flex flex-col gap-4">
-                            <h1 className="text-xl text-center">Welcome to RETRO !</h1>
-                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                                {emulators.slice().sort((a, b) => (a.year - b.year) || a.name.localeCompare(b.name)).map((emulator) => (
-                                    <Card key={emulator.name} {...emulator} />
-                                ))}
-                            </div>
+                        <main className="mx-auto">
+                            {sortedEmulators.map(({ name, generation, emulators }) => (
+                                <>
+                                    <h2 className={`my-4 text-xl text-center text-green-${200 + generation * 100} font-bold`}>{name}</h2>
+                                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                                        {emulators.slice().sort((a, b) => (a.year - b.year) || a.name.localeCompare(b.name)).map((emulator) => (
+                                            <Card key={emulator.name} {...emulator} />
+                                        ))}
+                                    </div>
+                                </>
+                            ))}
                         </main>
                     </Route>
                 </Switch>
