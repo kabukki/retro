@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, Fragment } from 'react'
 import { HashRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
@@ -7,16 +7,10 @@ import { formatOrdinal } from './utils';
 
 import Github from './assets/github.svg';
 import Wikipedia from './assets/wikipedia.svg';
-
-const sortedEmulators = Object.values(emulators.reduce((acc, emulator) => {
-    acc[emulator.generation] = acc[emulator.generation] || {
-        generation: emulator.generation,
-        name: Number.isInteger(emulator.generation) ? `${formatOrdinal(emulator.generation)} generation` : 'Other',
-    };
-    acc[emulator.generation].emulators = (acc[emulator.generation].emulators || []).concat(emulator);
-
-    return acc;
-}, {})).sort((a, b) => b.generation - a.generation);
+import Company from './assets/company.svg';
+import Calendar from './assets/calendar.svg';
+import Gamepad from './assets/gamepad.svg';
+import Play from './assets/play.svg';
 
 const withTitle = (emulator) => (props) => {
     const { name, component: Component } = emulator;
@@ -33,19 +27,13 @@ const withTitle = (emulator) => (props) => {
     );
 };
 
-const Card = ({ name, developer, year, path, picture, github, wikipedia }) => (
-    <div className={`relative overflow-hidden rounded shadow divide-y bg-${github ? 'white' : 'gray-100 opacity-25'} transition hover:shadow-md`}>
+const Card = ({ name, developer, year, generation, path, picture, github, wikipedia }) => (
+    <div className={`relative overflow-hidden rounded shadow divide-y bg-white transition hover:shadow-md`}>
         <h1 className="flex">
             <div className="p-2 flex-1 flex gap-2">
-                {github ? (
-                    <Link to={path} className="flex-1 text-green-700 font-bold font-mono">
-                        {name}
-                    </Link>
-                ) : (
-                    <span className="flex-1 line-through">
-                        {name}
-                    </span>
-                )}
+                <Link to={path} className="flex-1 text-green-700 font-bold font-mono">
+                    {name}
+                </Link>
                 {github && (
                     <a href={github} target={`${name}:github`} className="transition hover:text-green-700">
                         <Github className="fill-current"/>
@@ -60,11 +48,29 @@ const Card = ({ name, developer, year, path, picture, github, wikipedia }) => (
         </h1>
         <div className="p-2 flex items-center gap-2">
             <img className="h-24 object-contain" src={picture} alt={name} />
-            <div className="flex-1">
-                <h2 className="font-bold">{developer}</h2>
-                {year}
+            <div className="flex-1 text-gray-500">
+                <div className="flex gap-2 items-center">
+                    <Company className="w-4 h-4" />
+                    <p className="font-bold">{developer}</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                <Calendar className="w-4 h-4" />
+                    <p>{year}</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                    <Gamepad className="w-4 h-4" />
+                    <p>{Number.isInteger(generation) ? `${formatOrdinal(generation)} generation` : 'Unclassified'}</p>
+                </div>
             </div>
         </div>
+        {github ? (
+            <Link to={path} className="p-2 flex items-center justify-center gap-2 transition bg-green-700 hover:bg-green-500 text-white hover:animate-color">
+                <Play className="w-4 h-4" />
+                PLAY
+            </Link>
+        ): (
+            <button className="p-2 w-full bg-gray-200 text-white cursor-not-allowed">Unavailable</button>
+        )}
     </div>
 );
 
@@ -92,17 +98,12 @@ export const App = () => {
                         <Route key={emulator.name} path={emulator.path} component={withTitle(emulator)} />
                     ))}
                     <Route path="/">
-                        <main className="mx-auto">
-                            {sortedEmulators.map(({ name, generation, emulators }) => (
-                                <>
-                                    <h2 className={`my-4 text-xl text-center text-green-${200 + generation * 100} font-bold`}>{name}</h2>
-                                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                                        {emulators.slice().sort((a, b) => (a.year - b.year) || a.name.localeCompare(b.name)).map((emulator) => (
-                                            <Card key={emulator.name} {...emulator} />
-                                        ))}
-                                    </div>
-                                </>
-                            ))}
+                        <main className="mx-auto container">
+                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                                {emulators.slice().sort((a, b) => (b.year - a.year) || a.name.localeCompare(b.name)).map((emulator) => (
+                                    <Card key={emulator.name} {...emulator} />
+                                ))}
+                            </div>
                         </main>
                     </Route>
                 </Switch>

@@ -26,7 +26,7 @@ export const Audio = () => {
             <b>Frequency</b>
             <input type="range" min={20} max={20000} step={1} defaultValue={440} onChange={onFrequency} />
             <b>Type</b>
-            <select className="bg-transparent outline-none" defaultValue={emulator.audio.baseType} onChange={onType}>
+            <select className="bg-transparent outline-none" defaultValue={emulator?.audio?.baseType} onChange={onType}>
                 <option value="sawtooth">Sawtooth</option>
                 <option value="sine">Sine</option>
                 <option value="square">Square</option>

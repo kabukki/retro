@@ -12,6 +12,12 @@
     .text-shadow {
         text-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     }
+
+    @variants hover {
+        .animate-color {
+            animation: color 8s linear infinite;
+        }
+    }
 }
 
 .crt {
@@ -21,10 +27,6 @@
     backdrop-filter: brightness(1.2);
     box-shadow: 0 0 64px #000 inset;
     animation: scroll 0.5s linear infinite;
-}
-
-.animate-color {
-    animation: color 8s linear infinite;
 }
 
 @keyframes color {
