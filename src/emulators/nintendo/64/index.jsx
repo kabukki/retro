@@ -1,3 +1,5 @@
+import React from 'react';
+
 import picture from './assets/picture.png';
 import content from './assets/content.png';
 
