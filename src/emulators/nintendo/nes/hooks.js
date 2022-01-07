@@ -64,7 +64,7 @@ export const useEmulator = (canvas) => {
 
                 if (save) {
                     console.log(`Found save ${save.name}`);
-                    emulator.loadSave(save);
+                    emulator.load(save);
                 }
     
                 setEmulator(emulator);
