@@ -13,10 +13,8 @@
         text-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     }
 
-    @variants hover {
-        .animate-color {
-            animation: color 8s linear infinite;
-        }
+    .animate-color {
+        animation: color 8s linear infinite;
     }
 }
 
