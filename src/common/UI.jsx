@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Transition, Tab } from '@headlessui/react';
 
-import { EmulatorContext, ROMSelector, useKeyboard } from '.';
+import { Background, EmulatorContext, ROMSelector, useKeyboard } from '.';
 
 import Bug from '../assets/bug.svg';
 
@@ -33,24 +33,9 @@ const TransitionSlide = ({ children, ...props }) => (
     </Transition>
 );
 
-const Background = ({ text, className, children }) => (
-    <>
-        <div className={`absolute inset-0 pointer-events-none select-none grid grid-cols-5 grid-rows-5 place-items-center gap-4 whitespace-nowrap ${className || ''}`}>
-            {Array.from({ length: 25 }, (v, n) => (
-                <div key={n}>
-                    {n % 2 === 0 ? text : '·'}
-                </div>
-            ))}
-        </div>
-        <div className="z-10">
-            {children}
-        </div>
-    </>
-);
-
 export const UI = ({ modules, display, error, onSelect, onStop }) => {
     const [pause, setPause] = useState(false);
-    const [settingsOpen, setSettingsOpen] = useState(true);
+    const [settingsOpen, setSettingsOpen] = useState(false);
     const { meta, emulator, debug } = useContext(EmulatorContext);
 
     const _onStop = () => {
@@ -107,9 +92,9 @@ export const UI = ({ modules, display, error, onSelect, onStop }) => {
                     <ROMSelector picture={meta.content} onSelect={onSelect} />
                 </Background>
             </TransitionSlide>
-            <TransitionSlide show={!!error} className="absolute z-20 inset-0 grid place-content-center text-center text-white bg-red-700">
+            <TransitionSlide show={!!error} className="absolute z-20 inset-0 grid place-content-center text-white bg-red-700">
                 <Background className="text-red-900" text={meta.name}>
-                    <h1 className="font-bold">{error?.message}</h1>
+                    <div className="font-mono whitespace-pre-wrap">{error?.stack}</div>
                 </Background>
             </TransitionSlide>
         </main>

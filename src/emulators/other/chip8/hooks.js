@@ -16,7 +16,7 @@ export const useEmulator = (settings, canvas) => {
 
     const onError = ({ detail: error }) => {
         console.error(error);
-        setError(error);
+        setError(error.error);
     };
 
     useEffect(() => {

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import picture from './assets/picture.png';
 
 export default {
@@ -10,5 +8,4 @@ export default {
     wikipedia: 'https://en.wikipedia.org/wiki/GameCube',
     path: '/nintendo/gamecube',
     picture,
-    component: () => <p>Coming soon(ish)</p>,
 };

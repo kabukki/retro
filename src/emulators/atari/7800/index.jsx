@@ -1,5 +1,3 @@
-import React from 'react';
-
 import picture from './assets/picture.png';
 
 export default {
@@ -10,5 +8,4 @@ export default {
     wikipedia: 'https://fr.wikipedia.org/wiki/Atari_7800',
     path: '/atari/7800',
     picture,
-    component: () => <p>Coming soon(ish)</p>,
 };

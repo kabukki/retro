@@ -1,5 +1,3 @@
-import React from 'react';
-
 import picture from './assets/picture.png';
 
 export default {
@@ -10,5 +8,4 @@ export default {
     wikipedia: 'https://en.wikipedia.org/wiki/Sega_Genesis',
     path: '/sega/megadrive',
     picture,
-    component: () => <p>Coming soon(ish)</p>,
 };

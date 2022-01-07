@@ -1,9 +1,10 @@
-import React, { Suspense, Fragment } from 'react'
-import { HashRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom';
+import React, { Suspense } from 'react'
+import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import emulators from './emulators';
 import { formatOrdinal } from './utils';
+import { Unavailable } from './common';
 
 import Github from './assets/github.svg';
 import Wikipedia from './assets/wikipedia.svg';
@@ -13,7 +14,7 @@ import Gamepad from './assets/gamepad.svg';
 import Play from './assets/play.svg';
 
 const withTitle = (emulator) => (props) => {
-    const { name, component: Component } = emulator;
+    const { name, component: Component = Unavailable } = emulator;
     
     return (
         <>
@@ -76,9 +77,9 @@ const Card = ({ name, developer, year, generation, path, picture, github, wikipe
 
 export const App = () => {
     return (
-        <div className="h-screen flex flex-col">
+        <div className="h-screen flex flex-col bg-gray-50">
             <Router>
-                <header className="z-30 p-4 bg-green-700 shadow text-white">
+                <header className="z-30 p-4 bg-green-700 shadow-md text-white">
                     <h1 className="text-xl font-bold text-center text-shadow animate-color">
                         <Link to="/">RETRO</Link>
                     </h1>

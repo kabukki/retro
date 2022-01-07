@@ -1,5 +1,3 @@
-import React from 'react';
-
 import picture from './assets/picture.png';
 
 export default {
@@ -8,7 +6,6 @@ export default {
     year: 1990,
     generation: 4,
     wikipedia: 'https://fr.wikipedia.org/wiki/Neo-Geo_AES',
-    path: '/snk/neogeo',
+    path: '/other/neogeo',
     picture,
-    component: () => <p>Coming soon(ish)</p>,
 };
