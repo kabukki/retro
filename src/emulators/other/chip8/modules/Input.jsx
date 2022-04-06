@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useStatus } from '@kabukki/wasm-chip8';
 
 import { EmulatorContext } from '../../../../common';
 import { hex } from '../../../../utils';
@@ -88,18 +89,18 @@ const Keypad = ({ input }) => (
 );
 
 export const Input = () => {
-    const { settings, input } = useContext(EmulatorContext);
+    const { keypad } = useStatus();
 
     return (
         <div className="text-center">
-            <Keypad input={input} />
-            <ul>
+            <Keypad input={keypad.state} />
+            {/* <ul>
                 {Object.entries(settings.input.map).map(([key, value]) => (
                     <li key={key}>
                         <b>{key}</b>: {hex(value, 0)}
                     </li>
                 ))}
-            </ul>
+            </ul> */}
         </div>
     );
 };

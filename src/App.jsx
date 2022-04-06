@@ -1,17 +1,13 @@
 import React, { Suspense } from 'react'
 import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWikipediaW, faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faBuilding, faCalendarDay, faGamepad, faPlay } from '@fortawesome/free-solid-svg-icons';
 
 import emulators from './emulators';
 import { formatOrdinal } from './utils';
 import { Unavailable } from './common';
-
-import Github from './assets/github.svg';
-import Wikipedia from './assets/wikipedia.svg';
-import Company from './assets/company.svg';
-import Calendar from './assets/calendar.svg';
-import Gamepad from './assets/gamepad.svg';
-import Play from './assets/play.svg';
 
 const withTitle = (emulator) => (props) => {
     const { name, component: Component = Unavailable } = emulator;
@@ -22,7 +18,7 @@ const withTitle = (emulator) => (props) => {
                 <title>{name}</title>
             </Helmet>
             <Suspense fallback={<p>Loading</p>}>
-                <Component {...emulator} {...props} />
+                <Component {...props} />
             </Suspense>
         </>
     );
@@ -37,12 +33,12 @@ const Card = ({ name, developer, year, generation, path, picture, github, wikipe
                 </Link>
                 {github && (
                     <a href={github} target={`${name}:github`} className="transition hover:text-green-700">
-                        <Github className="fill-current"/>
+                        <FontAwesomeIcon icon={faGithub} className="fill-current"/>
                     </a>
                 )}
                 {wikipedia && (
                     <a href={wikipedia} target={`${name}:wikipedia`} className="transition hover:text-green-700">
-                        <Wikipedia className="fill-current"/>
+                        <FontAwesomeIcon icon={faWikipediaW} className="fill-current"/>
                     </a>
                 )}
             </div>
@@ -51,22 +47,22 @@ const Card = ({ name, developer, year, generation, path, picture, github, wikipe
             <img className="h-24 object-contain" src={picture} alt={name} />
             <div className="flex-1 text-gray-500">
                 <div className="flex gap-2 items-center">
-                    <Company className="w-4 h-4" />
+                    <FontAwesomeIcon icon={faBuilding} className="w-4 h-4" />
                     <p className="font-bold">{developer}</p>
                 </div>
                 <div className="flex gap-2 items-center">
-                <Calendar className="w-4 h-4" />
+                    <FontAwesomeIcon icon={faCalendarDay} className="w-4 h-4" />
                     <p>{year}</p>
                 </div>
                 <div className="flex gap-2 items-center">
-                    <Gamepad className="w-4 h-4" />
+                    <FontAwesomeIcon icon={faGamepad} className="w-4 h-4" />
                     <p>{Number.isInteger(generation) ? `${formatOrdinal(generation)} generation` : 'Unclassified'}</p>
                 </div>
             </div>
         </div>
         {github ? (
             <Link to={path} className="p-2 flex items-center justify-center gap-2 transition bg-green-700 hover:bg-green-500 text-white">
-                <Play className="w-4 h-4" />
+                <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
                 PLAY
             </Link>
         ): (
@@ -77,12 +73,13 @@ const Card = ({ name, developer, year, generation, path, picture, github, wikipe
 
 export const App = () => {
     return (
-        <div className="h-screen flex flex-col bg-gray-50">
+        <div className="h-screen flex flex-col bg-gray-100">
             <Router>
                 <header className="z-30 p-4 bg-green-700 shadow-md text-white">
                     <h1 className="text-xl font-bold text-center text-shadow animate-color">
                         <Link to="/">RETRO</Link>
                     </h1>
+                    {/* <input type="checkbox" /> Advanced */}
                 </header>
                 <Switch>
                     {emulators.map((emulator) => (

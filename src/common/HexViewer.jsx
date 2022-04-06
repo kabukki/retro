@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 
+import { Byte } from '.';
+
 // IDEA: transform byte div into input to make the data editable
 
 const mappers = {
@@ -37,15 +39,16 @@ export const HexViewer = ({ buffer, className = '' }) => {
             </div>
             <div style={{ gridArea: 'data' }} className="grid grid-cols-16 place-items-center">
                 {mapped.map(([byte, disabled], offset) => (
-                    <div
+                    <Byte
                         key={offset}
-                        className={`p-1 hover:text-green-700 ${disabled ? 'text-gray-400' : ''}`}
+                        isDisabled={() => disabled}
+                        className="p-1 hover:text-green-700"
                         title={'0x' + offset.toString(16).padStart(padding, 0)}
                         onMouseEnter={() => setHover(offset)}
                         onMouseLeave={() => setHover(null)}
                     >
                         {byte}
-                    </div>
+                    </Byte>
                 ))}
             </div>
         </div>
