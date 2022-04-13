@@ -13,7 +13,8 @@ export const Video = () => {
 
     return (
         <canvas
-            style={{ imageRendering: 'pixelated', width: '100%' }}
+            className="h-full w-full bg-black object-contain"
+            style={{ imageRendering: 'pixelated' }}
             ref={canvas}
             width={frame?.width}
             height={frame?.height}

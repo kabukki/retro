@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
-import { useStatus } from '@kabukki/wasm-chip8';
+import React from 'react';
+import { useDebug } from '@kabukki/wasm-chip8';
 
-import { EmulatorContext } from '../../../../common';
 import { hex } from '../../../../utils';
 
-const Keypad = ({ input }) => (
-    <svg viewBox="0 0 330.66665 261.33331">
+const Keypad = ({ input, className }) => (
+    <svg className={className} viewBox="0 0 330.66665 261.33331">
         <g transform="matrix(1.3333333,0,0,-1.3333333,-5.3333332,303.99999)">
             <path transform="translate(248,204.937)" fill="#ffffff" d="m 0,0 v 2.126 c 2.454,2.199 4,5.391 4,8.937 0,6.617 -5.383,12 -12,12 h -224 c -6.617,0 -12,-5.383 -12,-12 0,-3.546 1.546,-6.738 4,-8.937 V 0 c -2.454,-2.199 -4,-5.391 -4,-8.937 v -152 c 0,-6.617 5.383,-12 12,-12 h 96 28 100 c 6.617,0 12,5.383 12,12 v 152 C 4,-5.391 2.454,-2.199 0,0" />
             <path fill="#333333" d="M 240,196 H 16 v 20 h 224 z" />
@@ -89,11 +88,11 @@ const Keypad = ({ input }) => (
 );
 
 export const Input = () => {
-    const { keypad } = useStatus();
+    const { keypad } = useDebug();
 
     return (
         <div className="text-center">
-            <Keypad input={keypad.state} />
+            <Keypad className="h-32" input={keypad.state} />
             {/* <ul>
                 {Object.entries(settings.input.map).map(([key, value]) => (
                     <li key={key}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import pretty from 'pretty-ms';
-import { useStatus } from '@kabukki/wasm-chip8';
+import { useDebug } from '@kabukki/wasm-chip8';
 import { AreaClosed } from '@visx/shape';
 import { scaleLinear } from '@visx/scale';
 import { GridColumns, GridRows } from '@visx/grid';
@@ -45,14 +45,17 @@ const Histogram = withParentSize(({ history, parentWidth, parentHeight }) => {
 });
 
 export const Performance = () => {
-    const { performance } = useStatus();
+    const { performance } = useDebug();
 
     return (
         <div className="divide-y">
             <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
-                <b className="col-span-2">Performance</b>
-                <span>Elapsed time (real)</span>
+                <b className="col-span-2">Elapsed time</b>
+                <span>Real</span>
                 <span className="font-mono">{performance ? pretty(performance.timestamp, { colonNotation: true, keepDecimalsOnWholeSeconds: true, secondsDecimalDigits: 3 }) : '-'}</span>
+            </div>
+            <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
+                <b className="col-span-2">Frames</b>
                 <span>FPS</span>
                 <span className="font-mono">{performance?.fps?.toString() || '-'}</span>
                 <span>Delta</span>
@@ -63,7 +66,7 @@ export const Performance = () => {
                     <Histogram history={performance?.history} />
                 </div>
             </div>
-            <div className="p-2 bg-green-100 text-center">
+            <div className="p-2 text-green-700 text-center font-bold">
                 ℹ️ If you experience performance issues, make sure your devtools panel is closed.
             </div>
         </div>

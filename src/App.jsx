@@ -76,8 +76,8 @@ export const App = () => {
         <div className="h-screen flex flex-col bg-gray-100">
             <Router>
                 <header className="z-30 p-4 bg-green-700 shadow-md text-white">
-                    <h1 className="text-xl font-bold text-center text-shadow animate-color">
-                        <Link to="/">RETRO</Link>
+                    <h1 className="text-xl font-mono font-bold text-center text-shadow animate-color">
+                        <Link to="/">retro</Link>
                     </h1>
                     {/* <input type="checkbox" /> Advanced */}
                 </header>
