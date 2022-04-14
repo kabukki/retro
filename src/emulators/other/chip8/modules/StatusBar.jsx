@@ -2,6 +2,8 @@ import React from 'react';
 import { useLifecycle, Status } from '@kabukki/wasm-chip8';
 import colors from 'tailwindcss/colors';
 
+import { Indicator } from '../../../../common';
+
 const statusMap = {
     [Status.NONE]: { text: '-', color: colors.black },
     [Status.IDLE]: { text: 'Idle', color: colors.gray[500] },
@@ -16,7 +18,7 @@ export const StatusBar = ({ advanced, onAdvanced }) => {
     return (
         <div className="p-2 grid grid-cols-3 items-center bg-white">
             <div className="flex gap-2 items-center">
-                <div className="h-4 w-4 rounded-full" style={{ backgroundColor: color }} />
+                <Indicator color={color} />
                 {text}
             </div>
             <div className="flex gap-2 justify-center">

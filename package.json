@@ -1,7 +1,11 @@
 {
   "name": "retro",
   "version": "1.0.0",
-  "homepage": "https://kabukki.github.io/retro",
+  "homepage": "https://lucien.le-roux.dev/retro",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kabukki/retro"
+  },
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
