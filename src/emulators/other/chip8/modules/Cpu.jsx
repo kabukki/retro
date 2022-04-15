@@ -5,7 +5,7 @@ import { hex } from '../../../../utils';
 import { Byte } from '../../../../common';
 
 export const Cpu = () => {
-    const { cpu } = useDebug();
+    const { cpu, memory } = useDebug();
 
     if (cpu) {
         return (
@@ -14,15 +14,16 @@ export const Cpu = () => {
                     <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
                         <b className="col-span-2">General</b>
                         <span>Program counter</span>
-                        <Byte value={cpu.pc} format={hex} />
+                        <div className="font-mono">
+                            <Byte value={cpu.pc} format={hex} /> ({memory.disassembly[cpu.pc / 2]?.string})
+                        </div>
                         <span>Delay timer</span>
                         <Byte value={cpu.dt} />
                         <span>Sound timer</span>
                         <Byte value={cpu.st} />
-                        {/* instruction: {disassembly[cpu.pc]} */}
                     </div>
-                    <div className="p-2 grid grid-cols-4 gap-x-2 items-center">
-                        <b className="col-span-4">Registers</b>
+                    <div className="p-2 grid grid-cols-2 sm:grid-cols-4 gap-x-2 items-center">
+                        <b className="col-span-2 sm:col-span-4">Registers</b>
                         {Array.from(cpu.v).map((data, n) => (
                             <Fragment key={n}>
                                 <b>V{n.toString(16).toUpperCase()}</b>

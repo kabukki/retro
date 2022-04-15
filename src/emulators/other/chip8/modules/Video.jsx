@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-import { useIO } from '@kabukki/wasm-chip8';
+import { useDebug, useIO } from '@kabukki/wasm-chip8';
 
 export const Video = () => {
     const canvas = useRef(null);
     const { frame } = useIO();
+    const { performance } = useDebug();
 
     useEffect(() => {
         if (frame) {
@@ -12,12 +13,14 @@ export const Video = () => {
     }, [frame]);
 
     return (
-        <canvas
-            className="h-full w-full bg-black object-contain"
-            style={{ imageRendering: 'pixelated' }}
-            ref={canvas}
-            width={frame?.width}
-            height={frame?.height}
-        />
+        <div className="relative">
+            <span className="absolute top-2 right-2 font-mono text-white">{performance?.fps?.toString() || '-'}</span>
+            <canvas
+                className="h-full w-full bg-black object-contain [image-rendering:pixelated]"
+                ref={canvas}
+                width={frame?.width}
+                height={frame?.height}
+            />
+        </div>
     );
 };

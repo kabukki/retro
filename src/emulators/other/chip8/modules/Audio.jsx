@@ -9,7 +9,7 @@ export const Audio = () => {
     const onType = (e) => audio.type(e.target.value);
 
     return (
-        <div className="grid grid-cols-2 gap-x-2 items-center">
+        <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
             <span>Sample rate</span>
             {audio?.sampleRate.toLocaleString()} Hz
             <span>Volume</span>

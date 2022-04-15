@@ -6,3 +6,5 @@ export * from './Input';
 export * from './Interface';
 export * from './StatusBar';
 export * from './Video';
+export * from './Memory';
+export * from './Disassembly';

@@ -10,7 +10,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "build": "vite build src",
-    "start": "vite src"
+    "start": "vite src --host"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
@@ -18,7 +18,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
     "@headlessui/react": "^1.4.1",
-    "@kabukki/wasm-chip8": "^2.0.0",
+    "@kabukki/wasm-chip8": "^2.0.1",
     "@kabukki/wasm-nes": "^0.0.2",
     "@visx/curve": "^2.1.0",
     "@visx/grid": "^2.6.0",
@@ -35,7 +35,8 @@
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
-    "react-select": "^4.3.1"
+    "react-select": "^4.3.1",
+    "react-window": "^1.8.6"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.3.0",

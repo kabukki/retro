@@ -1,11 +1,11 @@
 import React, { lazy } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrochip, faMemory, faMusic, faGamepad, faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faMicrochip, faMemory, faMusic, faGamepad, faBolt, faScissors } from '@fortawesome/free-solid-svg-icons';
 import { EmulatorProvider, init, useLifecycle, useIO, Status } from '@kabukki/wasm-chip8';
 
 import { ROMSelector } from '../../../common';
-import { Cpu, Performance, Audio, Video, Input, StatusBar } from './modules';
+import { Cpu, Performance, Audio, Video, Input, StatusBar, Memory, Disassembly } from './modules';
 import { useInput } from './hooks';
 
 import picture from './assets/picture.png';
@@ -15,7 +15,7 @@ import classNames from 'classnames';
 
 export const Chip8 = () => {
     const { input } = useIO();
-    const { create, status } = useLifecycle();
+    const { create, status, error } = useLifecycle();
     const [advanced, setAdvanced] = useState(true);
 
     // const settings = useSettings();
@@ -39,56 +39,61 @@ export const Chip8 = () => {
     } else {
         return (
             <div className="h-0 flex-1 flex flex-col divide-y">
-                <main className={classNames('h-0 flex-1', { ['grid grid-rows-2']: advanced })}>
-                    <Video />
+                <main className={classNames('h-0 flex-1 grid divide-y', { ['grid-rows-2']: advanced })}>
+                    {error ? (
+                        <h2 className="text-red-700 m-auto">{error.message}</h2>
+                    ) : (
+                        <Video />
+                    )}
                     {advanced && (
-                        <section className="flex flex-col">
-                            <Tab.Group className="flex-1 h-0 flex divide-x" as="section">
-                                <Tab.List className="bg-white" as="nav">
-                                    <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                        <FontAwesomeIcon icon={faBolt} className="w-4" />
-                                    </Tab>
-                                    <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                        <FontAwesomeIcon icon={faMicrochip} className="w-4" />
-                                    </Tab>
-                                    <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                        <FontAwesomeIcon icon={faMemory} className="w-4" />
-                                    </Tab>
-                                    <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                        <FontAwesomeIcon icon={faMusic} className="w-4" />
-                                    </Tab>
-                                    <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                        <FontAwesomeIcon icon={faGamepad} className="w-4" />
-                                    </Tab>
-                                </Tab.List>
-                                <Tab.Panels className="flex-1 overflow-auto">
-                                    <Tab.Panel>
-                                        <h1 className="p-2 sticky top-0 bg-white shadow">Performance</h1>
-                                        <Performance />
-                                    </Tab.Panel>
-                                    <Tab.Panel>
-                                        <h1 className="p-2 sticky top-0 bg-white shadow">CPU</h1>
-                                        <Cpu />
-                                    </Tab.Panel>
-                                    <Tab.Panel>
-                                        <h1 className="p-2 sticky top-0 bg-white shadow">Memory</h1>
-                                        <div className="p-2">
-                                            Todo disassembly
-                                        </div>
-                                    </Tab.Panel>
-                                    <Tab.Panel>
-                                        <h1 className="p-2 sticky top-0 bg-white shadow">Audio</h1>
-                                        <div className="p-2">
-                                            <Audio />
-                                        </div>
-                                    </Tab.Panel>
-                                    <Tab.Panel>
-                                        <h1 className="p-2 sticky top-0 bg-white shadow">Input</h1>
-                                        <Input />
-                                    </Tab.Panel>
-                                </Tab.Panels>
-                            </Tab.Group>
-                        </section>
+                        <Tab.Group vertical className="flex items-stretch divide-x" as="section">
+                            <Tab.List className="bg-white overflow-auto" as="nav">
+                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
+                                    <FontAwesomeIcon icon={faBolt} className="w-4" />
+                                </Tab>
+                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
+                                    <FontAwesomeIcon icon={faMicrochip} className="w-4" />
+                                </Tab>
+                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
+                                    <FontAwesomeIcon icon={faMemory} className="w-4" />
+                                </Tab>
+                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
+                                    <FontAwesomeIcon icon={faScissors} className="w-4" />
+                                </Tab>
+                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
+                                    <FontAwesomeIcon icon={faMusic} className="w-4" />
+                                </Tab>
+                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
+                                    <FontAwesomeIcon icon={faGamepad} className="w-4" />
+                                </Tab>
+                            </Tab.List>
+                            <Tab.Panels className="flex-1 overflow-auto">
+                                <Tab.Panel>
+                                    <h1 className="p-2 sticky top-0 bg-white shadow">Performance</h1>
+                                    <Performance />
+                                </Tab.Panel>
+                                <Tab.Panel>
+                                    <h1 className="p-2 sticky top-0 bg-white shadow">CPU</h1>
+                                    <Cpu />
+                                </Tab.Panel>
+                                <Tab.Panel>
+                                    <h1 className="p-2 sticky top-0 bg-white shadow">Memory</h1>
+                                    <Memory />
+                                </Tab.Panel>
+                                <Tab.Panel className="h-full flex flex-col" unmount={false}>
+                                    <h1 className="p-2 sticky top-0 bg-white shadow">Disassembly</h1>
+                                    <Disassembly />
+                                </Tab.Panel>
+                                <Tab.Panel>
+                                    <h1 className="p-2 sticky top-0 bg-white shadow">Audio</h1>
+                                    <Audio />
+                                </Tab.Panel>
+                                <Tab.Panel>
+                                    <h1 className="p-2 sticky top-0 bg-white shadow">Input</h1>
+                                    <Input />
+                                </Tab.Panel>
+                            </Tab.Panels>
+                        </Tab.Group>
                     )}
                 </main>
                 <StatusBar advanced={advanced} onAdvanced={setAdvanced} />

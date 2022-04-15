@@ -7,7 +7,6 @@ export const ROMSelector = ({ picture, onSelect }) => {
 
     const onFile = async (file) => {
         const buffer = new Uint8Array(await file?.arrayBuffer());
-        
         console.log(`Loaded ROM ${file.name} (${pretty(buffer.byteLength)})`);
         onSelect(buffer);
     };
@@ -44,7 +43,7 @@ export const ROMSelector = ({ picture, onSelect }) => {
             </div>
             <div
                 ref={ref}
-                className="relative py-2 px-4 flex flex-col items-center gap-2 bg-white overflow-hidden rounded border border-dashed"
+                className="relative py-2 px-4 flex flex-col items-center gap-2 overflow-hidden rounded border-2 border-dashed"
                 onDrop={onDrop}
                 onDragOver={onDragOver}
                 onDragEnter={onDragEnter}
