@@ -1,8 +1,9 @@
-import React, { lazy } from 'react';
+import React, { lazy, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrochip, faMemory, faMusic, faGamepad, faBolt, faScissors } from '@fortawesome/free-solid-svg-icons';
+import { faMicrochip, faMemory, faMusic, faGamepad, faBolt, faScissors, faBug } from '@fortawesome/free-solid-svg-icons';
 import { EmulatorProvider, init, useLifecycle, useIO, Status } from '@kabukki/wasm-chip8';
+import classNames from 'classnames';
 
 import { ROMSelector } from '../../../common';
 import { Cpu, Performance, Audio, Video, Input, StatusBar, Memory, Disassembly } from './modules';
@@ -10,8 +11,6 @@ import { useInput } from './hooks';
 
 import picture from './assets/picture.png';
 import content from './assets/content.png';
-import { useState } from 'react';
-import classNames from 'classnames';
 
 export const Chip8 = () => {
     const { input } = useIO();
@@ -41,7 +40,10 @@ export const Chip8 = () => {
             <div className="h-0 flex-1 flex flex-col divide-y">
                 <main className={classNames('h-0 flex-1 grid divide-y', { ['grid-rows-2']: advanced })}>
                     {error ? (
-                        <h2 className="text-red-700 m-auto">{error.message}</h2>
+                        <div className="m-auto text-center text-red-700">
+                            <FontAwesomeIcon icon={faBug} className="w-4" />
+                            <h2>{error.message}</h2>
+                        </div>
                     ) : (
                         <Video />
                     )}
@@ -49,7 +51,7 @@ export const Chip8 = () => {
                         <Tab.Group vertical className="flex items-stretch divide-x" as="section">
                             <Tab.List className="bg-white overflow-auto" as="nav">
                                 <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                    <FontAwesomeIcon icon={faBolt} className="w-4" />
+                                <FontAwesomeIcon icon={faBolt} className="w-4" />
                                 </Tab>
                                 <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
                                     <FontAwesomeIcon icon={faMicrochip} className="w-4" />
