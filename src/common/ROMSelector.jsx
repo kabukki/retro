@@ -43,7 +43,7 @@ export const ROMSelector = ({ picture, onSelect }) => {
             </div>
             <div
                 ref={ref}
-                className="relative py-2 px-4 flex flex-col items-center gap-2 overflow-hidden rounded border-2 border-dashed"
+                className="relative py-2 px-4 flex flex-col items-center gap-2 overflow-hidden rounded border-2 border-dashed bg-white"
                 onDrop={onDrop}
                 onDragOver={onDragOver}
                 onDragEnter={onDragEnter}

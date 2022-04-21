@@ -7,6 +7,7 @@ module.exports = {
             },
             animation: {
                 reveal: 'reveal 0.5s ease-in-out',
+                color: 'color 8s linear infinite',
             },
             keyframes: {
                 reveal: {
@@ -17,6 +18,17 @@ module.exports = {
                     '100%': {
                         opacity: 1,
                     },
+                },
+                color: {
+                    '0%':       { color: '#000' },
+                    '12.5%':    { color: '#00f' },
+                    '25%':      { color: '#0f0' },
+                    '37.5%':    { color: '#0ff' },
+                    '50%':      { color: '#f00' },
+                    '62.5%':    { color: '#f0f' },
+                    '75%':      { color: '#ff0' },
+                    '87.5%':    { color: '#fff' },
+                    '100%':     { color: '#000' },
                 },
             },
         },

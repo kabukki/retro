@@ -12,10 +12,6 @@
     .text-shadow {
         text-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     }
-
-    .animate-color {
-        animation: color 8s linear infinite;
-    }
 }
 
 .crt {
@@ -25,18 +21,6 @@
     backdrop-filter: brightness(1.2);
     box-shadow: 0 0 64px #000 inset;
     animation: scroll 0.5s linear infinite;
-}
-
-@keyframes color {
-    0%      { color: #000; }
-    12.5%   { color: #00f; }
-    25%     { color: #0f0; }
-    37.5%   { color: #0ff; }
-    50%     { color: #f00; }
-    62.5%   { color: #f0f; }
-    75%     { color: #ff0; }
-    87.5%   { color: #fff; }
-    100%    { color: #000; }
 }
 
 @keyframes scroll {
