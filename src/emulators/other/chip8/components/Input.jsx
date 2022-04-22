@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useDebug } from '@kabukki/wasm-chip8';
+import classNames from 'classnames';
 
-import { hex } from '../../../../utils';
+import { Settings } from '.';
 
 const Keypad = ({ input, className }) => (
     <svg className={className} viewBox="0 0 330.66665 261.33331">
@@ -87,19 +88,44 @@ const Keypad = ({ input, className }) => (
     </svg>
 );
 
+const order = [
+    0x1, 0x2, 0x3, 0xC,
+    0x4, 0x5, 0x6, 0xD,
+    0x7, 0x8, 0x9, 0xE,
+    0xA, 0x0, 0xB, 0xF,
+];
+
 export const Input = () => {
     const { keypad } = useDebug();
+    const [{ keymap }, setSettings] = useContext(Settings);
+
+    const onKey = (key) => (e) => {
+        setSettings((previous) => ({
+            ...previous,
+            keymap: {
+                ...previous.keymap,
+                [key]: e.key,
+            },
+        }));
+    };
+
+    const entries = Object.entries(keymap).map(([key, mapped]) => [Number(key), mapped]).sort(([a], [b]) => order.indexOf(a) - order.indexOf(b));
 
     return (
-        <div className="text-center">
-            <Keypad className="h-32" input={keypad.state} />
-            {/* <ul>
-                {Object.entries(settings.input.map).map(([key, value]) => (
-                    <li key={key}>
-                        <b>{key}</b>: {hex(value, 0)}
-                    </li>
+        <div className="grid grid-cols-2 divide-x">
+            <div className="p-2">
+                <Keypad className="h-32" input={keypad.state} />
+            </div>
+            <div className="p-2 grid grid-cols-4 grid-rows-4 gap-2">
+                {entries.map(([key, mapped]) => (
+                    <label key={key} className={classNames('flex items-center gap-2', { 'text-green-700': keypad.state[key] })}>
+                        <b className="font-mono">{key.toString(16).toUpperCase()}</b>
+                        <input className="w-0 flex-1 text-center" type="text" value={mapped} readOnly onKeyDown={onKey(key)} />
+                    </label>
                 ))}
-            </ul> */}
+            </div>
+            <ul>
+            </ul>
         </div>
     );
 };

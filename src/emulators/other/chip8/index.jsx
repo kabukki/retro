@@ -1,33 +1,32 @@
-import React, { lazy, useState } from 'react';
+import React, { lazy, useState, useContext } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrochip, faMemory, faMusic, faGamepad, faBolt, faScissors, faBug } from '@fortawesome/free-solid-svg-icons';
 import { EmulatorProvider, init, useLifecycle, useIO, Status } from '@kabukki/wasm-chip8';
 import classNames from 'classnames';
 
-import { ROMSelector } from '../../../common';
-import { Cpu, Performance, Audio, Video, Input, StatusBar, Memory, Disassembly } from './modules';
-import { useInput } from './hooks';
+import { ROMSelector, useInput } from '../../../common';
+import { Cpu, Performance, Audio, Video, Input, StatusBar, Memory, Disassembly, SettingsProvider, Settings } from './components';
 
 import picture from './assets/picture.png';
 import content from './assets/content.png';
+import { useMemo } from 'react';
 
 export const Chip8 = () => {
     const { input } = useIO();
-    const { create, status, error } = useLifecycle();
+    const { create, status, error, start, stop } = useLifecycle();
     const [advanced, setAdvanced] = useState(true);
+    const [{ keymap }] = useContext(Settings);
 
-    // const settings = useSettings();
+    const mapping = useMemo(() => [
+        ['Escape', 'keydown', (status === Status.RUNNING) ? stop : (status === Status.IDLE) ? start : () => {}],
+        ...Object.entries(keymap).flatMap(([key, mapped]) => [
+            [mapped, 'keydown', () => input(key, true)],
+            [mapped, 'keyup', () => input(key, false)],
+        ]),
+    ], [status, keymap]);
 
-    useInput({
-        keymap: {
-            '1': 0x1, '2': 0x2, '3': 0x3, '4': 0xC,
-            'q': 0x4, 'w': 0x5, 'e': 0x6, 'r': 0xD,
-            'a': 0x7, 's': 0x8, 'd': 0x9, 'f': 0xE,
-            'z': 0xA, 'x': 0x0, 'c': 0xB, 'v': 0xF,
-        },
-        onInput: input,
-    });
+    useInput(mapping);
 
     if (status === Status.NONE) {
         return (
@@ -83,8 +82,8 @@ export const Chip8 = () => {
                                     <Memory />
                                 </Tab.Panel>
                                 <Tab.Panel className="h-full flex flex-col" unmount={false}>
-                                    <h1 className="p-2 sticky top-0 bg-white shadow">Disassembly</h1>
-                                    <Disassembly />
+                                    <h1 className="p-2 bg-white shadow">Disassembly</h1>
+                                    <Disassembly className="flex-1"/>
                                 </Tab.Panel>
                                 <Tab.Panel>
                                     <h1 className="p-2 sticky top-0 bg-white shadow">Audio</h1>
@@ -118,7 +117,9 @@ export default {
         default () {
             return (
                 <EmulatorProvider>
-                    <Chip8 />
+                    <SettingsProvider>
+                        <Chip8 />
+                    </SettingsProvider>
                 </EmulatorProvider>
             );
         },

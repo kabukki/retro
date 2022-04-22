@@ -15,7 +15,7 @@ export const Cpu = () => {
                         <b className="col-span-2">General</b>
                         <span>Program counter</span>
                         <div className="font-mono">
-                            <Byte value={cpu.pc} format={hex} /> ({memory.disassembly[cpu.pc / 2]?.string})
+                            <Byte value={cpu.pc} format={hex.with({ padding: 3 })} /> ({memory.disassembly[cpu.pc / 2]?.string})
                         </div>
                         <span>Delay timer</span>
                         <Byte value={cpu.dt} />
@@ -27,7 +27,7 @@ export const Cpu = () => {
                         {Array.from(cpu.v).map((data, n) => (
                             <Fragment key={n}>
                                 <b>V{n.toString(16).toUpperCase()}</b>
-                                <Byte value={data} format={data => hex(data, 2)} />
+                                <Byte value={data} format={hex.with({ padding: 2 })} />
                             </Fragment>
                         ))}
                         <b>I</b>
@@ -39,7 +39,7 @@ export const Cpu = () => {
                     <span className="font-mono">
                         {Array.from(cpu.stack).map((data, n) => (
                             <div key={n}>
-                                <Byte key={n} value={data} format={hex} />
+                                <Byte key={n} value={data} format={hex.with({ padding: 3 })} />
                                 {cpu.sp === n && <span className="text-green-700"> ← stack pointer</span>}
                             </div>
                         ))}
