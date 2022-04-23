@@ -7,6 +7,6 @@ export const Memory = () => {
     const { memory } = useDebug();
 
     return (
-        <HexViewer buffer={memory.ram} />
+        <HexViewer buffer={memory?.ram} className="h-full w-full" />
     );
 };

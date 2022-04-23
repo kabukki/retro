@@ -20,6 +20,7 @@
     "@headlessui/react": "^1.4.1",
     "@kabukki/wasm-chip8": "^2.0.1",
     "@kabukki/wasm-nes": "^0.0.2",
+    "@react-hook/size": "^2.1.2",
     "@visx/curve": "^2.1.0",
     "@visx/grid": "^2.6.0",
     "@visx/responsive": "^2.8.0",

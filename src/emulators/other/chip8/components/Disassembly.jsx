@@ -13,13 +13,13 @@ const sections = [
     { start: 0x0200, end: 0x0fff, name: 'Program', color: colors.green[500] },
 ];
 
-export const Disassembly = ({ className }) => {
+export const Disassembly = () => {
     const ref = useRef();
     const { cpu, memory } = useDebug();
     const [width, height] = useSize(ref);
 
     return (
-        <div ref={ref} className={className}>
+        <div ref={ref} className="h-full w-full">
             {memory ? (
                 <FixedSizeList width={width} height={height} itemCount={memory?.disassembly.length} itemSize={24}>
                     {({ index, style }) => {

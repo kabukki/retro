@@ -12,6 +12,15 @@ import picture from './assets/picture.png';
 import content from './assets/content.png';
 import { useMemo } from 'react';
 
+const tabs = [
+    { name: 'Performance', icon: faBolt, component: Performance, unmount: true },
+    { name: 'CPU', icon: faMicrochip, component: Cpu, unmount: true },
+    { name: 'Memory', icon: faMemory, component: Memory, unmount: false },
+    { name: 'Disassembly', icon: faScissors, component: Disassembly, unmount: false },
+    { name: 'Audio', icon: faMusic, component: Audio, unmount: true },
+    { name: 'Input', icon: faGamepad, component: Input, unmount: true },
+];
+
 export const Chip8 = () => {
     const { input } = useIO();
     const { create, status, error, start, stop } = useLifecycle();
@@ -49,50 +58,21 @@ export const Chip8 = () => {
                     {advanced && (
                         <Tab.Group vertical className="flex items-stretch divide-x" as="section">
                             <Tab.List className="bg-white overflow-auto" as="nav">
-                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                <FontAwesomeIcon icon={faBolt} className="w-4" />
-                                </Tab>
-                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                    <FontAwesomeIcon icon={faMicrochip} className="w-4" />
-                                </Tab>
-                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                    <FontAwesomeIcon icon={faMemory} className="w-4" />
-                                </Tab>
-                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                    <FontAwesomeIcon icon={faScissors} className="w-4" />
-                                </Tab>
-                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                    <FontAwesomeIcon icon={faMusic} className="w-4" />
-                                </Tab>
-                                <Tab className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
-                                    <FontAwesomeIcon icon={faGamepad} className="w-4" />
-                                </Tab>
+                                {tabs.map(({ name, icon }) => (
+                                    <Tab key={name} className={({ selected }) => `block w-full aspect-square p-4 ${selected ? 'bg-green-100 text-green-700' : ''}`} as="button">
+                                        <FontAwesomeIcon icon={icon} className="w-4" />
+                                    </Tab>
+                                ))}
                             </Tab.List>
                             <Tab.Panels className="flex-1 overflow-auto">
-                                <Tab.Panel>
-                                    <h1 className="p-2 sticky top-0 bg-white shadow">Performance</h1>
-                                    <Performance />
-                                </Tab.Panel>
-                                <Tab.Panel>
-                                    <h1 className="p-2 sticky top-0 bg-white shadow">CPU</h1>
-                                    <Cpu />
-                                </Tab.Panel>
-                                <Tab.Panel>
-                                    <h1 className="p-2 sticky top-0 bg-white shadow">Memory</h1>
-                                    <Memory />
-                                </Tab.Panel>
-                                <Tab.Panel className="h-full flex flex-col" unmount={false}>
-                                    <h1 className="p-2 bg-white shadow">Disassembly</h1>
-                                    <Disassembly className="flex-1"/>
-                                </Tab.Panel>
-                                <Tab.Panel>
-                                    <h1 className="p-2 sticky top-0 bg-white shadow">Audio</h1>
-                                    <Audio />
-                                </Tab.Panel>
-                                <Tab.Panel>
-                                    <h1 className="p-2 sticky top-0 bg-white shadow">Input</h1>
-                                    <Input />
-                                </Tab.Panel>
+                                {tabs.map(({ name, component: Component, unmount }) => (
+                                    <Tab.Panel key={name} className="h-full flex flex-col" unmount={unmount}>
+                                        <h1 className="p-2 bg-white text-green-700 font-bold shadow">{name}</h1>
+                                        <div className="flex-1">
+                                            <Component />
+                                        </div>
+                                    </Tab.Panel>
+                                ))}
                             </Tab.Panels>
                         </Tab.Group>
                     )}
