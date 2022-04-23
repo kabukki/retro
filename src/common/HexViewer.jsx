@@ -3,11 +3,12 @@ import useSize from '@react-hook/size';
 import { FixedSizeList } from 'react-window';
 
 import { Byte } from '.';
+import { hex } from '../utils';
 
 // IDEA: transform byte div into input to make the data editable
 
 const format = {
-    hex: (byte) => byte.toString(16).padStart(2, 0),
+    hex: hex.with({ padding: 2, prefix: false }),
     chr: (byte) => /\P{C}/u.test(String.fromCodePoint(byte)) ? String.fromCodePoint(byte) : '.',
 };
 
