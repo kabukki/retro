@@ -8,6 +8,7 @@ import { withParentSize } from '@visx/responsive';
 import { curveMonotoneX } from '@visx/curve';
 import colors from 'tailwindcss/colors';
 import { rgba } from 'polished';
+import { prefix } from 'metric-prefix';
 
 const Histogram = withParentSize(({ history, parentWidth, parentHeight }) => {
     if (history) {
@@ -45,29 +46,49 @@ const Histogram = withParentSize(({ history, parentWidth, parentHeight }) => {
 });
 
 export const Performance = () => {
-    const { performance } = useDebug();
+    const { performance, emulator } = useDebug();
 
     return (
-        <div className="divide-y">
-            <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
-                <b className="col-span-2">Elapsed time</b>
-                <span>Real</span>
-                <span className="font-mono">{performance ? pretty(performance.timestamp, { colonNotation: true, keepDecimalsOnWholeSeconds: true, secondsDecimalDigits: 3 }) : '-'}</span>
-            </div>
-            <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
-                <b className="col-span-2">Frames</b>
-                <span>FPS</span>
-                <span className="font-mono">{performance?.fps?.toString() || '-'}</span>
-                <span>Delta</span>
-                <span className="font-mono">{performance ? pretty(performance?.delta) : '-'}</span>
-                <span>Current</span>
-                <span className="font-mono">{performance?.frame?.toString() || '-'}</span>
-                <div className="h-32 col-span-2">
-                    <Histogram history={performance?.history} />
+        <div className="grid grid-cols-2 divide-x">
+            <div className="divide-y">
+                <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
+                    <b className="col-span-2">Elapsed time</b>
+                    <span>Real</span>
+                    <span className="font-mono">{performance ? pretty(performance.timestamp, { colonNotation: true, keepDecimalsOnWholeSeconds: true, secondsDecimalDigits: 3 }) : '-'}</span>
+                    <span>Emulated</span>
+                    <span className="font-mono">{emulator?.time ? pretty(emulator.time, { colonNotation: true, keepDecimalsOnWholeSeconds: true, secondsDecimalDigits: 3 }) : '-'}</span>
+                </div>
+                <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
+                    <b className="col-span-2">CPU</b>
+                    <span>Clock cycles</span>
+                    <span className="font-mono">{emulator?.cpu ? emulator.cpu.cycles.toLocaleString() : '-'}</span>
+                    <span>Clock rate</span>
+                    <span className="font-mono">{emulator?.cpu ? prefix(emulator.cpu.rate, { unit: 'Hz' }) : '-'}</span>
+                </div>
+                <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
+                    <b className="col-span-2">Timers</b>
+                    <span>Clock cycles</span>
+                    <span className="font-mono">{emulator?.cpu ? emulator.cpu.cycles_timer.toLocaleString() : '-'}</span>
+                    <span>Clock rate</span>
+                    <span className="font-mono">{emulator?.cpu ? prefix(emulator.cpu.rate_timer, { unit: 'Hz' }) : '-'}</span>
                 </div>
             </div>
-            <div className="p-2 text-green-700 text-center font-bold">
-                ℹ️ If you experience performance issues, make sure your devtools panel is closed.
+            <div className="p-2">
+                <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
+                    <b className="col-span-2">Frames</b>
+                    <span>FPS</span>
+                    <span className="font-mono">{performance?.fps?.toString() || '-'}</span>
+                    <span>Delta</span>
+                    <span className="font-mono">{performance ? pretty(performance?.delta) : '-'}</span>
+                    <span>Current</span>
+                    <span className="font-mono">{performance?.frame?.toString() || '-'}</span>
+                    <div className="h-32 col-span-2">
+                        <Histogram history={performance?.history} />
+                    </div>
+                </div>
+                <div className="p-2 text-green-700 text-center font-bold">
+                    ℹ️ If you experience performance issues, make sure your devtools panel is closed.
+                </div>
             </div>
         </div>
     );

@@ -96,7 +96,7 @@ const order = [
 ];
 
 export const Input = () => {
-    const { keypad } = useDebug();
+    const { emulator } = useDebug();
     const [{ keymap }, setSettings] = useContext(Settings);
 
     const onKey = (key) => (e) => {
@@ -114,18 +114,16 @@ export const Input = () => {
     return (
         <div className="grid grid-cols-2 divide-x">
             <div className="p-2">
-                <Keypad className="h-32" input={keypad.state} />
+                <Keypad className="h-32" input={emulator.keypad.state} />
             </div>
             <div className="p-2 grid grid-cols-4 grid-rows-4 gap-2">
                 {entries.map(([key, mapped]) => (
-                    <label key={key} className={classNames('flex items-center gap-2', { 'text-green-700': keypad.state[key] })}>
+                    <label key={key} className={classNames('flex items-center gap-2', { 'text-green-700': emulator.keypad.state[key] })}>
                         <b className="font-mono">{key.toString(16).toUpperCase()}</b>
                         <input className="w-0 flex-1 text-center" type="text" value={mapped} readOnly onKeyDown={onKey(key)} />
                     </label>
                 ))}
             </div>
-            <ul>
-            </ul>
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import React, { lazy, useState, useContext } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrochip, faMemory, faMusic, faGamepad, faBolt, faScissors, faBug } from '@fortawesome/free-solid-svg-icons';
+import { faMicrochip, faMemory, faMusic, faGamepad, faScissors, faBug, faGauge } from '@fortawesome/free-solid-svg-icons';
 import { EmulatorProvider, init, useLifecycle, useIO, Status } from '@kabukki/wasm-chip8';
 import classNames from 'classnames';
 
@@ -13,7 +13,7 @@ import content from './assets/content.png';
 import { useMemo } from 'react';
 
 const tabs = [
-    { name: 'Performance', icon: faBolt, component: Performance, unmount: true },
+    { name: 'Performance', icon: faGauge, component: Performance, unmount: true },
     { name: 'CPU', icon: faMicrochip, component: Cpu, unmount: true },
     { name: 'Memory', icon: faMemory, component: Memory, unmount: false },
     { name: 'Disassembly', icon: faScissors, component: Disassembly, unmount: false },
@@ -44,6 +44,7 @@ export const Chip8 = () => {
             </div>
         );
     } else {
+        // TODO transition between screens
         return (
             <div className="h-0 flex-1 flex flex-col divide-y">
                 <main className={classNames('h-0 flex-1 grid divide-y', { ['grid-rows-2']: advanced })}>

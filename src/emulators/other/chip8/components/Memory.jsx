@@ -4,9 +4,9 @@ import { useDebug } from '@kabukki/wasm-chip8';
 import { HexViewer } from '../../../../common';
 
 export const Memory = () => {
-    const { memory } = useDebug();
+    const { emulator } = useDebug();
 
     return (
-        <HexViewer buffer={memory?.ram} className="h-full w-full" />
+        <HexViewer buffer={emulator?.memory.ram} className="h-full w-full" />
     );
 };
