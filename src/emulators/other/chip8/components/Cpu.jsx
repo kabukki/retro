@@ -9,7 +9,7 @@ export const Cpu = () => {
 
     if (emulator) {
         return (
-            <div className="grid grid-cols-3 divide-x">
+            <div className="grid grid-cols-2 divide-x">
                 <div className="divide-y">
                     <div className="p-2 grid grid-cols-2 gap-x-2 items-center">
                         <b className="col-span-2">General</b>
@@ -31,7 +31,7 @@ export const Cpu = () => {
                             </Fragment>
                         ))}
                         <b>I</b>
-                        <Byte value={emulator.cpu.i} format={hex} />
+                        <Byte value={emulator.cpu.i} format={hex.with({ padding: 3 })} />
                     </div>
                 </div>
                 <div className="p-2">
@@ -44,10 +44,6 @@ export const Cpu = () => {
                             </div>
                         ))}
                     </span>
-                </div>
-                <div className="p-2">
-                    <b>Trace</b>
-                    <p>Todo</p>
                 </div>
             </div>
         );

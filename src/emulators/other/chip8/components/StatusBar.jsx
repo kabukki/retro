@@ -32,13 +32,13 @@ export const StatusBar = ({ advanced, onAdvanced }) => {
                 {text}
             </div>
             <div className="flex gap-2 justify-center">
+                <Button onClick={destroy} icon={faPowerOff} title="Stop" />
+                <Button icon={faRotate} title="Reset" />
                 {status === Status.RUNNING ? (
                     <Button onClick={stop} icon={faPause} title="Pause" />
                 ) : (
                     <Button onClick={start} icon={faPlay} title="Resume" />
                 )}
-                <Button icon={faRotate} title="Reset" />
-                <Button onClick={destroy} icon={faPowerOff} title="Stop" />
             </div>
             {advanced && (
                 <div className="flex gap-2 justify-center">

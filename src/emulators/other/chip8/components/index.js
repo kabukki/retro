@@ -7,3 +7,4 @@ export * from './Video';
 export * from './Memory';
 export * from './Disassembly';
 export * from './Settings';
+export * from './Logs';

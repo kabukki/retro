@@ -1,20 +1,20 @@
-import React, { lazy, useState, useContext } from 'react';
+import React, { lazy, useState, useContext, useMemo } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrochip, faMemory, faMusic, faGamepad, faScissors, faBug, faGauge } from '@fortawesome/free-solid-svg-icons';
+import { faMicrochip, faMemory, faMusic, faGamepad, faScissors, faBug, faGauge, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { EmulatorProvider, init, useLifecycle, useIO, Status } from '@kabukki/wasm-chip8';
 import classNames from 'classnames';
 
 import { ROMSelector, useInput } from '../../../common';
-import { Cpu, Performance, Audio, Video, Input, StatusBar, Memory, Disassembly, SettingsProvider, Settings } from './components';
+import { Cpu, Performance, Audio, Video, Input, StatusBar, Memory, Disassembly, SettingsProvider, Settings, Logs } from './components';
 
 import picture from './assets/picture.png';
 import content from './assets/content.png';
-import { useMemo } from 'react';
 
 const tabs = [
     { name: 'Performance', icon: faGauge, component: Performance, unmount: true },
     { name: 'CPU', icon: faMicrochip, component: Cpu, unmount: true },
+    { name: 'Logs', icon: faClockRotateLeft, component: Logs, unmount: true },
     { name: 'Memory', icon: faMemory, component: Memory, unmount: false },
     { name: 'Disassembly', icon: faScissors, component: Disassembly, unmount: false },
     { name: 'Audio', icon: faMusic, component: Audio, unmount: true },
@@ -69,7 +69,7 @@ export const Chip8 = () => {
                                 {tabs.map(({ name, component: Component, unmount }) => (
                                     <Tab.Panel key={name} className="h-full flex flex-col" unmount={unmount}>
                                         <h1 className="p-2 bg-white text-green-700 font-bold shadow">{name}</h1>
-                                        <div className="flex-1">
+                                        <div className="flex-1 overflow-auto">
                                             <Component />
                                         </div>
                                     </Tab.Panel>
