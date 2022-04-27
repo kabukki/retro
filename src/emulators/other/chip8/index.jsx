@@ -1,8 +1,8 @@
-import React, { lazy, useState, useContext, useMemo } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrochip, faMemory, faMusic, faGamepad, faScissors, faBug, faGauge, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
-import { EmulatorProvider, init, useLifecycle, useIO, Status } from '@kabukki/wasm-chip8';
+import { EmulatorProvider, useLifecycle, useIO, Status } from '@kabukki/wasm-chip8';
 import classNames from 'classnames';
 
 import { ROMSelector, useInput } from '../../../common';
@@ -48,14 +48,15 @@ export const Chip8 = () => {
         return (
             <div className="h-0 flex-1 flex flex-col divide-y">
                 <main className={classNames('h-0 flex-1 grid divide-y', { ['grid-rows-2']: advanced })}>
-                    {error ? (
-                        <div className="m-auto text-center text-red-700">
-                            <FontAwesomeIcon icon={faBug} className="w-4" />
-                            <h2>{error.message}</h2>
-                        </div>
-                    ) : (
-                        <Video />
-                    )}
+                    <div className="relative">
+                        <Video className="h-full w-full" />
+                        {error && (
+                            <div className="absolute inset-0 flex flex-col justify-center items-center backdrop-blur-xl text-red-500">
+                                <FontAwesomeIcon icon={faBug} className="h-8" />
+                                <h2 className="text-center">{error.message}</h2>
+                            </div>
+                        )}
+                    </div>
                     {advanced && (
                         <Tab.Group vertical className="flex items-stretch divide-x" as="section">
                             <Tab.List className="bg-white overflow-auto" as="nav">
@@ -94,15 +95,13 @@ export default {
     picture,
     content,
     path: '/other/chip8',
-    component: lazy(() => init().then(() => ({
-        default () {
-            return (
-                <EmulatorProvider>
-                    <SettingsProvider>
-                        <Chip8 />
-                    </SettingsProvider>
-                </EmulatorProvider>
-            );
-        },
-    }))),
+    component () {
+        return (
+            <EmulatorProvider>
+                <SettingsProvider>
+                    <Chip8 />
+                </SettingsProvider>
+            </EmulatorProvider>
+        );
+    },
 };

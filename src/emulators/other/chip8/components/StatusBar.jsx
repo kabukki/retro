@@ -26,21 +26,25 @@ export const StatusBar = ({ advanced, onAdvanced }) => {
     const { text, color } = statusMap[status];
 
     return (
-        <div className={classNames('p-2 grid items-center bg-white divide-x', advanced ? 'grid-cols-4' : 'grid-cols-3')}>
+        <div className={classNames('p-2 grid items-center bg-white divide-x', advanced && !error ? 'grid-cols-4' : 'grid-cols-3')}>
             <div className="flex gap-2 justify-center items-center">
                 <Indicator color={color} />
                 {text}
             </div>
             <div className="flex gap-2 justify-center">
                 <Button onClick={destroy} icon={faPowerOff} title="Stop" />
-                <Button icon={faRotate} title="Reset" />
-                {status === Status.RUNNING ? (
-                    <Button onClick={stop} icon={faPause} title="Pause" />
-                ) : (
-                    <Button onClick={start} icon={faPlay} title="Resume" />
+                {!error && (
+                    <>
+                        <Button icon={faRotate} title="Reset" />
+                        {status === Status.RUNNING ? (
+                            <Button onClick={stop} icon={faPause} title="Pause" />
+                        ) : (
+                            <Button onClick={start} icon={faPlay} title="Resume" />
+                        )}
+                    </>
                 )}
             </div>
-            {advanced && (
+            {advanced && !error && (
                 <div className="flex gap-2 justify-center">
                     <Button onClick={cycleCpu} icon={faForward}>Step CPU</Button>
                     <Button onClick={cycleTimer} icon={faForward}>Step timers</Button>

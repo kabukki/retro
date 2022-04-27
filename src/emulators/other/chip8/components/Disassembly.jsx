@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { FixedSizeList } from 'react-window';
 import { useDebug } from '@kabukki/wasm-chip8';
 import useSize from '@react-hook/size';
@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import colors from 'tailwindcss/colors';
 
 import { hex } from '../../../../utils';
-import { useRef } from 'react';
 
 const regions = [
     { start: 0x0000, end: 0x01ff, name: 'Reserved', color: colors.yellow[500] },
