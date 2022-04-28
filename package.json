@@ -18,7 +18,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
     "@headlessui/react": "^1.4.1",
-    "@kabukki/wasm-chip8": "^2.2.0",
+    "@kabukki/wasm-chip8": "^2.2.1",
     "@kabukki/wasm-nes": "^0.0.2",
     "@react-hook/size": "^2.1.2",
     "@visx/curve": "^2.1.0",
