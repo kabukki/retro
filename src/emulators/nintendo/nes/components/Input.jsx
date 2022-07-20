@@ -3,22 +3,22 @@ import { Button } from '@kabukki/wasm-nes';
 
 import { EmulatorContext, Select } from '../../../../common';
 
-import Keyboard from '../../../../assets/keyboard.svg';
-import Gamepad from '../../../../assets/gamepad.svg';
+// import Keyboard from '../../../../assets/keyboard.svg';
+// import Gamepad from '../../../../assets/gamepad.svg';
 
-const formatOptionLabelWithIcon = ({ id, type }) => {
-    const typeMap = {
-        keyboard: <Keyboard />,
-        gamepad: <Gamepad />,
-    };
+// const formatOptionLabelWithIcon = ({ id, type }) => {
+//     const typeMap = {
+//         keyboard: <Keyboard />,
+//         gamepad: <Gamepad />,
+//     };
 
-    return (
-        <div className="flex items-center gap-2">
-            <div className="w-4 h-4 text-center">{typeMap[type]}</div>
-            <div className="flex-1 truncate">{id}</div>
-        </div>
-    );
-};
+//     return (
+//         <div className="flex items-center gap-2">
+//             <div className="w-4 h-4 text-center">{typeMap[type]}</div>
+//             <div className="flex-1 truncate">{id}</div>
+//         </div>
+//     );
+// };
 
 const Controller = memo(({ input }) => (
     <svg viewBox="0 0 330.66626 154.66665">
@@ -69,7 +69,7 @@ export const Input = () => {
                 getOptionLabel={({ id }) => id}
                 getOptionValue={({ id }) => id}
                 isOptionDisabled={({ id }) => input.players.some((p) => p?.id === id)}
-                formatOptionLabel={formatOptionLabelWithIcon}
+                // formatOptionLabel={formatOptionLabelWithIcon}
                 isSearchable={false}
                 isClearable
             />
@@ -77,4 +77,4 @@ export const Input = () => {
     ));
 };
 
-Input.Icon = Gamepad;
+// Input.Icon = Gamepad;

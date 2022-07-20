@@ -1,6 +1,10 @@
 module.exports = {
     content: ['./src/**/*.{html,js,jsx}'],
     theme: {
+        fontFamily: {
+            sans: 'IBM Plex Sans',
+            mono: 'IBM Plex Mono',
+        },
         extend: {
             gridTemplateColumns: {
                 '16': 'repeat(16, minmax(0, 1fr))',

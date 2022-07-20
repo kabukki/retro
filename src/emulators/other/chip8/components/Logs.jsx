@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faBug, faInfo, faExclamation, faXmark, faDownload } from '@fortawesome/free-solid-svg-icons';
 
 const levelMap = {
-    trace: { fg: 'text-gray-400', icon: faMagnifyingGlass },
-    debug: { fg: 'text-gray-600', icon: faBug },
+    trace: { fg: 'text-neutral-400', icon: faMagnifyingGlass },
+    debug: { fg: 'text-neutral-600', icon: faBug },
     info: { fg: 'text-black', icon: faInfo },
     warning: { fg: 'text-yellow-500', icon: faExclamation },
     error: { fg: 'text-red-500', icon: faXmark },

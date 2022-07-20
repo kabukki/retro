@@ -4,8 +4,6 @@ import { prefix } from 'metric-prefix';
 
 import { EmulatorContext, BarChart } from '../../../../common';
 
-import Icon from '../../../../assets/audio.svg';
-
 export const Audio = () => {
     const { debug, emulator } = useContext(EmulatorContext);
 
@@ -39,5 +37,3 @@ export const Audio = () => {
         </div>
     );
 };
-
-Audio.Icon = Icon;

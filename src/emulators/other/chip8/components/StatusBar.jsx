@@ -9,7 +9,7 @@ import { Indicator } from '../../../../common';
 
 const statusMap = {
     [Status.NONE]: { text: '-', color: colors.black },
-    [Status.IDLE]: { text: 'Idle', color: colors.gray[500] },
+    [Status.IDLE]: { text: 'Idle', color: colors.neutral[400] },
     [Status.RUNNING]: { text: 'Running', color: colors.green[700] },
     [Status.ERROR]: { text: 'Error', color: colors.red[700] },
 };

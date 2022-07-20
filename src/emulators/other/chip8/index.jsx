@@ -48,7 +48,7 @@ export const Chip8 = () => {
         return (
             <div className="h-0 flex-1 flex flex-col divide-y">
                 <main className={classNames('h-0 flex-1 grid divide-y', { ['grid-rows-2']: advanced })}>
-                    <div className="relative">
+                    <div className="relative min-h-0">
                         <Video className="h-full w-full" />
                         {error && (
                             <div className="absolute inset-0 flex flex-col justify-center items-center backdrop-blur-xl text-red-500">

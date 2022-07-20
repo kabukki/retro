@@ -14,3 +14,4 @@ export * from './UI';
 export * from './Unavailable';
 export * from './Indicator';
 export * from './Pixels';
+export * from './Histogram';

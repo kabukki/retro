@@ -32,7 +32,7 @@ export const Disassembly = () => {
                             <div style={style} className={classNames('flex items-center gap-4 font-mono', { 'bg-green-200': emulator.cpu.pc === address })}>
                                 <div className="w-4 self-stretch" style={{ backgroundColor: region.color }} title={region.name} />
                                 <b>{hex(address, { padding: 3, prefix: false })}</b>
-                                <span className="text-gray-500">{hex(instruction.opcode, { padding: 4, prefix: false })}</span>
+                                <span className="text-neutral-400">{hex(instruction.opcode, { padding: 4, prefix: false })}</span>
                                 {instruction.disassembly}
                             </div>
                         );
