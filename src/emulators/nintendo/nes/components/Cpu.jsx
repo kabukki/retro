@@ -51,7 +51,7 @@ export const Cpu = () => {
                 <div className="p-2 grid grid-cols-2 gap-x-2 items-center overflow-auto">
                     <span>Program counter</span>
                     <div className="flex gap-2 font-mono">
-                        <Byte value={emulator.debug.cpu.pc} format={hex.with({ padding: 3 })} />
+                        <Byte value={emulator.debug.cpu.pc} format={hex.with({ padding: 4 })} />
                         <button className="text-green-700" title="Jump to program counter" onClick={() => onJump(emulator.debug.cpu.pc)}>
                             <FontAwesomeIcon  className="w-4 fill-green-700" icon={faArrowRightToBracket} />
                         </button>
@@ -81,7 +81,7 @@ export const Cpu = () => {
                         ]} />
                     </div>
                     <span>Stack pointer</span>
-                    <Byte value={emulator.debug.cpu.y} format={hex.with({ padding: 2 })} />
+                    <Byte value={emulator.debug.cpu.sp} format={hex.with({ padding: 2 })} />
                     <span>DMA</span>
                     <span>{emulator.debug.bus.dma?.page ?? '-'}</span>
                 </div>
@@ -93,7 +93,7 @@ export const Cpu = () => {
                         <div key={n} className="flex gap-4 font-mono">
                             <b>{hex(n, { padding: 2, prefix: false })}</b>
                             <Byte key={n} value={data} format={hex.with({ padding: 2 })} />
-                            {emulator.debug.cpu.sp === + n && <span className="text-green-700">← stack pointer</span>}
+                            {emulator.debug.cpu.sp === n && <span className="text-green-700">← stack pointer</span>}
                         </div>
                     ))}
                 </div>

@@ -1,5 +1,4 @@
-import React from 'react';
-import { useIO } from '@kabukki/wasm-chip8';
+import React, { useContext } from 'react';
 import { LinePath } from '@visx/shape';
 import { scaleLinear } from '@visx/scale';
 import { withParentSize } from '@visx/responsive';
@@ -7,6 +6,8 @@ import { curveMonotoneX } from '@visx/curve';
 import { AxisBottom } from '@visx/axis';
 import { GridColumns, GridRows } from '@visx/grid';
 import colors from 'tailwindcss/colors';
+
+import { EmulatorContext } from '../context';
 
 const Signal = withParentSize(({ data, parentWidth, parentHeight }) => {
     const xScale = scaleLinear({
@@ -61,39 +62,37 @@ const Spectrum = withParentSize(({ data, sampleRate, parentWidth, parentHeight }
 });
 
 export const Audio = () => {
-    const { audio } = useIO();
+    const { emulator } = useContext(EmulatorContext);
 
-    const onVolume = (e) => audio.volume(e.target.valueAsNumber);
-    const onFrequency = (e) => audio.frequency(e.target.valueAsNumber);
-    const onType = (e) => audio.type(e.target.value);
+    const onVolume = (e) => emulator.audio.volume(e.target.valueAsNumber);
+    const onFrequency = (e) => emulator.audio.frequency(e.target.valueAsNumber);
+    const onType = (e) => emulator.audio.type(e.target.value);
 
-    if (audio) {
-        return (
-            <div className="p-2 grid grid-cols-2">
-                <span>Sample rate</span>
-                {audio.sampleRate.toLocaleString()} Hz
-                <span>Volume</span>
-                <input type="range" min={0} max={1} step={0.01} defaultValue={1} onChange={onVolume} />
-                <span>Frequency</span>
-                <input type="range" min={20} max={20000} step={1} defaultValue={440} onChange={onFrequency} />
-                <span>Type</span>
-                <select className="bg-transparent outline-none" defaultValue={audio.baseType} onChange={onType}>
-                    <option value="sawtooth">Sawtooth</option>
-                    <option value="sine">Sine</option>
-                    <option value="square">Square</option>
-                    <option value="triangle">Triangle</option>
-                </select>
-                <span className="col-span-2">Sound wave</span>
-                <div className="h-32 col-span-2">
-                    <Signal data={audio.data.timeDomain} />
-                </div>
-                <span className="col-span-2">Frequency spectrum</span>
-                <div className="h-32 col-span-2">
-                    <Spectrum data={audio.data.frequency} sampleRate={audio.sampleRate} />
-                </div>
+    return emulator.audio ? (
+        <div className="p-2 grid grid-cols-2">
+            <span>Sample rate</span>
+            {emulator.audio.sampleRate.toLocaleString()} Hz
+            <span>Volume</span>
+            <input type="range" min={0} max={1} step={0.01} defaultValue={1} onChange={onVolume} />
+            <span>Frequency</span>
+            <input type="range" min={20} max={20000} step={1} defaultValue={440} onChange={onFrequency} />
+            <span>Type</span>
+            <select className="bg-transparent outline-none" defaultValue={emulator.audio.type} onChange={onType}>
+                <option value="sawtooth">Sawtooth</option>
+                <option value="sine">Sine</option>
+                <option value="square">Square</option>
+                <option value="triangle">Triangle</option>
+            </select>
+            <span className="col-span-2">Sound wave</span>
+            <div className="h-32 col-span-2">
+                <Signal data={emulator.audio.data.timeDomain} />
             </div>
-        );
-    } else {
-        return <p className="p-2 text-center">No data :(</p>
-    }
+            <span className="col-span-2">Frequency spectrum</span>
+            <div className="h-32 col-span-2">
+                <Spectrum data={emulator.audio.data.frequency} sampleRate={emulator.audio.sampleRate} />
+            </div>
+        </div>
+    ) : (
+        <p className="p-2 text-center">No data :(</p>
+    );
 };

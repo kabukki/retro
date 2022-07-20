@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { useDebug } from '@kabukki/wasm-chip8';
 import classNames from 'classnames';
 
+import { EmulatorContext } from '../context';
 import { Settings } from '.';
 
 const Keypad = ({ input, className }) => (
@@ -96,7 +96,7 @@ const order = [
 ];
 
 export const Input = () => {
-    const { emulator } = useDebug();
+    const { emulator } = useContext(EmulatorContext);
     const [{ keymap }, setSettings] = useContext(Settings);
 
     const onKey = (key) => (e) => {
@@ -114,11 +114,11 @@ export const Input = () => {
     return (
         <div className="grid grid-cols-2 divide-x">
             <div className="p-2">
-                <Keypad className="h-32" input={emulator.keypad.state} />
+                <Keypad className="h-32" input={emulator.debug?.input} />
             </div>
             <div className="p-2 grid grid-cols-4 grid-rows-4 gap-2">
                 {entries.map(([key, mapped]) => (
-                    <label key={key} className={classNames('flex items-center gap-2', { 'text-green-700': emulator.keypad.state[key] })}>
+                    <label key={key} className={classNames('flex items-center gap-2', { 'text-green-700': emulator.debug?.input?.[key] })}>
                         <b className="font-mono">{key.toString(16).toUpperCase()}</b>
                         <input className="w-0 flex-1 text-center" type="text" value={mapped} readOnly onKeyDown={onKey(key)} />
                     </label>

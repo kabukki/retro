@@ -1,12 +1,14 @@
-import React from 'react';
-import { useDebug } from '@kabukki/wasm-chip8';
+import React, { useContext } from 'react';
 
 import { HexViewer } from '../../../../common';
+import { EmulatorContext } from '../context';
 
 export const Memory = () => {
-    const { emulator } = useDebug();
+    const { emulator } = useContext(EmulatorContext);
 
-    return (
-        <HexViewer buffer={emulator?.memory.ram} className="h-full w-full" />
+    return emulator?.debug ? (
+        <HexViewer buffer={emulator.debug.memory.ram || []} className="h-full overflow-auto" />
+    ) : (
+        <p className="h-full flex items-center justify-center">No data :(</p>
     );
 };

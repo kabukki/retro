@@ -16,7 +16,7 @@ const tabs = [
     { name: 'Performance', icon: faGauge, component: Performance, unmount: true },
     { name: 'CPU', icon: faMicrochip, component: Cpu, unmount: true },
     { name: 'PPU', icon: faBrush, component: Ppu, unmount: true },
-    { name: 'Memory', icon: faMemory, component: Memory, unmount: true },
+    { name: 'RAM', icon: faMemory, component: Memory, unmount: true },
     { name: 'Cartridge', icon: faCompactDisc, component: Cartridge, unmount: true },
     { name: 'Audio', icon: faMusic, component: Audio, unmount: true },
     { name: 'Input', icon: faGamepad, component: Input, unmount: true },
