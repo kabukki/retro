@@ -17,7 +17,7 @@ const regions = [
 
 const Row = ({ index, style }) => {
     const { emulator } = useContext(EmulatorContext);
-    const address = emulator.debug.disassembly.index_to_address(index);
+    const address = emulator.debug.disassembly.indexToAddress(index);
     const disassembly = emulator.debug.disassembly.at(address);
 
     const region = useMemo(() => {
@@ -41,7 +41,7 @@ export const Cpu = () => {
     const [width, height] = useSize(ref);
 
     const onJump = (address) => {
-        const index = emulator.debug.disassembly.address_to_index(address);
+        const index = emulator.debug.disassembly.addressToIndex(address);
         list.current.scrollToItem(index, 'center');
     };
 
