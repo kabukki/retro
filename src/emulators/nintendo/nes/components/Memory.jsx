@@ -1,9 +1,7 @@
-import React, { useState, useRef, useContext, useMemo } from 'react';
+import React, { useRef, useContext, useMemo } from 'react';
 import { FixedSizeList } from 'react-window';
 import useSize from '@react-hook/size';
 import classNames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import colors from 'tailwindcss/colors';
 
 import { Byte } from '../../../../common';
@@ -14,13 +12,9 @@ const regions = [
     { start: 0x0000, end: 0x1FFF, name: 'RAM', color: colors.red[500] },
     { start: 0x2000, end: 0x3FFF, name: 'PPU', color: colors.blue[500] },
     { start: 0x4000, end: 0x401F, name: 'APU & I/O', color: colors.yellow[500] },
-    { start: 0x4020, end: 0xFFFF, name: 'Cartridge', color: colors.green[500] },
-];
-
-const shortcuts = [
-    { name: 'Start', address: 0 },
-    { name: 'End', address: 0xFFFF },
-    { name: 'Cartridge RAM', address: 0x6000 },
+    { start: 0x4020, end: 0x5FFF, name: 'Expansion ROM', color: colors.green[500] },
+    { start: 0x6000, end: 0x7FFF, name: 'PRG-RAM', color: colors.purple[500] },
+    { start: 0x8000, end: 0xFFFF, name: 'PRG-ROM', color: colors.orange[500] },
 ];
 
 const Row = ({ index, style }) => {
@@ -33,8 +27,8 @@ const Row = ({ index, style }) => {
     }, [offset]);
 
     return (
-        <div style={style} className={classNames('flex items-center gap-4 font-mono')}>
-            <div className="w-4 self-stretch" style={{ backgroundColor: region.color }} title={region.name} />
+        <div style={style} className={classNames('flex items-center gap-2 font-mono')}>
+            <div className="p-2 self-stretch" style={{ backgroundColor: region.color }} title={region.name} />
             <div key={offset} className="p-1 text-center font-bold">
                 {(offset).toString(16).padStart(4, 0)}
             </div>
@@ -49,7 +43,13 @@ const Row = ({ index, style }) => {
             ) : (
                 <span key={n} className="p-1 text-red-700">??</span>
             ))}
-            {data.map((byte) => /\P{C}/u.test(String.fromCodePoint(byte)) ? String.fromCodePoint(byte) : '.')}
+            <div>
+                {data.map((byte) => /\P{C}/u.test(String.fromCodePoint(byte)) ? (
+                    <span>{String.fromCodePoint(byte)}</span>
+                ) : (
+                    <span className={byte !== null ? 'text-neutral-400' : 'text-red-700'}>.</span>
+                ))}
+            </div>
         </div>
     );
 };
@@ -59,7 +59,6 @@ export const Memory = () => {
     const list = useRef();
     const { emulator } = useContext(EmulatorContext);
     const [width, height] = useSize(ref);
-    const [shortcut, setShortcut] = useState(0);
 
     const onJump = (address) => {
         list.current.scrollToItem(address / 16, 'start');
@@ -70,12 +69,9 @@ export const Memory = () => {
             <div className="flex divide-x">
                 <div className="p-2 flex gap-2 justify-center items-center">
                     Jump to
-                    <select className="border rounded" value={shortcut} onChange={(e) => setShortcut(e.target.value)}>
-                        {shortcuts.map(({ name, address }) => <option key={address} value={address}>{name}</option>)}
+                    <select className="border rounded" onChange={(e) => onJump(e.target.value)}>
+                        {regions.map(({ name, start }) => <option key={start} value={start}>{name}</option>)}
                     </select>
-                    <button className="text-green-700" title="Go" onClick={() => onJump(shortcut)}>
-                        <FontAwesomeIcon className="w-4 fill-green-700" icon={faArrowRightToBracket} />
-                    </button>
                 </div>
             </div>
             <div ref={ref} className="h-0 flex-1">

@@ -46,7 +46,7 @@ export const StatusBar = ({ advanced, onAdvanced }) => {
                 )}
             </div>
             {advanced && !emulator.error && (
-                <div className="p-2 flex gap-2 justify-center items-center">
+                <div className="p-2 flex flex-wrap gap-2 justify-center items-center">
                     Step by one
                     <select className="border rounded" value={stepBy} onChange={(e) => setStepBy(e.target.value)}>
                         {Object.entries(stepMap).map(([step, name]) => <option key={step} value={step}>{name}</option>)}

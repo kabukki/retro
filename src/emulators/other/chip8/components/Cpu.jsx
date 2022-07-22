@@ -25,7 +25,7 @@ const Row = ({ index, style }) => {
     }, [address]);
 
     return (
-        <div style={style} className={classNames('flex items-center gap-4 font-mono', { 'bg-green-200': emulator.debug.cpu.pc === disassembly.address })}>
+        <div style={style} className={classNames('flex items-center gap-2 font-mono', { 'bg-green-200': emulator.debug.cpu.pc === disassembly.address })}>
             <div className="w-4 self-stretch" style={{ backgroundColor: region.color }} title={region.name} />
             <b>{hex(disassembly.address, { padding: 3, prefix: false })}</b>
             <span className="text-neutral-400">{hex(disassembly.opcode, { padding: 4, prefix: false })}</span>

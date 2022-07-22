@@ -17,7 +17,7 @@ const Row = ({ index, style }) => {
     const disassembly = emulator.debug.disassembly.at(address);
 
     return (
-        <div style={style} className={classNames('flex items-center gap-4 font-mono', { 'bg-green-200': emulator.debug.cpu.pc === disassembly.address })}>
+        <div style={style} className={classNames('flex items-center gap-2 font-mono', { 'bg-green-200': emulator.debug.cpu.pc === disassembly.address })}>
             <b>{disassembly.bank.toString().padStart(2, 0)}:{hex(disassembly.address, { padding: 4, prefix: false })}</b>
             <span className="text-neutral-400">{disassembly.bytes}</span>
             {disassembly.operator} {disassembly.operand}
