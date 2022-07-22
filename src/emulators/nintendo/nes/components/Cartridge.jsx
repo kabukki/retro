@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import pretty from 'pretty-bytes';
 
 import { EmulatorContext } from '../context';
@@ -19,22 +19,30 @@ export const Cartridge = () => {
 
     return emulator?.debug ? (
         <div className="h-full grid grid-rows-3 divide-y md:grid-cols-3 md:grid-rows-1 md:divide-x md:divide-y-0">
-            <div className="flex flex-col divide-y">
-                <div className="p-2 font-bold">iNES header</div>
+            <div>
+                <div className="p-2 font-bold border-y">iNES header</div>
                 <div className="p-2 grid grid-cols-2 gap-x-2 items-center overflow-auto">
+                    <span>PRG banks</span>
+                    <span className="font-mono">{emulator.debug.cartridge.ines?.prg_banks ?? '-'}</span>
+                    <span>PRG banks</span>
+                    <span className="font-mono">{emulator.debug.cartridge.ines?.prg_banks ?? '-'}</span>
+                    <span>CHR banks</span>
+                    <span className="font-mono">{emulator.debug.cartridge.ines?.chr_banks ?? '-'}</span>
                     <span>Mapper</span>
                     <span className="font-mono">{emulator.debug.cartridge.ines?.mapper ?? '-'}</span>
                     <span>Mirroring</span>
                     <span className="font-mono">{emulator.debug.cartridge.ines?.mirroring ?? '-'}</span>
+                    <span>RAM ?</span>
+                    <span className="font-mono">{emulator.debug.cartridge.ines?.ram ? 'Yes' : 'No'}</span>
                     <span>Trainer ?</span>
                     <span className="font-mono">{emulator.debug.cartridge.ines?.trainer ? 'Yes' : 'No'}</span>
                 </div>
             </div>
-            <div className="flex flex-col divide-y">
-                <div className="p-2 font-bold">PRG</div>
+            <div>
+                <div className="p-2 font-bold border-y">PRG</div>
                 <div className="p-2 grid grid-cols-2 gap-x-2 overflow-auto">
-                    <span>Total banks</span>
-                    <span className="font-mono">{emulator.debug.cartridge.ines?.prg_banks ?? '-'}</span>
+                    <span>Capacity</span>
+                    <span className="font-mono">{pretty(emulator.debug.cartridge.prgCapacity, { binary: true })}</span>
                     <span>Selected banks</span>
                     <ul className="font-mono">
                         {emulator.debug.cartridge.prgCurrent?.map((bank) => (
@@ -43,15 +51,13 @@ export const Cartridge = () => {
                             </li>
                         )) ?? '-'}
                     </ul>
-                    <span>RAM</span>
-                    <span className="font-mono">{emulator.debug.cartridge.ines?.ram ?? '-'}</span>
                 </div>
             </div>
-            <div className="flex flex-col divide-y">
-                <div className="p-2 font-bold">CHR</div>
+            <div>
+                <div className="p-2 font-bold border-y">CHR</div>
                 <div className="p-2 grid grid-cols-2 gap-x-2 overflow-auto">
-                    <span>Total banks</span>
-                    <span className="font-mono">{emulator.debug.cartridge.ines?.chr_banks ?? '-'}</span>
+                    <span>Capacity</span>
+                    <span className="font-mono">{pretty(emulator.debug.cartridge.chrCapacity, { binary: true })}</span>
                     <span>Selected banks</span>
                     <ul className="font-mono">
                         {emulator.debug.cartridge.chrCurrent?.map((bank) => (

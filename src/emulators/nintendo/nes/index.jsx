@@ -1,7 +1,7 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrochip, faMemory, faMusic, faGamepad, faScissors, faBug, faGauge, faClockRotateLeft, faCompactDisc, faBrush } from '@fortawesome/free-solid-svg-icons';
+import { faMicrochip, faMemory, faMusic, faGamepad, faScissors, faBug, faGauge, faClockRotateLeft, faFloppyDisk, faBrush } from '@fortawesome/free-solid-svg-icons';
 import { Status } from '@kabukki/wasm-nes';
 import classNames from 'classnames';
 
@@ -16,8 +16,8 @@ const tabs = [
     { name: 'Performance', icon: faGauge, component: Performance, unmount: true },
     { name: 'CPU', icon: faMicrochip, component: Cpu, unmount: true },
     { name: 'PPU', icon: faBrush, component: Ppu, unmount: true },
-    { name: 'RAM', icon: faMemory, component: Memory, unmount: true },
-    { name: 'Cartridge', icon: faCompactDisc, component: Cartridge, unmount: true },
+    { name: 'Memory', icon: faMemory, component: Memory, unmount: true },
+    { name: 'Cartridge', icon: faFloppyDisk, component: Cartridge, unmount: true },
     { name: 'Audio', icon: faMusic, component: Audio, unmount: true },
     { name: 'Input', icon: faGamepad, component: Input, unmount: true },
     { name: 'Logs', icon: faClockRotateLeft, component: Logs, unmount: true },

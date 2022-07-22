@@ -37,14 +37,16 @@ export const Performance = () => {
                 <div className="p-2 grid grid-cols-2 gap-x-2 items-center overflow-auto">
                     <span>Real</span>
                     <span className="font-mono">{emulator.performance ? prettyMs(emulator.performance.timestamp, { colonNotation: true, keepDecimalsOnWholeSeconds: true, secondsDecimalDigits: 3 }) : '-'}</span>
+                    <span>Audio</span>
+                    <span className="font-mono">{prettyMs(emulator.audio.time * 1000, { colonNotation: true, keepDecimalsOnWholeSeconds: true, secondsDecimalDigits: 3 })}</span>
                     <span>Emulated</span>
                     <span className="font-mono">{emulator.debug.clock ? `${prettyMs(emulator.debug.clock.time * 1000, { colonNotation: true, keepDecimalsOnWholeSeconds: true, secondsDecimalDigits: 3 })} @ ${prefix(emulator.debug.clock.rate, { unit: 'Hz' })}` : '-'}</span>
                     <span>CPU</span>
                     <span className="font-mono">{emulator.debug.cpu.clock.cycles.toLocaleString()} cycles @ {prefix(emulator.debug.cpu.clock.rate, { unit: 'Hz' })}</span>
+                    <span>APU</span>
+                    <span className="font-mono">{emulator.debug.apu.clock.cycles.toLocaleString()} cycles @ {prefix(emulator.debug.apu.clock.rate, { unit: 'Hz' })}</span>
                     <span>PPU</span>
                     <span className="font-mono">{emulator.debug.ppu.clock.cycles.toLocaleString()} cycles @ {prefix(emulator.debug.ppu.clock.rate, { unit: 'Hz' })}</span>
-                    <span>APU</span>
-                    <span className="font-mono">todo</span>
                 </div>
             </div>
         </div>
