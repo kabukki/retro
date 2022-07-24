@@ -6,26 +6,25 @@ export class Input extends EventTarget {
         this.id = id;
         this.type = type;
         this.value = Button.None;
-        this.buffer = this.value;
-    }
-
-    commit () {
-        if (this.buffer !== this.value) {
-            this.value = this.buffer;
-            this.dispatchEvent(new CustomEvent('update', { detail: this.value }));
-        }
+        this.keymap = {};
     }
 
     press (button) {
-        this.buffer |= button;
+        if ((this.value & button) === 0) {
+            this.value |= button;
+            this.dispatchEvent(new CustomEvent('press', { detail: button }));
+        }
     }
 
     release (button) {
-        this.buffer &= ~button;
+        if ((this.value & button) > 0) {
+            this.value &= ~button;
+            this.dispatchEvent(new CustomEvent('release', { detail: button }));
+        }
     }
 
     reset () {
-        this.buffer = Button.None;
+        this.value = Button.None;
     }
 
     isPressed (button) {
@@ -34,19 +33,18 @@ export class Input extends EventTarget {
 }
 
 export class Keyboard extends Input {
-    static keymap = {
-        ' ': Button.A,
-        'Meta': Button.B,
-        'Shift': Button.Select,
-        'Enter': Button.Start,
-        'ArrowUp': Button.Up,
-        'ArrowDown': Button.Down,
-        'ArrowLeft': Button.Left,
-        'ArrowRight': Button.Right,
-    };
-
     constructor () {
         super({ id: 'Keyboard', type: 'keyboard' });
+        this.keymap = {
+            [Button.A]: ' ',
+            [Button.B]: 'Meta',
+            [Button.Select]: 'Shift',
+            [Button.Start]: 'Enter',
+            [Button.Up]: 'ArrowUp',
+            [Button.Down]: 'ArrowDown',
+            [Button.Left]: 'ArrowLeft',
+            [Button.Right]: 'ArrowRight',
+        };
     }
 
     monitor () {
@@ -60,14 +58,14 @@ export class Keyboard extends Input {
     }
 
     onKey (e) {
-        if (e.key in Keyboard.keymap) {
-            e.preventDefault();
-            switch (e.type) {
-                case 'keydown': this.press(Keyboard.keymap[e.key]); break;
-                case 'keyup': this.release(Keyboard.keymap[e.key]); break;
+        for (const [button, key] of Object.entries(this.keymap)) {
+            if (key === e.key) {
+                e.preventDefault();
+                switch (e.type) {
+                    case 'keydown': this.press(button); break;
+                    case 'keyup': this.release(button); break;
+                }
             }
-
-            this.commit();
         }
     }
 }
@@ -111,38 +109,58 @@ export class Gamepad extends Input {
     constructor ({ id }) {
         super({ id, type: 'gamepad' });
         this.rafHandle = null;
+        this.keymap = {
+            [Button.A]: GamepadButton.A,
+            [Button.B]: GamepadButton.B,
+            [Button.Select]: GamepadButton.Back,
+            [Button.Start]: GamepadButton.Start,
+            [Button.Up]: GamepadButton.Up,
+            [Button.Down]: GamepadButton.Down,
+            [Button.Left]: GamepadButton.Left,
+            [Button.Right]: GamepadButton.Right,
+        };
     }
 
     monitor () {
         const gamepad = [...navigator.getGamepads()].find((gamepad) => gamepad?.id === this.id);
 
-        this.reset();
-
-        // Button controls
-        for (const key in Gamepad.keymap) {
-            const button = gamepad.buttons[key];
+        if (gamepad) {
+            // Button controls
+            for (const button of [Button.A, Button.B, Button.Select, Button.Start]) {
+                const key = this.keymap[button];
     
-            if (button.pressed) {
-                this.press(Gamepad.keymap[key]);
+                if (gamepad.buttons[key].pressed) {
+                    this.press(button);
+                } else {
+                    this.release(button);
+                }
+            }
+    
+            // Joystick + arrows controls
+            if (gamepad.axes[0] <= -0.5 || gamepad.buttons[GamepadButton.Left].pressed) {
+                this.press(Button.Left);
             } else {
-                this.release(Gamepad.keymap[key]);
+                this.release(Button.Left);
+            }
+            
+            if (gamepad.axes[0] >= 0.5 || gamepad.buttons[GamepadButton.Right].pressed) {
+                this.press(Button.Right);
+            } else {
+                this.release(Button.Right);
+            }
+    
+            if (gamepad.axes[1] <= -0.5 || gamepad.buttons[GamepadButton.Up].pressed) {
+                this.press(Button.Up);
+            } else {
+                this.release(Button.Up);
+            }
+            
+            if (gamepad.axes[1] >= 0.5 || gamepad.buttons[GamepadButton.Down].pressed) {
+                this.press(Button.Down);
+            } else {
+                this.release(Button.Down);
             }
         }
-
-        // Joystick controls
-        if (gamepad.axes[0] <= -0.5) {
-            this.press(Button.Left);
-        } else if (gamepad.axes[0] >= 0.5) {
-            this.press(Button.Right);
-        }
-
-        if (gamepad.axes[1] <= -0.5) {
-            this.press(Button.Up);
-        } else if (gamepad.axes[1] >= 0.5) {
-            this.press(Button.Down);
-        }
-
-        this.commit();
 
         this.rafHandle = requestAnimationFrame(this.monitor.bind(this));
     }

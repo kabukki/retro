@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactSelect from 'react-select';
+import colors from 'tailwindcss/colors';
 
 const selectStyles = {
     control: () => ({
@@ -15,8 +16,8 @@ const selectStyles = {
     }),
     option: (provided, { isSelected, isFocused }) => ({
         ...provided,
-        backgroundColor: isSelected ? '#047857' : isFocused ? '#D1FAE5' : 'initial',
-        color: isSelected ? '#fff' : isFocused ? '#000' : 'initial',
+        backgroundColor: isSelected ? colors.green[700] : isFocused ? colors.green[100] : 'initial',
+        color: isSelected ? colors.white : isFocused ? colors.black : 'initial',
     }),
 };
 
