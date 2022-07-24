@@ -18,7 +18,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
-        run: npm run build
+        run: npm run build -- --base /${{ github.event.repository.name }}/
+      - run: ls -la && ls -la dist
       - name: Save build output
         uses: actions/upload-artifact@v3
         with:
@@ -34,7 +35,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Save npm logs
+      - name: Retrieve build
         uses: actions/download-artifact@v3
         with:
           name: dist
