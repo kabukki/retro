@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { createRoot } from 'react-dom/client';
-import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWikipediaW, faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -13,7 +13,7 @@ import { Unavailable, Pixels } from './common';
  
 import './index.css';
 
-const withTitle = (emulator) => (props) => {
+const Emulator = ({ emulator }) => {
     const { name, component: Component = Unavailable } = emulator;
     
     return (
@@ -22,7 +22,7 @@ const withTitle = (emulator) => (props) => {
                 <title>{name}</title>
             </Helmet>
             <Suspense fallback={<p>Loading</p>}>
-                <Component {...props} />
+                <Component />
             </Suspense>
         </>
     );
@@ -70,6 +70,30 @@ const Card = ({ name, developer, year, generation, path, picture, github, wikipe
     </div>
 );
 
+const List = () => (
+    <main className="p-8 overflow-auto">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {emulators.slice().sort((a, b) => (b.year - a.year) || a.name.localeCompare(b.name)).map((emulator) => (
+                <Card key={emulator.name} {...emulator} />
+            ))}
+        </div>
+    </main>
+);
+
+const Home = () => (
+    <main className="flex-1 relative overflow-hidden">
+        <Pixels className="absolute inset-0" />
+        <div className="absolute inset-0 bg-black bg-opacity-50" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 space-y-4 text-center">
+            <h1 className="text-8xl text-white text-shadow font-mono animate-reveal">👾<br />retro</h1>
+            <h2 className="text-xl text-gray-100 opacity-0 animate-reveal [animation-delay:1000ms] [animation-fill-mode:forwards]">Replay all your favorite old-school games right in your browser!</h2>
+            <button className="px-4 py-2 rounded-full bg-green-700 hover:bg-green-500 transition text-white opacity-0 animate-reveal [animation-delay:1500ms] [animation-fill-mode:forwards]">
+                <Link to="/list">Let's play!</Link>
+            </button>
+        </div>
+    </main>
+);
+
 const App = () => {
     return (
         <div className="h-screen flex flex-col bg-gray-100">
@@ -82,33 +106,13 @@ const App = () => {
                         <FontAwesomeIcon icon={faGithub} />
                     </a>
                 </header>
-                <Switch>
+                <Routes>
                     {emulators.map((emulator) => (
-                        <Route key={emulator.name} path={emulator.path} component={withTitle(emulator)} />
+                        <Route key={emulator.name} path={emulator.path} element={<Emulator emulator={emulator} {...emulator} />} />
                     ))}
-                    <Route path="/list">
-                        <main className="p-8 overflow-auto">
-                            <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                                {emulators.slice().sort((a, b) => (b.year - a.year) || a.name.localeCompare(b.name)).map((emulator) => (
-                                    <Card key={emulator.name} {...emulator} />
-                                ))}
-                            </div>
-                        </main>
-                    </Route>
-                    <Route path="/">
-                        <main className="flex-1 relative overflow-hidden">
-                            <Pixels className="absolute inset-0" />
-                            <div className="absolute inset-0 bg-black bg-opacity-50" />
-                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 space-y-4 text-center">
-                                <h1 className="text-8xl text-white text-shadow font-mono animate-reveal">👾<br />retro</h1>
-                                <h2 className="text-xl text-gray-100 opacity-0 animate-reveal [animation-delay:1000ms] [animation-fill-mode:forwards]">Replay all your favorite old-school games right in your browser!</h2>
-                                <button className="px-4 py-2 rounded-full bg-green-700 hover:bg-green-500 transition text-white opacity-0 animate-reveal [animation-delay:1500ms] [animation-fill-mode:forwards]">
-                                    <Link to="/list">Let's play!</Link>
-                                </button>
-                            </div>
-                        </main>
-                    </Route>
-                </Switch>
+                    <Route path="/list" element={<List />} />
+                    <Route path="/" element={<Home />} />
+                </Routes>
             </Router>
         </div>
     );
