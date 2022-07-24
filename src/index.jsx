@@ -76,7 +76,7 @@ const App = () => {
             <Router>
                 <header className="z-30 p-4 flex items-center justify-between bg-green-700 text-white shadow-md">
                     <h1 className="text-xl font-mono font-bold text-shadow animate-color">
-                        <Link to="/">retro</Link>
+                        <Link to="/list">retro</Link>
                     </h1>
                     <a target="github" href={repository.url}>
                         <FontAwesomeIcon icon={faGithub} />

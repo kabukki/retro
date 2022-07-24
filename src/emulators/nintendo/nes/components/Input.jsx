@@ -57,7 +57,6 @@ export const Input = () => {
     const [settings] = useContext(SettingsContext);
 
     const onKey = (input, button) => (e) => {
-        console.log(button);
         input.keymap[button] = e.key;
     };
 

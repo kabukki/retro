@@ -4,7 +4,7 @@ export * from './Cpu';
 export * from './Input';
 export * from './Performance';
 export * from './Memory';
-export * from './Saves';
+// export * from './Saves';
 export * from './Logs';
 export * from './StatusBar';
 export * from './Video';

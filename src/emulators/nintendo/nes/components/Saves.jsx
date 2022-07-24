@@ -2,8 +2,6 @@ import React, { useContext } from 'react';
 
 import { EmulatorContext } from '../../../../common';
 
-import Icon from '../../../../assets/save.svg';
-
 const Save = ({ name, date, thumbnail }) => (
     <div className="p-4 flex gap-4 items-center">
         <img className="w-16" src={thumbnail} />
@@ -25,5 +23,3 @@ export const Saves = () => {
         </div>
     );
 };
-
-Saves.Icon = Icon;

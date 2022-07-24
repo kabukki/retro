@@ -5,9 +5,10 @@ import { faMicrochip, faMemory, faMusic, faGamepad, faBug, faGauge, faClockRotat
 import { Status } from '@kabukki/wasm-chip8';
 import classNames from 'classnames';
 
-import { ROMSelector, useInput } from '../../../common';
+import { ROMSelector } from '../../../common';
 import { Cpu, Performance, Audio, Video, Input, StatusBar, Memory, SettingsProvider, Settings, Logs } from './components';
 import { EmulatorProvider, EmulatorContext } from './context';
+import { useInput } from './hooks';
 
 import picture from './assets/picture.png';
 import content from './assets/content.png';
