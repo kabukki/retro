@@ -1,27 +1,29 @@
 import React, { memo, useContext } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGamepad, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@kabukki/wasm-nes';
+import classNames from 'classnames';
 
-import { EmulatorContext, Select } from '../../../../common';
+import { Select } from '../../../../common';
+import { EmulatorContext } from '../context';
+import { SettingsContext } from '../settings';
 
-// import Keyboard from '../../../../assets/keyboard.svg';
-// import Gamepad from '../../../../assets/gamepad.svg';
+const formatOptionLabelWithIcon = ({ id, type }) => {
+    const typeMap = {
+        keyboard: faKeyboard,
+        gamepad: faGamepad,
+    };
 
-// const formatOptionLabelWithIcon = ({ id, type }) => {
-//     const typeMap = {
-//         keyboard: <Keyboard />,
-//         gamepad: <Gamepad />,
-//     };
+    return (
+        <div className="flex items-center gap-2">
+            <FontAwesomeIcon className="w-4 h-4" icon={typeMap[type]} />
+            <div className="flex-1 truncate">{id}</div>
+        </div>
+    );
+};
 
-//     return (
-//         <div className="flex items-center gap-2">
-//             <div className="w-4 h-4 text-center">{typeMap[type]}</div>
-//             <div className="flex-1 truncate">{id}</div>
-//         </div>
-//     );
-// };
-
-const Controller = memo(({ input }) => (
-    <svg viewBox="0 0 330.66626 154.66665">
+const Controller = memo(({ input, className }) => (
+    <svg className={className} viewBox="0 0 330.66626 154.66665">
         <g transform="matrix(1.3333333,0,0,-1.3333333,-5.3333332,245.33333)">
             <path transform="translate(239.1667,184)" fill="#ffffff" d="m 0,0 h -222.333 c -7.077,0 -12.834,-5.742 -12.834,-12.8 v -90.4 c 0,-7.058 5.757,-12.8 12.834,-12.8 H 0 c 7.076,0 12.833,5.742 12.833,12.8 v 90.4 C 12.833,-5.742 7.076,0 0,0" />
             <path transform="translate(239.1667,76)" fill="#cccccc" d="m 0,0 h -222.333 c -2.67,0 -4.834,2.149 -4.834,4.8 v 90.4 c 0,2.651 2.164,4.8 4.834,4.8 H 0 c 2.669,0 4.833,-2.149 4.833,-4.8 V 4.8 C 4.833,2.149 2.669,0 0,0" />
@@ -51,30 +53,45 @@ const Controller = memo(({ input }) => (
 ));
 
 export const Input = () => {
-    const { input } = useContext(EmulatorContext);
+    const { emulator } = useContext(EmulatorContext);
+    const [settings] = useContext(SettingsContext);
 
-    return input.players.map((player, index) => (
-        <div key={index}>
-            <h2 className="font-bold">Player {index + 1}</h2>
-            {player ? (
-                <Controller input={player.value} />
-            ) : (
-                <p className="text-red-500">Disconnected</p>
-            )}
-            <Select
-                value={player}
-                options={input.inputs}
-                placeholder="Select input source..."
-                onChange={(p) => input.setPlayer(index, p)}
-                getOptionLabel={({ id }) => id}
-                getOptionValue={({ id }) => id}
-                isOptionDisabled={({ id }) => input.players.some((p) => p?.id === id)}
-                // formatOptionLabel={formatOptionLabelWithIcon}
-                isSearchable={false}
-                isClearable
-            />
+    const onKey = (input, button) => (e) => {
+        console.log(button);
+        input.keymap[button] = e.key;
+    };
+
+    return (
+        <div className="h-full grid grid-cols-2 divide-x">
+            {Array.from(emulator.debug.input).map((input, index) => (
+                <div key={index}>
+                    <div className="p-2 font-bold border-y">Player {index + 1}</div>
+                    <div className="p-2">
+                        <Controller className="m-auto max-h-32" input={input} />
+                        <Select
+                            value={settings.input.players[index]}
+                            options={settings.input.inputs}
+                            placeholder="Select input source..."
+                            onChange={(p) => settings.input.setPlayer(index, p)}
+                            getOptionLabel={({ id }) => id}
+                            getOptionValue={({ id }) => id}
+                            formatOptionLabel={formatOptionLabelWithIcon}
+                            isSearchable={false}
+                            isClearable
+                        />
+                        {settings.input.players[index]?.type === 'keyboard' && (
+                            <div className="p-2 grid grid-cols-4 grid-rows-4 gap-2">
+                                {Object.entries(settings.input.players[index]?.keymap).map(([button, mapped]) => (
+                                    <label key={button} className={classNames('flex items-center gap-2', { 'text-green-700': (input & button) > 0 })}>
+                                        <b className="font-mono">{Button[button]}</b>
+                                        <input className="w-0 flex-1 text-center" type="text" value={mapped} readOnly onKeyDown={onKey(settings.input.players[index], button)} />
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ))}
         </div>
-    ));
+    );
 };
-
-// Input.Icon = Gamepad;

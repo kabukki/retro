@@ -5,7 +5,6 @@ export * from './Input';
 export * from './Performance';
 export * from './Memory';
 export * from './Saves';
-export * from './Settings';
 export * from './Logs';
 export * from './StatusBar';
 export * from './Video';

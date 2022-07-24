@@ -7,7 +7,7 @@ import { Tile } from './Tile';
 const PatternTables = ({ patternTables }) => (
     <div className="grid grid-cols-16 gap-px w-fit">
         {patternTables.map((tile, n) => (
-            <div key={n} className="hover:outline hover:outline-1 hover:outline-green-700" title={n}>
+            <div key={n} className="transition-transform hover:scale-150" title={n}>
                 <Tile data={tile} className="w-4 h-4" />
             </div>
         ))}

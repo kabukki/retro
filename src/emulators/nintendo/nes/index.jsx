@@ -1,13 +1,13 @@
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useContext } from 'react';
 import { Tab } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrochip, faMemory, faMusic, faGamepad, faScissors, faBug, faGauge, faClockRotateLeft, faFloppyDisk, faBrush } from '@fortawesome/free-solid-svg-icons';
-import { Status } from '@kabukki/wasm-nes';
+import { faMicrochip, faMemory, faMusic, faGamepad, faBug, faGauge, faClockRotateLeft, faFloppyDisk, faBrush } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
 
-import { ROMSelector, useInput } from '../../../common';
-import { Cpu, Ppu, Cartridge, Performance, Audio, Video, Input, StatusBar, Memory, SettingsProvider, Settings, Logs } from './components';
+import { ROMSelector } from '../../../common';
+import { Cpu, Ppu, Cartridge, Performance, Audio, Video, Input, StatusBar, Memory, Logs } from './components';
 import { EmulatorProvider, EmulatorContext } from './context';
+import { SettingsProvider } from './settings';
 
 import picture from './assets/picture.png';
 import content from './assets/content.png';
@@ -24,22 +24,9 @@ const tabs = [
 ];
 
 export const Nes = () => {
-    // const { input } = useIO();
     const { create, emulator } = useContext(EmulatorContext);
     const [advanced, setAdvanced] = useState(true);
-    // const [{ keymap }] = useContext(Settings);
 
-    // const mapping = useMemo(() => [
-    //     ['Escape', 'keydown', (status === Status.RUNNING) ? stop : (status === Status.IDLE) ? start : () => {}],
-    //     ...Object.entries(keymap).flatMap(([key, mapped]) => [
-    //         [mapped, 'keydown', () => input(key, true)],
-    //         [mapped, 'keyup', () => input(key, false)],
-    //     ]),
-    // ], [status, keymap]);
-
-    // useInput(mapping);
-
-    // TODO transition between screens
     return emulator ? (
         <div className="h-0 flex-1 flex flex-col divide-y">
             <main className={classNames('h-0 flex-1 grid divide-y', { ['grid-rows-2']: advanced })}>
